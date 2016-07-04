@@ -1,6 +1,6 @@
 variables:
-  ADVERTISED_HOST: spotify__kafka
-  ADVERTISED_PORT: 9092
+  ADVERTISED_HOST: 'spotify__kafka'
+  ADVERTISED_PORT: '9092'
 
 stages:
   - test
