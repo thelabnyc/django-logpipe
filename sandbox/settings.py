@@ -69,7 +69,7 @@ STATIC_URL = '/static/'
 
 KAFKA = {
     'BOOTSTRAP_SERVERS': [
-        'ches__kafka:9092'
+        'spotify__kafka:9092'
     ]
 }
 

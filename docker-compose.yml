@@ -1,18 +1,10 @@
 version: '2'
 services:
-  jplock__zookeeper:
-    image: jplock/zookeeper:3.4.8
-    ports:
-      - "2181:2181"
-  ches__kafka:
-    image: ches/kafka:0.10.0.0
-    ports:
-      - "7203:7203"
-      - "9092:9092"
+  spotify__kafka:
+    image: spotify/kafka
     environment:
-      ZOOKEEPER_IP: jplock__zookeeper
-    depends_on:
-      - jplock__zookeeper
+      ADVERTISED_HOST: spotify__kafka
+      ADVERTISED_PORT: 9092
   postgres:
     image: postgres:9.4
   test:
@@ -21,7 +13,7 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - ches__kafka
+      - spotify__kafka
       - postgres
     volumes:
       - .:/code

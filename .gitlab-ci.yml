@@ -1,12 +1,12 @@
 variables:
-  ZOOKEEPER_IP: jplock__zookeeper
+  ADVERTISED_HOST: spotify__kafka
+  ADVERTISED_PORT: 9092
 
 stages:
   - test
 
 services:
-  - jplock/zookeeper:3.4.8
-  - ches/kafka:0.10.0.0
+  - spotify/kafka
   - postgres:9.4
 
 before_script:

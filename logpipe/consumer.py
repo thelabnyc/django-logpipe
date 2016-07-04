@@ -65,7 +65,9 @@ class Consumer(object):
         logger.info('Received message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
 
         # Wait?
-        lag_ms = (time.time() * 1000) - message.timestamp
+        print(message)
+        timestamp = getattr(message, 'timestamp', None) or (time.time() * 1000)
+        lag_ms = (time.time() * 1000) - timestamp
         logger.info("Message lag is %sms" % lag_ms)
         wait_ms = settings.get('MIN_MESSAGE_LAG_MS', 500) - lag_ms
         if wait_ms > 0:
