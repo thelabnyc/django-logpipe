@@ -1,0 +1,32 @@
+variables:
+  ZOOKEEPER_IP: zookeeper
+
+stages:
+  - test
+
+services:
+  - jplock/zookeeper:3.4.8
+  - ches/kafka:0.10.0.0
+  - postgres:9.4
+
+before_script:
+  - pip install -r requirements.txt
+  - pip install -e .
+
+lint:
+  stage: test
+  image: python:3.5
+  script:
+    - flake8 logpipe/ sandbox/
+
+test_python:3.4:
+  stage: test
+  image: python:3.4
+  script:
+    - ./test.sh
+
+test_python:3.5:
+  stage: test
+  image: python:3.5
+  script:
+    - ./test.sh

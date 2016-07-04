@@ -1,0 +1,27 @@
+version: '2'
+services:
+  jplock__zookeeper:
+    image: jplock/zookeeper:3.4.8
+    ports:
+      - "2181:2181"
+  ches__kafka:
+    image: ches/kafka:0.10.0.0
+    ports:
+      - "7203:7203"
+      - "9092:9092"
+    environment:
+      ZOOKEEPER_IP: jplock__zookeeper
+    depends_on:
+      - jplock__zookeeper
+  postgres:
+    image: postgres:9.4
+  test:
+    build: .
+    command: python sandbox/manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      - ches__kafka
+      - postgres
+    volumes:
+      - .:/code

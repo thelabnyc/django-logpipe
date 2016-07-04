@@ -1,0 +1,1 @@
+TOPIC_PEOPLE = 'people'

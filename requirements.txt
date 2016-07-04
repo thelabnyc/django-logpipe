@@ -1,0 +1,7 @@
+Django==1.9.6
+djangorestframework==3.3.3
+flake8==2.6.2
+kafka-python==1.2.2
+msgpack-python==0.4.7
+psycopg2==2.6.1
+versiontag==1.1.0
