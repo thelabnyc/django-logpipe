@@ -1,5 +1,5 @@
 variables:
-  ZOOKEEPER_IP: zookeeper
+  ZOOKEEPER_IP: jplock__zookeeper
 
 stages:
   - test
