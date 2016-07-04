@@ -31,6 +31,7 @@ class Consumer(object):
             backend = get_backend()
             for tp in tps:
                 backend.seek(self._client, tp.topic, tp.partition)
+                self._client.committed(tp)
         return self._client
 
 
@@ -65,7 +66,6 @@ class Consumer(object):
         logger.info('Received message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
 
         # Wait?
-        print(message)
         timestamp = getattr(message, 'timestamp', None) or (time.time() * 1000)
         lag_ms = (time.time() * 1000) - timestamp
         logger.info("Message lag is %sms" % lag_ms)

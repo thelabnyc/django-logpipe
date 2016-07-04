@@ -10,15 +10,15 @@ class RoundTripTest(BaseTest):
         FakeStateSerializer = self.mock_state_serializer(save)
 
         producer = Producer(TOPIC_STATES, StateSerializer)
-
-        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
-        consumer.register(FakeStateSerializer)
-
         record = producer.send({'code': 'NY', 'name': 'New York'})
         self.assertEqual(record.topic, 'us-states')
         self.assertEqual(record.partition, 0)
         self.assertTrue(record.offset >= 0)
 
+        producer.client.flush()
+
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=1000)
+        consumer.register(FakeStateSerializer)
         consumer.run(iter_limit=1)
 
         self.assertEqual(FakeStateSerializer.call_count, 1)
