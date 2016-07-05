@@ -12,6 +12,8 @@ packages = [
     'logpipe.management.commands',
     'logpipe.migrations',
     'logpipe.tests',
+    'logpipe.tests.integration',
+    'logpipe.tests.unit',
 ]
 
 setup_requires = [

@@ -24,10 +24,10 @@ test_python:3.4:
   stage: test
   image: python:3.4
   script:
-    - ./test.sh
+    - python sandbox/manage.py test logpipe.tests.unit
 
 test_python:3.5:
   stage: test
   image: python:3.5
   script:
-    - ./test.sh
+    - python sandbox/manage.py test logpipe.tests.unit

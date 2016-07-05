@@ -5,7 +5,7 @@ from kafka.structs import TopicPartition
 from rest_framework.exceptions import ValidationError
 from logpipe import Consumer
 from logpipe.exceptions import InvalidMessageError, UnknownMessageVersionError
-from .common import BaseTest, TOPIC_STATES
+from ..common import BaseTest, TOPIC_STATES
 
 
 KAFKA = {

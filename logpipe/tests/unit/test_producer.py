@@ -2,7 +2,7 @@ from django.test import TestCase, override_settings
 from rest_framework.exceptions import ValidationError
 from unittest.mock import MagicMock, patch
 from logpipe import Producer
-from .common import StateSerializer, StateModel, TOPIC_STATES
+from ..common import StateSerializer, StateModel, TOPIC_STATES
 
 
 KAFKA = {

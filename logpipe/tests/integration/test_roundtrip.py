@@ -1,5 +1,5 @@
 from logpipe import Producer, Consumer
-from .common import BaseTest, StateSerializer, TOPIC_STATES
+from ..common import BaseTest, StateSerializer, TOPIC_STATES
 
 
 class RoundTripTest(BaseTest):
