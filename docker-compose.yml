@@ -3,8 +3,9 @@ services:
   spotify__kafka:
     image: spotify/kafka
     environment:
-      ADVERTISED_HOST: spotify__kafka
-      ADVERTISED_PORT: 9092
+      ADVERTISED_HOST: 'spotify__kafka'
+      ADVERTISED_PORT: '9092'
+      AUTO_CREATE_TOPICS: 'true'
   postgres:
     image: postgres:9.4
   test:
