@@ -18,7 +18,7 @@ lint:
   stage: test
   image: python:3.5
   script:
-    - flake8 logpipe/ sandbox/
+    - flake8 --exclude=migrations
 
 test_python:3.4:
   stage: test

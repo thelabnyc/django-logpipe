@@ -1,37 +1,34 @@
 #!/usr/bin/env python
+from setuptools import setup, find_packages, Distribution
 import codecs
 import os.path
-from setuptools import setup
-from versiontag import get_version, cache_git_tag
+
+# Make sure versiontag exists before going any further
+Distribution().fetch_build_eggs('versiontag>=1.2.0')
+
+from versiontag import get_version, cache_git_tag  # NOQA
 
 
-packages = [
-    'logpipe',
-    'logpipe.formats',
-    'logpipe.management',
-    'logpipe.management.commands',
-    'logpipe.migrations',
-    'logpipe.tests',
-    'logpipe.tests.integration',
-    'logpipe.tests.unit',
-]
+packages = find_packages(exclude=(
+    'sandbox',
+    'sandbox.*',
+))
 
-setup_requires = [
-    'versiontag>=1.1.0',
-]
-
-requires = [
+install_requires = [
     'Django>=1.9.6',
     'djangorestframework>=3.3.3',
     'kafka-python>=1.2.2',
     'msgpack-python>=0.4.7',
 ]
 
+
 def fpath(name):
     return os.path.join(os.path.dirname(__file__), name)
 
+
 def read(fname):
     return codecs.open(fpath(fname), encoding='utf-8').read()
+
 
 cache_git_tag()
 
@@ -62,6 +59,5 @@ setup(
     license='ISC',
     packages=packages,
     include_package_data=True,
-    install_requires=requires,
-    setup_requires=setup_requires
+    install_requires=install_requires,
 )
