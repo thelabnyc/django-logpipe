@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 from logpipe import Consumer
 from logpipe.exceptions import InvalidMessageError, UnknownMessageVersionError
 from ..common import BaseTest, TOPIC_STATES
+import binascii
 
 
 KAFKA = {
@@ -116,7 +117,10 @@ class ConsumerTest(BaseTest):
             timestamp=1467649216540,
             timestamp_type=0,
             key=b'NY',
-            value=value)
+            value=value,
+            checksum=binascii.crc32(value),
+            serialized_key_size=b'NY',
+            serialized_value_size=value)
         fake_kafka_consumer.__next__.return_value = record
 
         # Return some partitions
