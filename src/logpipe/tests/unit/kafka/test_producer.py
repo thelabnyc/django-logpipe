@@ -1,8 +1,10 @@
 from django.test import TestCase, override_settings
+from kafka.consumer.fetcher import ConsumerRecord
 from rest_framework.exceptions import ValidationError
 from unittest.mock import MagicMock, patch
 from logpipe import Producer
-from ..common import StateSerializer, StateModel, TOPIC_STATES
+from logpipe.tests.common import StateSerializer, StateModel, TOPIC_STATES
+import binascii
 
 
 LOGPIPE = {
@@ -17,7 +19,7 @@ class ProducerTest(TestCase):
     @patch('kafka.KafkaProducer')
     def test_normal_send(self, KafkaProducer):
         future = MagicMock()
-        future.get.return_value = 'some-metadata'
+        future.get.return_value = self._get_record_metadata()
 
         def test_send_call(topic, key, value):
             self.assertEqual(topic, 'us-states')
@@ -38,7 +40,9 @@ class ProducerTest(TestCase):
             'code': 'NY',
             'name': 'New York'
         })
-        self.assertEqual(ret, 'some-metadata')
+        self.assertEqual(ret.topic, TOPIC_STATES)
+        self.assertEqual(ret.partition, 0)
+        self.assertEqual(ret.offset, 42)
         self.assertEqual(KafkaProducer.call_count, 1)
         self.assertEqual(client.send.call_count, 1)
         self.assertEqual(future.get.call_count, 1)
@@ -50,7 +54,7 @@ class ProducerTest(TestCase):
     @patch('kafka.KafkaProducer')
     def test_object_send(self, KafkaProducer):
         future = MagicMock()
-        future.get.return_value = 'some-metadata'
+        future.get.return_value = self._get_record_metadata()
 
         def test_send_call(topic, key, value):
             self.assertEqual(topic, 'us-states')
@@ -71,7 +75,9 @@ class ProducerTest(TestCase):
         obj.code = 'NY'
         obj.name = 'New York'
         ret = producer.send(obj)
-        self.assertEqual(ret, 'some-metadata')
+        self.assertEqual(ret.topic, TOPIC_STATES)
+        self.assertEqual(ret.partition, 0)
+        self.assertEqual(ret.offset, 42)
         self.assertEqual(KafkaProducer.call_count, 1)
         self.assertEqual(client.send.call_count, 1)
         self.assertEqual(future.get.call_count, 1)
@@ -89,3 +95,17 @@ class ProducerTest(TestCase):
                 'name': 'New York'
             })
         self.assertEqual(KafkaProducer.call_count, 0)
+
+
+    def _get_record_metadata(self):
+        return ConsumerRecord(
+            topic=TOPIC_STATES,
+            partition=0,
+            offset=42,
+            timestamp=1467649216540,
+            timestamp_type=0,
+            key=b'NY',
+            value=b'foo',
+            checksum=binascii.crc32(b'foo'),
+            serialized_key_size=b'NY',
+            serialized_value_size=b'foo')

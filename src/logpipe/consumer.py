@@ -1,10 +1,9 @@
 from django.db import transaction
-from .exceptions import InvalidMessageError, UnknownMessageVersionError, MissingTopicError
-from .offset_backends import get_backend
+from .exceptions import InvalidMessageError, UnknownMessageVersionError
+from .backend import get_offset_backend, get_consumer_backend
 from .format import parse
 from . import settings
 import itertools
-import kafka
 import logging
 import time
 
@@ -16,27 +15,12 @@ class Consumer(object):
     _client = None
 
     def __init__(self, topic_name, **kwargs):
-        self.topic_name = topic_name
-        self.client_kwargs = kwargs
+        self.consumer = get_consumer_backend(topic_name, **kwargs)
         self.serializer_classes = {}
 
 
-    @property
-    def client(self):
-        if not self._client:
-            kwargs = self._get_client_config()
-            self._client = kafka.KafkaConsumer(**kwargs)
-            tps = self._get_topic_partitions()
-            self._client.assign(tps)
-            backend = get_backend()
-            for tp in tps:
-                backend.seek(self._client, tp.topic, tp.partition)
-                self._client.committed(tp)
-        return self._client
-
-
     def commit(self, message):
-        get_backend().commit(self.client, message)
+        get_offset_backend().commit(self.consumer, message)
 
 
     def register(self, serializer_class):
@@ -60,7 +44,8 @@ class Consumer(object):
 
 
     def __next__(self):
-        message = next(self.client)
+        message = next(self.consumer)
+
         # ConsumerRecord(topic='', partition=0, offset=0, timestamp=1467649216540, timestamp_type=0, key=b'', value=b'')
         info = (message.key.decode(), message.topic, message.partition, message.offset)
         logger.info('Received message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
@@ -80,7 +65,7 @@ class Consumer(object):
 
 
     def __str__(self):
-        return '<logpipe.consumer.Consumer topic="%s">' % self.topic_name
+        return '<logpipe.consumer.Consumer topic="%s">' % self.consumer.topic_name
 
 
     def _unserialize(self, message):
@@ -102,30 +87,6 @@ class Consumer(object):
         serializer = serializer_class(instance=instance, data=data['message'])
         serializer.is_valid(raise_exception=True)
         return serializer
-
-
-    def _get_topic_partitions(self):
-        p = []
-        partitions = self.client.partitions_for_topic(self.topic_name)
-        if not partitions:
-            raise MissingTopicError('Could not find topic %s. Does it exist?' % self.topic_name)
-        for partition in partitions:
-            tp = kafka.TopicPartition(self.topic_name, partition=partition)
-            p.append(tp)
-        return p
-
-
-    def _get_client_config(self):
-        kwargs = {
-            'auto_offset_reset': 'earliest',
-            'enable_auto_commit': False,
-            'consumer_timeout_ms': 1000,
-        }
-        kwargs.update(self.client_kwargs)
-        kwargs.update({
-            'bootstrap_servers': settings.get('BOOTSTRAP_SERVERS'),
-        })
-        return kwargs
 
 
 

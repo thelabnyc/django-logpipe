@@ -1,7 +1,7 @@
+from .backend import get_producer_backend
 from .constants import FORMAT_JSON
 from .format import render
 from . import settings
-import kafka
 import logging
 
 
@@ -12,16 +12,9 @@ class Producer(object):
     _client = None
 
     def __init__(self, topic_name, serializer_class):
+        self.client = get_producer_backend()
         self.topic_name = topic_name
         self.serializer_class = serializer_class
-
-
-    @property
-    def client(self):
-        if not self._client:
-            kwargs = self._get_client_config()
-            self._client = kafka.KafkaProducer(**kwargs)
-        return self._client
 
 
     def send(self, data, renderer=None):
@@ -46,17 +39,6 @@ class Producer(object):
         }
         serialized_data = render(renderer, body)
 
-        timeout = settings.get('TIMEOUT', 10)
-        future = self.client.send(self.topic_name, key=key, value=serialized_data)
-        record_metadata = future.get(timeout=timeout)
+        record_metadata = self.client.send(self.topic_name, key=key, value=serialized_data)
         logger.info('Sent message with key "%s" to topic "%s"' % (key.decode(), self.topic_name))
         return record_metadata
-
-
-    def _get_client_config(self):
-        servers = settings.get('BOOTSTRAP_SERVERS')
-        retries = settings.get('RETRIES', 0)
-        return {
-            'bootstrap_servers': servers,
-            'retries': retries,
-        }
