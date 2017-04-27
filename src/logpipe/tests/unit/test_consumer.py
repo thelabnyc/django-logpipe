@@ -9,13 +9,13 @@ from ..common import BaseTest, TOPIC_STATES
 import binascii
 
 
-KAFKA = {
+LOGPIPE = {
     'BOOTSTRAP_SERVERS': ['kafka:9092'],
 }
 
 
 class ConsumerTest(BaseTest):
-    @override_settings(KAFKA=KAFKA)
+    @override_settings(LOGPIPE=LOGPIPE)
     @patch('kafka.KafkaConsumer')
     def test_normal_consume(self, KafkaConsumer):
         # Make a fake consumer to generate a message

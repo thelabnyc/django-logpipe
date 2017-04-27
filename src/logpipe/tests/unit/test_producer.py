@@ -5,7 +5,7 @@ from logpipe import Producer
 from ..common import StateSerializer, StateModel, TOPIC_STATES
 
 
-KAFKA = {
+LOGPIPE = {
     'BOOTSTRAP_SERVERS': ['kafka:9092'],
     'RETRIES': 5,
     'TIMEOUT': 5,
@@ -13,7 +13,7 @@ KAFKA = {
 
 
 class ProducerTest(TestCase):
-    @override_settings(KAFKA=KAFKA)
+    @override_settings(LOGPIPE=LOGPIPE)
     @patch('kafka.KafkaProducer')
     def test_normal_send(self, KafkaProducer):
         future = MagicMock()
@@ -46,7 +46,7 @@ class ProducerTest(TestCase):
         future.get.assert_called_with(timeout=5)
 
 
-    @override_settings(KAFKA=KAFKA)
+    @override_settings(LOGPIPE=LOGPIPE)
     @patch('kafka.KafkaProducer')
     def test_object_send(self, KafkaProducer):
         future = MagicMock()
@@ -79,7 +79,7 @@ class ProducerTest(TestCase):
         future.get.assert_called_with(timeout=5)
 
 
-    @override_settings(KAFKA=KAFKA)
+    @override_settings(LOGPIPE=LOGPIPE)
     @patch('kafka.KafkaProducer')
     def test_invalid_data(self, KafkaProducer):
         producer = Producer(TOPIC_STATES, StateSerializer)

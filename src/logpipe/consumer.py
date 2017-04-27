@@ -128,6 +128,7 @@ class Consumer(object):
         return kwargs
 
 
+
 class MultiConsumer(object):
     def __init__(self, *consumers):
         self.consumers = consumers

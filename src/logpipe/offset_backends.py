@@ -10,10 +10,10 @@ logger = logging.getLogger(__name__)
 
 class ModelOffsetStore(object):
     def commit(self, client, message):
-        Offset = apps.get_model(app_label='logpipe', model_name='Offset')
+        KafkaOffset = apps.get_model(app_label='logpipe', model_name='KafkaOffset')
         logger.info('Commit offset "%s" for topic "%s", partition "%s" to %s' % (
             message.offset, message.topic, message.partition, self.__class__.__name__))
-        obj, created = Offset.objects.get_or_create(
+        obj, created = KafkaOffset.objects.get_or_create(
             topic=message.topic,
             partition=message.partition)
         obj.offset = message.offset + 1
@@ -21,13 +21,13 @@ class ModelOffsetStore(object):
 
 
     def seek(self, client, topic, partition):
-        Offset = apps.get_model(app_label='logpipe', model_name='Offset')
+        KafkaOffset = apps.get_model(app_label='logpipe', model_name='KafkaOffset')
         tp = kafka.TopicPartition(topic=topic, partition=partition)
         try:
-            obj = Offset.objects.get(topic=topic, partition=partition)
+            obj = KafkaOffset.objects.get(topic=topic, partition=partition)
             logger.info('Seeking to offset "%s" on topic "%s", partition "%s"' % (obj.offset, topic, partition))
             client.seek(tp, obj.offset)
-        except Offset.DoesNotExist:
+        except KafkaOffset.DoesNotExist:
             logger.info('Seeking to beginning of topic "%s", partition "%s"' % (topic, partition))
             client.seek_to_beginning(tp)
 

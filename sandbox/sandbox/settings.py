@@ -67,7 +67,7 @@ DATABASES = {
 STATIC_URL = '/static/'
 
 
-KAFKA = {
+LOGPIPE = {
     'BOOTSTRAP_SERVERS': [
         'spotify__kafka:9092'
     ]
