@@ -5,8 +5,9 @@ Django LogPipe
 |  |build| |license| |kit| |format| |downloads|
 
 This library serves as a universal pipe for moving data around between Django applications and services. It is build on
-top of `Apache Kafka`_, `kafka-python`_, and `Django REST Framework`_.
+top of `Boto3`_, `Apache Kafka`_, `kafka-python`_, and `Django REST Framework`_.
 
+.. _`Boto3`: https://boto3.readthedocs.io/en/latest/
 .. _`Apache Kafka`: https://kafka.apache.org/
 .. _`kafka-python`: https://github.com/dpkp/kafka-python
 .. _`Django REST Framework`: http://www.django-rest-framework.org/
@@ -15,11 +16,15 @@ top of `Apache Kafka`_, `kafka-python`_, and `Django REST Framework`_.
 Installation
 ============
 
-Install `django-logpipe` from pip.::
+Install ``django-logpipe`` from pip.
+
+::
 
     $ pip install django-logpipe
 
-Add `logpipe` to your installed apps.::
+Add ``logpipe`` to your installed apps.
+
+::
 
     INSTALLED_APPS = [
         ...
@@ -27,12 +32,45 @@ Add `logpipe` to your installed apps.::
         ...
     ]
 
-Add connection settings to your `settings.py` file.::
+Add connection settings to your ``settings.py`` file. If you're using Kafka, this will look like this:
 
-    KAFKA = {
-        'BOOTSTRAP_SERVERS': [
+::
+
+    LOGPIPE = {
+        # Required Settings
+        'OFFSET_BACKEND': 'logpipe.backend.kafka.ModelOffsetStore',
+        'CONSUMER_BACKEND': 'logpipe.backend.kafka.Consumer',
+        'PRODUCER_BACKEND': 'logpipe.backend.kafka.Producer',
+        'KAFKA_BOOTSTRAP_SERVERS': [
             'kafka:9092'
         ],
+        'KAFKA_CONSUMER_KWARGS': {
+            'group_id': 'django-logpipe',
+        },
+
+        # Optional Settings
+        # 'KAFKA_SEND_TIMEOUT': 10,
+        # 'KAFKA_MAX_SEND_RETRIES': 0,
+        # 'MIN_MESSAGE_LAG_MS': 0,
+        # 'DEFAULT_FORMAT': 'json',
+    }
+
+If you're using AWS Kinesis instead of Kafka, it will look like this:
+
+::
+
+    LOGPIPE = {
+        # Required Settings
+        'OFFSET_BACKEND': 'logpipe.backend.kinesis.ModelOffsetStore',
+        'CONSUMER_BACKEND': 'logpipe.backend.kinesis.Consumer',
+        'PRODUCER_BACKEND': 'logpipe.backend.kinesis.Producer',
+
+        # Optional Settings
+        # 'KINESIS_REGION': 'us-east-1',
+        # 'KINESIS_FETCH_LIMIT': 25,
+        # 'KINESIS_SEQ_NUM_CACHE_SIZE': 1000,
+        # 'MIN_MESSAGE_LAG_MS': 0,
+        # 'DEFAULT_FORMAT': 'json',
     }
 
 Run migrations. This will create the model used to store Kafka log position offsets.::
@@ -45,15 +83,17 @@ Usage
 Serializers
 -----------
 
-The first step in either sending or receiving messages with `logpipe` is to define a serializer. Serializers for `logpipe` have a few rules:
+The first step in either sending or receiving messages with ``logpipe`` is to define a serializer. Serializers for ``logpipe`` have a few rules:
 
-1. Must be either a subclass of `rest_framework.serializers.Serializer` or a class implementing an interface that mimics `rest_framework.serializers.Serializer`.
-2. Must have property `VERSION` defined on the class, representing the schema version number.
-3. Should have property `KEY_FIELD` defined on the class, representing the name of the field to use as the message key. The message key is used by Kafka when performing log compaction. The property can be omitted for topics which do not require a key.
-4. If the serializer will be used for incoming-messages, it should implement class method `lookup_instance(cls, **kwargs)`. This class method will be with message data as kwargs directly before instantiating the serializer. It should lookup and return the related object (if one exists) so that it can be passed to the serializer's `instance` argument during initialization. If not objects exists yet (the message is representing a new object), it should return `None`.
+1. Must be either a subclass of ``rest_framework.serializers.Serializer`` or a class implementing an interface that mimics ``rest_framework.serializers.Serializer``.
+1. Must have a ``MESSAGE_TYPE`` attribute defined on the class. The value should be a string that defines uniquely defines the data-type within it's Topic / Stream.
+2. Must have a ``VERSION`` attribute defined on the class. The value should be a monotonic integer representing the schema version number.
+3. Must have a ``KEY_FIELD`` attribute defined on the class, representing the name of the field to use as the message key. The message key is used by Kafka when performing log compaction and by Kinesis as the shard partition key. The property can be omitted for topics which do not require a key.
+4. If the serializer will be used for incoming-messages, it should implement class method `lookup_instance(cls, **kwargs)`. This class method will be called with message data as keyword arguments directly before instantiating the serializer. It should lookup and return the related object (if one exists) so that it can be passed to the serializer's ``instance`` argument during initialization. If no object exists yet (the message is representing a new object), it should return ``None``.
 
-Below is a sample Django model and it's accompanying serializer.::
+Below is a sample Django model and it's accompanying serializer.
 
+::
 
     from django.db import models
     from rest_framework import serializers
@@ -65,6 +105,7 @@ Below is a sample Django model and it's accompanying serializer.::
         last_name = models.CharField(max_length=200)
 
     class PersonSerializer(serializers.ModelSerializer):
+        MESSAGE_TYPE = 'person'
         VERSION = 1
         KEY_FIELD = 'uuid'
 
@@ -83,22 +124,28 @@ Below is a sample Django model and it's accompanying serializer.::
 Sending Messages
 ----------------
 
-Once a serializer exists, you can send a message to Kafka by creating Producer object and calling the `send` method.::
+Once a serializer exists, you can send a message to Kafka by creating Producer object and calling the ``send`` method.
+
+::
 
     from logpipe import Producer
     joe = Person.objects.create(first_name='Joe', last_name='Schmoe')
     producer = Producer('people', PersonSerializer)
     producer.send(joe)
 
-The above sample code would result in the following message being sent to the Kafka topic named `people`.::
+The above sample code would result in the following message being sent to the Kafka topic named `people`.
 
-    json:{"version":1,"message":{"first_name":"Joe","last_name":"Schmoe","uuid":"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"}}
+::
+
+    json:{"type":"person","version":1,"message":{"first_name":"Joe","last_name":"Schmoe","uuid":"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"}}
 
 
 Receiving Messages
 ------------------
 
-To processing incoming messages, we can reuse the same model and serializer. We just need to instantiate a Consumer object.::
+To processing incoming messages, we can reuse the same model and serializer. We just need to instantiate a Consumer object.
+
+::
 
     # Watch for messages, but timeout after 1000ms of no messages
     consumer = Consumer('people', consumer_timeout_ms=1000)
@@ -110,9 +157,32 @@ To processing incoming messages, we can reuse the same model and serializer. We 
     consumer.register(PersonSerializer)
     consumer.run()
 
-The consumer object uses Django REST Framework's built-in `save`, `create`, and `update` methods to apply the message. If your messages are tied directly to a Django model, skip defining the `lookup_instance` class method and override the `save` method to house your custom import logic.
+The consumer object uses Django REST Framework's built-in ``save``, ``create``, and ``update`` methods to apply the message. If your messages aren't tied directly to a Django model, skip defining the ``lookup_instance`` class method and override the ``save`` method to house your custom import logic.
 
-Multiple consumers can be watched simultaneously by the same process by using a MultiConsumer.::
+If you have multiple data-types in a single topic or stream, you can consume them all by registering multiple serializers with the consumer.
+
+::
+
+    consumer = Consumer('people')
+    consumer.register(PersonSerializer)
+    consumer.register(PlaceSerializer)
+    consumer.register(ThingSerializer)
+    consumer.run()
+
+You can also support multiple incompatible version of message types by defining a serializer for each message type version and registering them all with the consumer.
+
+::
+
+    consumer = Consumer('people')
+    consumer.register(PersonSerializerVersion1)
+    consumer.register(PersonSerializerVersion2)
+    consumer.register(PlaceSerializer)
+    consumer.register(ThingSerializer)
+    consumer.run()
+
+If you have multiple streams or topics to watch, make a consumers for each, and watch them all simultaneously in the same process by using a MultiConsumer.
+
+::
 
     from logpipe import MultiConsumer
     people_consumer = Consumer('people')
@@ -124,7 +194,9 @@ Multiple consumers can be watched simultaneously by the same process by using a 
     # Watch for 'people' and 'places' topics indefinitely
     multi.run()
 
-Finally, consumers can be registered and run automatically by the build in `run_kafka_consumer` management command.::
+Finally, consumers can be registered and run automatically by the build in ``run_kafka_consumer`` management command.
+
+::
 
     # myapp/apps.py
     from django.apps import AppConfig
@@ -140,7 +212,9 @@ Finally, consumers can be registered and run automatically by the build in `run_
         consumer.register(PersonSerializer)
         return consumer
 
-Use the `register_consumer` decorator to register as many consumers and topics as you need to work with. Then, run the `run_kafka_consumer` command to process messages for all consumers automatically in a round-robin fashion.::
+Use the ``register_consumer`` decorator to register as many consumers and topics as you need to work with. Then, run the ``run_kafka_consumer`` command to process messages for all consumers automatically in a round-robin fashion.
+
+::
 
     $ python manage.py run_kafka_consumer
 
@@ -166,6 +240,7 @@ For example, if we wanted to require an email field on the `Person` model we def
         email = models.EmailField(max_length=200, null=True)
 
     class PersonSerializerV1(serializers.ModelSerializer):
+        MESSAGE_TYPE = 'person'
         VERSION = 1
         KEY_FIELD = 'uuid'
         class Meta:
@@ -173,6 +248,7 @@ For example, if we wanted to require an email field on the `Person` model we def
             fields = ['uuid', 'first_name', 'last_name']
 
     class PersonSerializerV2(PersonSerializerV1):
+        MESSAGE_TYPE = 'person'
         VERSION = 2
         class Meta(PersonSerializerV1.META):
             fields = ['uuid', 'first_name', 'last_name', 'email']
@@ -188,32 +264,13 @@ The consumers will now use the appropriate serializer for the message version. S
 Finally, after all the old version 1 messages have been dropped (by log compaction), the `PersonSerializerV1` class can be removed form the code base.
 
 
-Settings
-========
-
-The follow settings added to `settings.py` to configure `logpipe`.
-
-+--------------------+----------------------------------------------------------------------+------------------------------------------+
-| Key                | Description                                                          | Default Value                            |
-+====================+======================================================================+==========================================+
-| BOOTSTRAP_SERVERS  | A list of Kafka servers to connect to upon startup.                  | *Required*                               |
-+--------------------+----------------------------------------------------------------------+------------------------------------------+
-| DEFAULT_FORMAT     | The default serialization format to use when sending new messages.   | json                                     |
-+--------------------+----------------------------------------------------------------------+------------------------------------------+
-| OFFSET_BACKEND     | Path to class used to store offset data.                             | logpipe.offset_backends.ModelOffsetStore |
-+--------------------+----------------------------------------------------------------------+------------------------------------------+
-| MIN_MESSAGE_LAG_MS | Minimum amount of time between when a message is sent and when it    |                                          |
-|                    | will be processed. This is useful is a single service is both        | 500                                      |
-|                    | producing and consuming the same topic.                              |                                          |
-+--------------------+----------------------------------------------------------------------+------------------------------------------+
-| RETRIES            | Number of times to retry sending a message.                          | 0                                        |
-+--------------------+----------------------------------------------------------------------+------------------------------------------+
-| TIMEOUT            | How many seconds to wait for a message sent confirmation from Kafka. | 10                                       |
-+--------------------+----------------------------------------------------------------------+------------------------------------------+
-
-
 Changelog
 =========
+
+0.2.0
+------------------
+- Added concept of message types.
+- Added support for AWS Kinesis.
 
 0.1.0
 ------------------
