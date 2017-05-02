@@ -5,6 +5,7 @@ variables:
 
 stages:
   - lint
+  - test
 
 services:
   - spotify/kafka
