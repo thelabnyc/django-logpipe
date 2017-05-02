@@ -2,6 +2,7 @@ from django.apps import apps
 from lru import LRU
 from .. import settings
 from . import RecordMetadata, Record, get_offset_backend
+from botocore.exceptions import ClientError
 import boto3
 import collections
 import logging
@@ -119,7 +120,9 @@ class Consumer(KinesisBase):
         # Fetch the records from Kinesis
         logger.debug('Loading page of records from {}.{}'.format(self.topic_name, shard))
         fetch_limit = settings.get('KINESIS_FETCH_LIMIT', 25)
-        response = self.client.get_records(ShardIterator=shard_iter, Limit=fetch_limit)
+        response = self._get_records(shard_iter, fetch_limit)
+        if response is None:
+            return
 
         # Save the shard iterator for next time we need to get records from this shard
         self.shard_iters[shard] = response['NextShardIterator']
@@ -138,6 +141,23 @@ class Consumer(KinesisBase):
 
         # Add the shard back to the right of the queue
         self.shards.append(shard)
+
+
+    def _get_records(self, shard_iter, fetch_limit, retries=1):
+        i = 0
+        while i <= retries:
+            try:
+                response = self.client.get_records(ShardIterator=shard_iter, Limit=fetch_limit)
+                return response
+            except ClientError as e:
+                if e.response['Error']['Code'] == 'ProvisionedThroughputExceededException':
+                    logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
+                    time.sleep(5)
+                else:
+                    logger.warning("Received {} from AWS API: {}".format(e.response['Error']['Code'], e.response['Error']['Message']))
+            i += 1
+        logger.warning("After {} attempts, couldn't get records from Kinesis. Giving up.".format(i))
+        return None
 
 
     def _list_shard_ids(self):
@@ -170,7 +190,7 @@ class Producer(KinesisBase):
         if last_seq_num:
             kwargs['SequenceNumberForOrdering'] = last_seq_num
 
-        metadata = self.client.put_record(**kwargs)
+        metadata = self._send_and_retry(kwargs)
 
         shard_id = metadata['ShardId']
         seq_num = str(metadata['SequenceNumber'])
@@ -180,3 +200,18 @@ class Producer(KinesisBase):
             topic=topic_name,
             partition=shard_id,
             offset=seq_num)
+
+    def _send_and_retry(self, data, retries=1):
+        i = 0
+        while i <= retries:
+            try:
+                metadata = self.client.put_record(**data)
+                return metadata
+            except ClientError as e:
+                if e.response['Error']['Code'] == 'ProvisionedThroughputExceededException':
+                    logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
+                    time.sleep(5)
+                else:
+                    logger.warning("Received {} from AWS API: {}".format(e.response['Error']['Code'], e.response['Error']['Message']))
+            i += 1
+        logger.warning("After {} attempts, couldn't send message to Kinesis. Giving up.".format(i))
