@@ -1,7 +1,7 @@
 from django.apps import apps
 from ..exceptions import MissingTopicError
 from .. import settings
-from . import RecordMetadata, get_offset_backend
+from . import RecordMetadata, Record, get_offset_backend
 import kafka
 import logging
 
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 class ModelOffsetStore(object):
     def commit(self, consumer, message):
         KafkaOffset = apps.get_model(app_label='logpipe', model_name='KafkaOffset')
-        logger.info('Commit offset "%s" for topic "%s", partition "%s" to %s' % (
+        logger.debug('Commit offset "%s" for topic "%s", partition "%s" to %s' % (
             message.offset, message.topic, message.partition, self.__class__.__name__))
         obj, created = KafkaOffset.objects.get_or_create(
             topic=message.topic,
@@ -27,17 +27,17 @@ class ModelOffsetStore(object):
         tp = kafka.TopicPartition(topic=topic, partition=partition)
         try:
             obj = KafkaOffset.objects.get(topic=topic, partition=partition)
-            logger.info('Seeking to offset "%s" on topic "%s", partition "%s"' % (obj.offset, topic, partition))
+            logger.debug('Seeking to offset "%s" on topic "%s", partition "%s"' % (obj.offset, topic, partition))
             consumer.client.seek(tp, obj.offset)
         except KafkaOffset.DoesNotExist:
-            logger.info('Seeking to beginning of topic "%s", partition "%s"' % (topic, partition))
+            logger.debug('Seeking to beginning of topic "%s", partition "%s"' % (topic, partition))
             consumer.client.seek_to_beginning(tp)
 
 
 
 class KafkaOffsetStore(object):
     def commit(self, consumer, message):
-        logger.info('Commit offset "%s" for topic "%s", partition "%s" to %s' % (
+        logger.debug('Commit offset "%s" for topic "%s", partition "%s" to %s' % (
             message.offset, message.topic, message.partition, self.__class__.__name__))
         consumer.client.commit()
 
@@ -63,7 +63,7 @@ class Consumer(object):
             self._client.assign(tps)
             backend = get_offset_backend()
             for tp in tps:
-                backend.seek(self._client, tp.topic, tp.partition)
+                backend.seek(self, tp.topic, tp.partition)
                 self._client.committed(tp)
         return self._client
 
@@ -73,7 +73,15 @@ class Consumer(object):
 
 
     def __next__(self):
-        return next(self.client)
+        r = next(self.client)
+        record = Record(
+            topic=r.topic,
+            partition=r.partition,
+            offset=r.offset,
+            timestamp=r.timestamp,
+            key=r.key,
+            value=r.value)
+        return record
 
 
     def _get_topic_partitions(self):
@@ -93,9 +101,10 @@ class Consumer(object):
             'enable_auto_commit': False,
             'consumer_timeout_ms': 1000,
         }
+        kwargs.update(settings.get('KAFKA_CONSUMER_KWARGS', {}))
         kwargs.update(self.client_kwargs)
         kwargs.update({
-            'bootstrap_servers': settings.get('BOOTSTRAP_SERVERS'),
+            'bootstrap_servers': settings.get('KAFKA_BOOTSTRAP_SERVERS'),
         })
         return kwargs
 
@@ -114,7 +123,8 @@ class Producer(object):
 
 
     def send(self, topic_name, key, value):
-        timeout = settings.get('TIMEOUT', 10)
+        key = key.encode()
+        timeout = settings.get('KAFKA_SEND_TIMEOUT', 10)
         future = self.client.send(topic_name, key=key, value=value)
         metadata = future.get(timeout=timeout)
         return RecordMetadata(
@@ -124,8 +134,8 @@ class Producer(object):
 
 
     def _get_client_config(self):
-        servers = settings.get('BOOTSTRAP_SERVERS')
-        retries = settings.get('RETRIES', 0)
+        servers = settings.get('KAFKA_BOOTSTRAP_SERVERS')
+        retries = settings.get('KAFKA_MAX_SEND_RETRIES', 0)
         return {
             'bootstrap_servers': servers,
             'retries': retries,

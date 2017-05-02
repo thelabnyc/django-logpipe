@@ -30,7 +30,7 @@ class Producer(object):
         key_field = getattr(self.serializer_class, 'KEY_FIELD', None)
         key = None
         if key_field:
-            key = str(ser.validated_data[key_field]).encode()
+            key = str(ser.validated_data[key_field])
 
         renderer = settings.get('DEFAULT_FORMAT', FORMAT_JSON)
         body = {
@@ -40,5 +40,5 @@ class Producer(object):
         serialized_data = render(renderer, body)
 
         record_metadata = self.client.send(self.topic_name, key=key, value=serialized_data)
-        logger.info('Sent message with key "%s" to topic "%s"' % (key.decode(), self.topic_name))
+        logger.debug('Sent message with key "%s" to topic "%s"' % (key, self.topic_name))
         return record_metadata

@@ -10,7 +10,7 @@ import binascii
 
 
 LOGPIPE = {
-    'BOOTSTRAP_SERVERS': ['kafka:9092'],
+    'KAFKA_BOOTSTRAP_SERVERS': ['kafka:9092'],
 }
 
 

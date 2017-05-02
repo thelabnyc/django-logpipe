@@ -68,9 +68,23 @@ STATIC_URL = '/static/'
 
 
 LOGPIPE = {
-    'BOOTSTRAP_SERVERS': [
+    'KAFKA_BOOTSTRAP_SERVERS': [
         'spotify__kafka:9092'
-    ]
+    ],
+    'KAFKA_CONSUMER_KWARGS': {
+        'group_id': 'django-logpipe',
+    },
+    # OFFSET_BACKEND: Defaults to logpipe.backend.kafka.ModelOffsetStore.
+    # CONSUMER_BACKEND: Defaults to logpipe.backend.kafka.Consumer.
+    # PRODUCER_BACKEND: Defaults to logpipe.backend.kafka.Producer.
+    # KAFKA_BOOTSTRAP_SERVERS: List of Kafka hostname:post pairs. Required when using Kafka.
+    # KAFKA_SEND_TIMEOUT: Defaults to 10 seconds.
+    # KAFKA_MAX_SEND_RETRIES: Defaults to 0 retry attempts.
+    # KINESIS_REGION: Defaults to 'us-east-1'.
+    # KINESIS_FETCH_LIMIT: Defaults to 25 records.
+    # KINESIS_SEQ_NUM_CACHE_SIZE: Defaults to 1000.
+    # MIN_MESSAGE_LAG_MS: Defaults to 0ms
+    # DEFAULT_FORMAT: Defaults to 'json'
 }
 
 

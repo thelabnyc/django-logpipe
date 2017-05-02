@@ -3,6 +3,9 @@ from django.utils.module_loading import import_string
 from .. import settings
 
 
+Record = namedtuple('Record', ['topic', 'partition', 'offset', 'timestamp', 'key', 'value'])
+
+
 RecordMetadata = namedtuple('RecordMetadata', ['topic', 'partition', 'offset'])
 
 

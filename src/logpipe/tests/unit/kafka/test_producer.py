@@ -8,9 +8,9 @@ import binascii
 
 
 LOGPIPE = {
-    'BOOTSTRAP_SERVERS': ['kafka:9092'],
-    'RETRIES': 5,
-    'TIMEOUT': 5,
+    'KAFKA_BOOTSTRAP_SERVERS': ['kafka:9092'],
+    'KAFKA_SEND_TIMEOUT': 5,
+    'KAFKA_MAX_SEND_RETRIES': 5,
 }
 
 

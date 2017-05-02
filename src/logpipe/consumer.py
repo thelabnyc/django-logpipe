@@ -47,18 +47,18 @@ class Consumer(object):
         message = next(self.consumer)
 
         # ConsumerRecord(topic='', partition=0, offset=0, timestamp=1467649216540, timestamp_type=0, key=b'', value=b'')
-        info = (message.key.decode(), message.topic, message.partition, message.offset)
-        logger.info('Received message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
+        info = (message.topic, message.partition, message.offset)
+        logger.debug('Received message with from topic "%s", partition "%s", offset "%s"' % info)
 
         # Wait?
         timestamp = getattr(message, 'timestamp', None) or (time.time() * 1000)
         lag_ms = (time.time() * 1000) - timestamp
-        logger.info("Message lag is %sms" % lag_ms)
-        wait_ms = settings.get('MIN_MESSAGE_LAG_MS', 500) - lag_ms
+        logger.debug("Message lag is %sms" % lag_ms)
+        wait_ms = settings.get('MIN_MESSAGE_LAG_MS', 0) - lag_ms
         if wait_ms > 0:
-            logger.info("Respecting MIN_MESSAGE_LAG_MS by waiting %sms" % wait_ms)
+            logger.debug("Respecting MIN_MESSAGE_LAG_MS by waiting %sms" % wait_ms)
             time.sleep(wait_ms / 1000)
-            logger.info("Finished waiting")
+            logger.debug("Finished waiting")
 
         serializer = self._unserialize(message)
         return message, serializer

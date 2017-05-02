@@ -14,24 +14,25 @@ packages = find_packages('src')
 install_requires = [
     'Django>=1.9.6',
     'djangorestframework>=3.3.3',
+    'lru-dict>=1.1.6',
 ]
 
 extras_require = {
     'development': [
-        'flake8>=3.2.1',
+        'flake8>=3.3.0',
         'moto>=0.4.31',
         'psycopg2>=2.7.1',
-        'tox>=2.6.0',
+        'tox>=2.7.0',
         'versiontag>=1.2.0',
     ],
     'kafka': [
-        'kafka-python>=1.2.2',
+        'kafka-python>=1.3.3',
     ],
     'kinesis': [
         'boto3>=1.4.4',
     ],
     'msgpack': [
-        'msgpack-python>=0.4.7',
+        'msgpack-python>=0.4.8',
     ],
 }
 
