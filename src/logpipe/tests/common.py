@@ -8,6 +8,7 @@ TOPIC_STATES = 'us-states'
 
 class StateSerializer(serializers.Serializer):
     """Keyed Serializer for sending data about US States"""
+    MESSAGE_TYPE = 'us-state'
     VERSION = 1
     KEY_FIELD = 'code'
     code = serializers.CharField(min_length=2, max_length=2)
@@ -34,6 +35,7 @@ class BaseTest(TestCase):
             return ser
 
         FakeStateSerializer = MagicMock()
+        FakeStateSerializer.MESSAGE_TYPE = StateSerializer.MESSAGE_TYPE
         FakeStateSerializer.VERSION = StateSerializer.VERSION
         FakeStateSerializer.side_effect = make
 

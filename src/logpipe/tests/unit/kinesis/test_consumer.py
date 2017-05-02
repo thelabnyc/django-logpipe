@@ -18,7 +18,7 @@ class ConsumerTest(BaseTest):
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_kinesis
     def test_normal_consume(self):
-        self.make_stream_with_record('NY', b'json:{"message":{"code":"NY","name":"New York"},"version":1}')
+        self.make_stream_with_record('NY', b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}')
 
         # Test the values sent to our serializer match the message
         def save(ser):
@@ -41,7 +41,7 @@ class ConsumerTest(BaseTest):
     def test_multi_shard_consume(self):
         # Send a bunch of messages to a bunch of shards
         key = 1
-        value = b'json:{"message":{"code":"NY","name":"New York"},"version":1}'
+        value = b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}'
         client = self.make_stream_with_record(str(key), value, shard_count=20)
         for i in range(100):
             key += 1
@@ -90,7 +90,7 @@ class ConsumerTest(BaseTest):
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_kinesis
     def test_unknown_version(self):
-        self.make_stream_with_record('NY', b'json:{"message":{"code":"NY","name":"New York"},"version":2}')
+        self.make_stream_with_record('NY', b'json:{"message":{"code":"NY","name":"New York"},"version":2,"type":"us-state"}')
         FakeStateSerializer = self.mock_state_serializer()
 
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
@@ -103,7 +103,7 @@ class ConsumerTest(BaseTest):
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_kinesis
     def test_invalid_message(self):
-        self.make_stream_with_record('NY', b'json:{"message":{"code":"NYC","name":"New York"},"version":1}')
+        self.make_stream_with_record('NY', b'json:{"message":{"code":"NYC","name":"New York"},"version":1,"type":"us-state"}')
         FakeStateSerializer = self.mock_state_serializer()
 
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)

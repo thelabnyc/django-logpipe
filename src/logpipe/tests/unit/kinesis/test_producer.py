@@ -47,6 +47,7 @@ class ProducerTest(TestCase):
 
         self.assertEqual(response['Records'][0]['SequenceNumber'], '1')
         self.assertJSONEqual(response['Records'][0]['Data'].decode().replace('json:', ''), {
+            'type': 'us-state',
             'version': 1,
             'message': {
                 'code': 'NY',
@@ -57,6 +58,7 @@ class ProducerTest(TestCase):
 
         self.assertEqual(response['Records'][1]['SequenceNumber'], '2')
         self.assertJSONEqual(response['Records'][1]['Data'].decode().replace('json:', ''), {
+            'type': 'us-state',
             'version': 1,
             'message': {
                 'code': 'PA',
@@ -99,6 +101,7 @@ class ProducerTest(TestCase):
 
         self.assertEqual(response['Records'][0]['SequenceNumber'], '1')
         self.assertJSONEqual(response['Records'][0]['Data'].decode().replace('json:', ''), {
+            'type': 'us-state',
             'version': 1,
             'message': {
                 'code': 'NY',
@@ -109,6 +112,7 @@ class ProducerTest(TestCase):
 
         self.assertEqual(response['Records'][1]['SequenceNumber'], '2')
         self.assertJSONEqual(response['Records'][1]['Data'].decode().replace('json:', ''), {
+            'type': 'us-state',
             'version': 1,
             'message': {
                 'code': 'PA',

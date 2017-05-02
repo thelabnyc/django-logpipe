@@ -1,5 +1,5 @@
 from django.db import transaction
-from .exceptions import InvalidMessageError, UnknownMessageVersionError
+from .exceptions import InvalidMessageError, UnknownMessageTypeError, UnknownMessageVersionError
 from .backend import get_offset_backend, get_consumer_backend
 from .format import parse
 from . import settings
@@ -24,8 +24,11 @@ class Consumer(object):
 
 
     def register(self, serializer_class):
-        v = serializer_class.VERSION
-        self.serializer_classes[v] = serializer_class
+        message_type = serializer_class.MESSAGE_TYPE
+        version = serializer_class.VERSION
+        if message_type not in self.serializer_classes:
+            self.serializer_classes[message_type] = {}
+        self.serializer_classes[message_type][version] = serializer_class
 
 
     def run(self, iter_limit=0):
@@ -46,9 +49,8 @@ class Consumer(object):
     def __next__(self):
         message = next(self.consumer)
 
-        # ConsumerRecord(topic='', partition=0, offset=0, timestamp=1467649216540, timestamp_type=0, key=b'', value=b'')
-        info = (message.topic, message.partition, message.offset)
-        logger.debug('Received message with from topic "%s", partition "%s", offset "%s"' % info)
+        info = (message.key, message.topic, message.partition, message.offset)
+        logger.debug('Received message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
 
         # Wait?
         timestamp = getattr(message, 'timestamp', None) or (time.time() * 1000)
@@ -70,16 +72,22 @@ class Consumer(object):
 
     def _unserialize(self, message):
         data = parse(message.value)
+        if 'type' not in data:
+            raise InvalidMessageError('Received message missing missing a top-level "type" key.')
         if 'version' not in data:
             raise InvalidMessageError('Received message missing missing a top-level "version" key.')
         if 'message' not in data:
             raise InvalidMessageError('Received message missing missing a top-level "message" key.')
 
-        version = data['version']
-        if version not in self.serializer_classes:
-            raise UnknownMessageVersionError('Received message with unknown version "%s" in topic %s' % (version, message.topic))
+        message_type = data['type']
+        if message_type not in self.serializer_classes:
+            raise UnknownMessageTypeError('Received message with unknown type "%s" in topic %s' % (message_type, message.topic))
 
-        serializer_class = self.serializer_classes[version]
+        version = data['version']
+        if version not in self.serializer_classes[message_type]:
+            raise UnknownMessageVersionError('Received message of type "%s" with unknown version "%s" in topic %s' % (message_type, version, message.topic))
+
+        serializer_class = self.serializer_classes[message_type][version]
 
         instance = None
         if hasattr(serializer_class, 'lookup_instance'):

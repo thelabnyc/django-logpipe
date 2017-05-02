@@ -20,7 +20,7 @@ class ConsumerTest(BaseTest):
     def test_normal_consume(self, KafkaConsumer):
         # Make a fake consumer to generate a message
         fake_kafka_consumer = self.mock_consumer(KafkaConsumer,
-            value=b'json:{"message":{"code":"NY","name":"New York"},"version":1}')
+            value=b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}')
 
         # Test the values sent to our serializer match the message
         def save(ser):
@@ -81,7 +81,7 @@ class ConsumerTest(BaseTest):
     @patch('kafka.KafkaConsumer')
     def test_unknown_version(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer,
-            value=b'json:{"message":{"code":"NY","name":"New York"},"version":2}')
+            value=b'json:{"message":{"code":"NY","name":"New York"},"version":2,"type":"us-state"}')
         FakeStateSerializer = self.mock_state_serializer()
 
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
@@ -94,7 +94,7 @@ class ConsumerTest(BaseTest):
     @patch('kafka.KafkaConsumer')
     def test_invalid_message(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer,
-            value=b'json:{"message":{"code":"NYC","name":"New York"},"version":1}')
+            value=b'json:{"message":{"code":"NYC","name":"New York"},"version":1,"type":"us-state"}')
         FakeStateSerializer = self.mock_state_serializer()
 
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
