@@ -17,14 +17,9 @@ class Producer(object):
         self.serializer_class = serializer_class
 
 
-    def send(self, data, renderer=None):
-        # Figure out if we have a model or a dictionary
-        if hasattr(data, '__dict__'):
-            data = data.__dict__
-
-        # Instantiate the serializer and ensure the data is valid
-        ser = self.serializer_class(data=data)
-        ser.is_valid(raise_exception=True)
+    def send(self, instance, renderer=None):
+        # Instantiate the serialize
+        ser = self.serializer_class(instance=instance)
 
         # Get the message type and version
         message_type = self.serializer_class.MESSAGE_TYPE

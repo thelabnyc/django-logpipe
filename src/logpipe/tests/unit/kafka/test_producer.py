@@ -1,6 +1,5 @@
 from django.test import TestCase, override_settings
 from kafka.consumer.fetcher import ConsumerRecord
-from rest_framework.exceptions import ValidationError
 from unittest.mock import MagicMock, patch
 from logpipe import Producer
 from logpipe.tests.common import StateSerializer, StateModel, TOPIC_STATES
@@ -83,18 +82,6 @@ class ProducerTest(TestCase):
         self.assertEqual(future.get.call_count, 1)
         KafkaProducer.assert_called_with(bootstrap_servers=['kafka:9092'], retries=5)
         future.get.assert_called_with(timeout=5)
-
-
-    @override_settings(LOGPIPE=LOGPIPE)
-    @patch('kafka.KafkaProducer')
-    def test_invalid_data(self, KafkaProducer):
-        producer = Producer(TOPIC_STATES, StateSerializer)
-        with self.assertRaises(ValidationError):
-            producer.send({
-                'code': 'NYC',
-                'name': 'New York'
-            })
-        self.assertEqual(KafkaProducer.call_count, 0)
 
 
     def _get_record_metadata(self):

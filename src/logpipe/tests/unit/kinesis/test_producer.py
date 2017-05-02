@@ -1,5 +1,4 @@
 from django.test import TestCase, override_settings
-from rest_framework.exceptions import ValidationError
 from logpipe import Producer
 from logpipe.tests.common import StateSerializer, StateModel, TOPIC_STATES
 from moto import mock_kinesis
@@ -120,26 +119,3 @@ class ProducerTest(TestCase):
             },
         })
         self.assertEqual(response['Records'][1]['PartitionKey'], 'PA')
-
-
-    @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
-    def test_invalid_data(self):
-        client = boto3.client('kinesis', region_name='us-east-1')
-        client.create_stream(
-            StreamName=TOPIC_STATES,
-            ShardCount=1)
-
-        producer = Producer(TOPIC_STATES, StateSerializer)
-        with self.assertRaises(ValidationError):
-            producer.send({
-                'code': 'NYC',
-                'name': 'New York'
-            })
-
-        shard_iter = client.get_shard_iterator(StreamName=TOPIC_STATES, ShardId='shardId-000000000000', ShardIteratorType='TRIM_HORIZON')['ShardIterator']
-        response = client.get_records(
-            ShardIterator=shard_iter,
-            Limit=100)
-
-        self.assertEqual(len(response['Records']), 0)
