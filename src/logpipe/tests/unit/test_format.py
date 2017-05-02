@@ -34,7 +34,7 @@ class MsgPackFormatTest(TestCase):
 
 
 class PickleFormatTest(TestCase):
-    @override_settings(KAFKA={'BOOTSTRAP_SERVERS': ['kafka:9092']})
+    @override_settings(LOGPIPE={'BOOTSTRAP_SERVERS': ['kafka:9092']})
     def test_default(self):
         with self.assertRaises(UnknownFormatError):
             logpipe.format.render('pickle', {})

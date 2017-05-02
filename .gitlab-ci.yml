@@ -4,30 +4,37 @@ variables:
   AUTO_CREATE_TOPICS: 'true'
 
 stages:
+  - lint
   - test
 
 services:
   - spotify/kafka
   - postgres:9.4
 
+cache:
+  key: "$CI_PROJECT_NAME"
+  paths:
+    - $HOME/.cache/pip
+
 before_script:
-  - pip install -r requirements.txt
-  - pip install -e .
+  - pip install tox
 
 lint:
-  stage: test
-  image: python:3.5
-  script:
-    - flake8 --exclude=migrations
+  stage: lint
+  image: python:3.6
+  script: tox -e lint
 
-test_python:3.4:
+test_python34:
   stage: test
   image: python:3.4
-  script:
-    - python sandbox/manage.py test logpipe.tests.unit
+  script: tox -e 'py34-django{19,110,111}'
 
-test_python:3.5:
+test_python35:
   stage: test
   image: python:3.5
-  script:
-    - python sandbox/manage.py test logpipe.tests.unit
+  script: tox -e 'py35-django{19,110,111}'
+
+test_python36:
+  stage: test
+  image: python:3.6
+  script: tox -e 'py36-django{19,110,111}'

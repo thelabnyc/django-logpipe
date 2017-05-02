@@ -6,8 +6,10 @@ services:
       ADVERTISED_HOST: 'spotify__kafka'
       ADVERTISED_PORT: '9092'
       AUTO_CREATE_TOPICS: 'true'
+
   postgres:
     image: postgres:9.4
+
   test:
     build: .
     command: python sandbox/manage.py runserver 0.0.0.0:8000

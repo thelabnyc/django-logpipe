@@ -15,7 +15,7 @@ class RoundTripTest(BaseTest):
         self.assertEqual(record.partition, 0)
         self.assertTrue(record.offset >= 0)
 
-        producer.client.flush()
+        # producer.client.flush()
 
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=1000)
         consumer.register(FakeStateSerializer)
