@@ -52,6 +52,7 @@ class ConsumerTest(BaseTest):
 
         # Test the values sent to our serializer match the message
         test = { 'i': 0 }
+
         def save(ser):
             self.assertEqual(ser.validated_data['code'], 'NY')
             self.assertEqual(ser.validated_data['name'], 'New York')
