@@ -37,7 +37,7 @@ class ModelOffsetStore(object):
         obj, created = KinesisOffset.objects.get_or_create(
             stream=message.topic,
             shard=message.partition)
-        obj.offset = message.offset
+        obj.sequence_number = message.offset
         obj.save()
 
 

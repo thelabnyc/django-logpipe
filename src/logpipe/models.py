@@ -20,10 +20,10 @@ class KinesisOffset(models.Model):
     stream = models.CharField(max_length=200,
         help_text='The Kinesis stream name')
 
-    shard = models.CharField(max_length=20,
+    shard = models.CharField(max_length=200,
         help_text='The Kinesis shard ID')
 
-    sequence_number = models.CharField(max_length=20,
+    sequence_number = models.CharField(max_length=200,
         help_text='The current sequence number in the Kinesis shard')
 
     class Meta:
