@@ -20,7 +20,8 @@ class ConsumerTest(BaseTest):
     def test_normal_consume(self, KafkaConsumer):
         # Make a fake consumer to generate a message
         fake_kafka_consumer = self.mock_consumer(KafkaConsumer,
-            value=b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}')
+            value=b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}',
+            max_calls=100)
 
         # Test the values sent to our serializer match the message
         def save(ser):
@@ -59,32 +60,54 @@ class ConsumerTest(BaseTest):
 
 
     @patch('kafka.KafkaConsumer')
-    def test_missing_version(self, KafkaConsumer):
+    def test_missing_version_throws(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer,
             value=b'json:{"message":{"code":"NY","name":"New York"}}')
-
-        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        FakeStateSerializer = self.mock_state_serializer()
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         with self.assertRaises(InvalidMessageError):
             consumer.run(iter_limit=1)
+        self.assertEqual(FakeStateSerializer.call_count, 0)
 
 
     @patch('kafka.KafkaConsumer')
-    def test_missing_message(self, KafkaConsumer):
+    def test_missing_version_ignored(self, KafkaConsumer):
+        self.mock_consumer(KafkaConsumer,
+            value=b'json:{"message":{"code":"NY","name":"New York"}}')
+        FakeStateSerializer = self.mock_state_serializer()
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer.run(iter_limit=1)
+        self.assertEqual(FakeStateSerializer.call_count, 0)
+
+
+    @patch('kafka.KafkaConsumer')
+    def test_missing_message_throws(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer,
             value=b'json:{"version":1}')
-
-        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        FakeStateSerializer = self.mock_state_serializer()
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         with self.assertRaises(InvalidMessageError):
             consumer.run(iter_limit=1)
+        self.assertEqual(FakeStateSerializer.call_count, 0)
 
 
     @patch('kafka.KafkaConsumer')
-    def test_unknown_version(self, KafkaConsumer):
+    def test_missing_message_ignored(self, KafkaConsumer):
+        self.mock_consumer(KafkaConsumer,
+            value=b'json:{"version":1}')
+        FakeStateSerializer = self.mock_state_serializer()
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer.run(iter_limit=1)
+        self.assertEqual(FakeStateSerializer.call_count, 0)
+
+
+    @patch('kafka.KafkaConsumer')
+    def test_unknown_version_throws(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer,
             value=b'json:{"message":{"code":"NY","name":"New York"},"version":2,"type":"us-state"}')
         FakeStateSerializer = self.mock_state_serializer()
 
-        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         consumer.register(FakeStateSerializer)
         with self.assertRaises(UnknownMessageVersionError):
             consumer.run(iter_limit=1)
@@ -92,12 +115,24 @@ class ConsumerTest(BaseTest):
 
 
     @patch('kafka.KafkaConsumer')
-    def test_invalid_message(self, KafkaConsumer):
+    def test_unknown_version_ignored(self, KafkaConsumer):
+        self.mock_consumer(KafkaConsumer,
+            value=b'json:{"message":{"code":"NY","name":"New York"},"version":2,"type":"us-state"}')
+        FakeStateSerializer = self.mock_state_serializer()
+
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer.register(FakeStateSerializer)
+        consumer.run(iter_limit=1)
+        self.assertEqual(FakeStateSerializer.call_count, 0)
+
+
+    @patch('kafka.KafkaConsumer')
+    def test_invalid_message_throws(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer,
             value=b'json:{"message":{"code":"NYC","name":"New York"},"version":1,"type":"us-state"}')
         FakeStateSerializer = self.mock_state_serializer()
 
-        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         consumer.register(FakeStateSerializer)
         with self.assertRaises(ValidationError):
             consumer.run(iter_limit=1)
@@ -105,11 +140,24 @@ class ConsumerTest(BaseTest):
         self.assertEqual(self.serializers['state'].save.call_count, 0)
 
 
-    def mock_consumer(self, KafkaConsumer, value):
+    @patch('kafka.KafkaConsumer')
+    def test_invalid_message_ignored(self, KafkaConsumer):
+        self.mock_consumer(KafkaConsumer,
+            value=b'json:{"message":{"code":"NYC","name":"New York"},"version":1,"type":"us-state"}')
+        FakeStateSerializer = self.mock_state_serializer()
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer.register(FakeStateSerializer)
+        consumer.run(iter_limit=1)
+        self.assertEqual(FakeStateSerializer.call_count, 1)
+        self.assertEqual(self.serializers['state'].save.call_count, 0)
+
+
+    def mock_consumer(self, KafkaConsumer, value, max_calls=1):
         # Mock a consumer object
         fake_kafka_consumer = MagicMock()
 
-        # Should return a record when used as an iterator
+        # Should return a record when used as an iterator. Set up the mock to
+        # return the record up to the limit of max_calls. Then raises StopIteration
         record = ConsumerRecord(
             topic=TOPIC_STATES,
             partition=0,
@@ -121,7 +169,16 @@ class ConsumerTest(BaseTest):
             checksum=binascii.crc32(value),
             serialized_key_size=b'NY',
             serialized_value_size=value)
-        fake_kafka_consumer.__next__.return_value = record
+
+        meta = { 'i': 0 }
+
+        def _iter(*args, **kwargs):
+            if meta['i'] >= max_calls:
+                raise StopIteration()
+            meta['i'] += 1
+            return record
+
+        fake_kafka_consumer.__next__.side_effect = _iter
 
         # Return some partitions
         fake_kafka_consumer.partitions_for_topic.return_value = set([0, 1])

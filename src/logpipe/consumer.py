@@ -1,4 +1,5 @@
 from django.db import transaction
+from rest_framework.exceptions import ValidationError
 from .exceptions import InvalidMessageError, UnknownMessageTypeError, UnknownMessageVersionError
 from .backend import get_offset_backend, get_consumer_backend
 from .format import parse
@@ -11,11 +12,31 @@ import time
 logger = logging.getLogger(__name__)
 
 
+
+def consumer_error_handler(inner):
+    while True:
+        # Try to get the next message
+        try:
+            yield next(inner)
+
+        # Obey the laws of StopIteration
+        except StopIteration as e:
+            raise e
+
+        # If the message was invalid for some reason, log the issue, and commit the message so that it gets skipped
+        except (InvalidMessageError, UnknownMessageTypeError, UnknownMessageVersionError, ValidationError) as e:
+            logger.warning("Skipping message in topic {}. Details: {}".format(inner.consumer.topic_name, e))
+            inner.commit(e.message)
+        pass
+
+
+
 class Consumer(object):
     _client = None
 
-    def __init__(self, topic_name, **kwargs):
+    def __init__(self, topic_name, throw_errors=False, **kwargs):
         self.consumer = get_consumer_backend(topic_name, **kwargs)
+        self.throw_errors = throw_errors
         self.serializer_classes = {}
 
 
@@ -43,10 +64,20 @@ class Consumer(object):
 
 
     def __iter__(self):
-        return self
+        if self.throw_errors:
+            return self
+        return consumer_error_handler(self)
 
 
     def __next__(self):
+        return self._get_next_message()
+
+
+    def __str__(self):
+        return '<logpipe.consumer.Consumer topic="%s">' % self.consumer.topic_name
+
+
+    def _get_next_message(self):
         message = next(self.consumer)
 
         info = (message.key, message.topic, message.partition, message.offset)
@@ -62,12 +93,13 @@ class Consumer(object):
             time.sleep(wait_ms / 1000)
             logger.debug("Finished waiting")
 
-        serializer = self._unserialize(message)
+        try:
+            serializer = self._unserialize(message)
+        except Exception as e:
+            e.message = message
+            raise e
+
         return message, serializer
-
-
-    def __str__(self):
-        return '<logpipe.consumer.Consumer topic="%s">' % self.consumer.topic_name
 
 
     def _unserialize(self, message):
