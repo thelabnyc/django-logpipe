@@ -16,6 +16,10 @@ class KafkaOffset(models.Model):
         ordering = ('topic', 'partition', 'offset')
 
 
+    def __str__(self):
+        return 'topic="{}", partition="{}", offset="{}"'.format(self.topic, self.partition, self.offset)
+
+
 class KinesisOffset(models.Model):
     stream = models.CharField(max_length=200,
         help_text='The Kinesis stream name')
@@ -29,3 +33,6 @@ class KinesisOffset(models.Model):
     class Meta:
         unique_together = ('stream', 'shard')
         ordering = ('stream', 'shard', 'sequence_number')
+
+    def __str__(self):
+        return 'stream="{}", shard="{}", sequence_number="{}"'.format(self.stream, self.shard, self.sequence_number)
