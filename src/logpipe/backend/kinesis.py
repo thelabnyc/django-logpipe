@@ -91,11 +91,10 @@ class Consumer(KinesisBase):
 
 
     def __next__(self):
-        # Try and load records
-        i = 0
-        while len(self.records) <= 0 and i <= len(self.shards):
-            self._load_next_page()
-            i += 1
+        # Try and load records. Keep trying until either (1) we have some records or (2) current_lag drops to 0
+        current_lag = 1
+        while len(self.records) <= 0 and current_lag > 0:
+            current_lag = self._load_next_page()
 
         # If we've tried all the shards and still don't have any records, stop iteration
         if len(self.records) == 0:
@@ -110,25 +109,25 @@ class Consumer(KinesisBase):
         try:
             shard = self.shards.popleft()
         except IndexError:
-            return
+            return 0
 
         # Get the next shard iterator for the shard
         shard_iter = self.shard_iters.pop(shard, None)
         if not shard_iter:
-            return
+            return 0
 
         # Fetch the records from Kinesis
         logger.debug('Loading page of records from {}.{}'.format(self.topic_name, shard))
         fetch_limit = settings.get('KINESIS_FETCH_LIMIT', 25)
         response = self._get_records(shard_iter, fetch_limit)
         if response is None:
-            return
+            return 0
 
-        # Save the shard iterator for next time we need to get records from this shard
-        self.shard_iters[shard] = response['NextShardIterator']
+        current_stream_lag = response.get('MillisBehindLatest', 0)
+        logger.debug('Loaded page of records from {}.{}. Currently {}ms behind stream head.'.format(self.topic_name, shard, current_stream_lag))
 
         # Add the records page into the queue
-        timestamp = (time.time() * 1000) - response.get('MillisBehindLatest', 0)
+        timestamp = (time.time() * 1000) - current_stream_lag
         for r in response['Records']:
             record = Record(
                 topic=self.topic_name,
@@ -139,8 +138,16 @@ class Consumer(KinesisBase):
                 value=r['Data'])
             self.records.append(record)
 
-        # Add the shard back to the right of the queue
-        self.shards.append(shard)
+        # Add the shard back to the right of the queue and save the shard iterator for next time we need
+        # to get records from this shard. If NextShardIterator is None, the shard has been closed and
+        # we should remove it from the pool.
+        if response.get('NextShardIterator', None):
+            self.shard_iters[shard] = response['NextShardIterator']
+            self.shards.append(shard)
+        else:
+            logger.info('Shard {}.{} has been closed. Removing it from the fetch pool.'.format(self.topic_name, shard))
+
+        return current_stream_lag
 
 
     def _get_records(self, shard_iter, fetch_limit, retries=1):
@@ -163,14 +170,6 @@ class Consumer(KinesisBase):
     def _list_shard_ids(self):
         resp = self.client.describe_stream(StreamName=self.topic_name)
         return [shard['ShardId'] for shard in resp['StreamDescription']['Shards']]
-
-
-    def _get_shard_iter(self, shard_id):
-        resp = self.client.get_shard_iterator(
-            StreamName=self.topic_name,
-            ShardId=shard_id,
-            ShardIteratorType='TRIM_HORIZON')
-        return resp['ShardIterator']
 
 
 
