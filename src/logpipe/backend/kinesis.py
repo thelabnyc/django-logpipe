@@ -92,9 +92,15 @@ class Consumer(KinesisBase):
 
     def __next__(self):
         # Try and load records. Keep trying until either (1) we have some records or (2) current_lag drops to 0
-        current_lag = 1
-        while len(self.records) <= 0 and current_lag > 0:
-            current_lag = self._load_next_page()
+        while len(self.records) <= 0:
+            # Load a page from each shard and sum the shard lags
+            current_lag = 0
+            for i in range(len(self.shards)):
+                current_lag += self._load_next_page()
+
+            # If all shards report 0 lag, then give up trying to load records
+            if current_lag <= 0:
+                break
 
         # If we've tried all the shards and still don't have any records, stop iteration
         if len(self.records) == 0:
@@ -123,8 +129,13 @@ class Consumer(KinesisBase):
         if response is None:
             return 0
 
-        current_stream_lag = response.get('MillisBehindLatest', 0)
-        logger.debug('Loaded page of records from {}.{}. Currently {}ms behind stream head.'.format(self.topic_name, shard, current_stream_lag))
+        # This default value is mostly just for testing with Moto. Real Kinesis should always return a value for MillisBehindLatest.
+        num_records = len(response['Records'])
+        if 'MillisBehindLatest' in response:
+            current_stream_lag = response['MillisBehindLatest']
+        else:
+            current_stream_lag = 0 if num_records == 0 else 1
+        logger.debug('Loaded {} records from {}.{}. Currently {}ms behind stream head.'.format(num_records, self.topic_name, shard, current_stream_lag))
 
         # Add the records page into the queue
         timestamp = (time.time() * 1000) - current_stream_lag
