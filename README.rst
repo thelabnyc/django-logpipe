@@ -86,10 +86,14 @@ Serializers
 The first step in either sending or receiving messages with ``logpipe`` is to define a serializer. Serializers for ``logpipe`` have a few rules:
 
 1. Must be either a subclass of ``rest_framework.serializers.Serializer`` or a class implementing an interface that mimics ``rest_framework.serializers.Serializer``.
-1. Must have a ``MESSAGE_TYPE`` attribute defined on the class. The value should be a string that defines uniquely defines the data-type within it's Topic / Stream.
-2. Must have a ``VERSION`` attribute defined on the class. The value should be a monotonic integer representing the schema version number.
-3. Must have a ``KEY_FIELD`` attribute defined on the class, representing the name of the field to use as the message key. The message key is used by Kafka when performing log compaction and by Kinesis as the shard partition key. The property can be omitted for topics which do not require a key.
-4. If the serializer will be used for incoming-messages, it should implement class method `lookup_instance(cls, **kwargs)`. This class method will be called with message data as keyword arguments directly before instantiating the serializer. It should lookup and return the related object (if one exists) so that it can be passed to the serializer's ``instance`` argument during initialization. If no object exists yet (the message is representing a new object), it should return ``None``.
+
+2. Must have a ``MESSAGE_TYPE`` attribute defined on the class. The value should be a string that defines uniquely defines the data-type within it's Topic / Stream.
+
+3. Must have a ``VERSION`` attribute defined on the class. The value should be a monotonic integer representing the schema version number.
+
+4. Must have a ``KEY_FIELD`` attribute defined on the class, representing the name of the field to use as the message key. The message key is used by Kafka when performing log compaction and by Kinesis as the shard partition key. The property can be omitted for topics which do not require a key.
+
+5. If the serializer will be used for incoming-messages, it should implement class method `lookup_instance(cls, **kwargs)`. This class method will be called with message data as keyword arguments directly before instantiating the serializer. It should lookup and return the related object (if one exists) so that it can be passed to the serializer's ``instance`` argument during initialization. If no object exists yet (the message is representing a new object), it should return ``None``.
 
 Below is a sample Django model and it's accompanying serializer.
 
