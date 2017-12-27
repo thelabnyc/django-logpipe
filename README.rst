@@ -2,7 +2,7 @@
 Django LogPipe
 ===============================
 
-|  |build| |license| |kit| |format| |downloads|
+|  |build| |license| |kit| |format|
 
 This library serves as a universal pipe for moving data around between Django applications and services. It is build on
 top of `Boto3`_, `Apache Kafka`_, `kafka-python`_, and `Django REST Framework`_.
@@ -284,6 +284,4 @@ Changelog
 .. |kit| image:: https://badge.fury.io/py/django-logpipe.svg
     :target: https://pypi.python.org/pypi/django-logpipe
 .. |format| image:: https://img.shields.io/pypi/format/django-logpipe.svg
-    :target: https://pypi.python.org/pypi/django-logpipe
-.. |downloads| image:: https://img.shields.io/pypi/dm/django-logpipe.svg?maxAge=2592000
     :target: https://pypi.python.org/pypi/django-logpipe
