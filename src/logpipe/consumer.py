@@ -65,8 +65,13 @@ class Consumer(object):
         i = 0
         for message, serializer in self:
             with transaction.atomic():
-                serializer.save()
-                self.commit(message)
+                try:
+                    serializer.save()
+                    self.commit(message)
+                except Exception as e:
+                    info = (message.key, message.topic, message.partition, message.offset)
+                    logger.exception('Failed to process message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
+                    raise e
             i += 1
             if iter_limit > 0 and i >= iter_limit:
                 break
