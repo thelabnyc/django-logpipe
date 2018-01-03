@@ -267,6 +267,11 @@ Finally, after all the old version 1 messages have been dropped (by log compacti
 Changelog
 =========
 
+0.2.1
+------------------
+- More robustly handle exceptions thrown by a consumer serializer's `save()` method.
+- Improve log messages and levels for invalid or unknown messages.
+
 0.2.0
 ------------------
 - Added concept of message types.
