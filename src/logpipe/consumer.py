@@ -24,9 +24,18 @@ def consumer_error_handler(inner):
             raise e
 
         # If the message was invalid for some reason, log the issue, and commit the message so that it gets skipped
-        except (InvalidMessageError, UnknownMessageTypeError, UnknownMessageVersionError, ValidationError) as e:
-            logger.warning("Skipping message in topic {}. Details: {}".format(inner.consumer.topic_name, e))
+        except UnknownMessageTypeError as e:
+            logger.info("Skipping unknown message type in topic {}. Details: {}".format(inner.consumer.topic_name, e))
             inner.commit(e.message)
+
+        except UnknownMessageVersionError as e:
+            logger.error("Skipping unknown message version in topic {}. Details: {}".format(inner.consumer.topic_name, e))
+            inner.commit(e.message)
+
+        except (InvalidMessageError, ValidationError) as e:
+            logger.error("Skipping invalid message in topic {}. Details: {}".format(inner.consumer.topic_name, e))
+            inner.commit(e.message)
+
         pass
 
 
