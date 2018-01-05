@@ -271,6 +271,7 @@ Changelog
 ------------------
 - More robustly handle exceptions thrown by a consumer serializer's `save()` method.
 - Improve log messages and levels for invalid or unknown messages.
+- Add new method: ``logpipe.Consumer.add_ignored_message_type``, which allows the consumer to explicitly ignore specific message types silently. This helps to filter log noise (messages that a consumer really doesn't care about) from actual errors (messages a consumer is skipping, but should be processing).
 
 0.2.0
 ------------------
