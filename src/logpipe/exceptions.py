@@ -6,6 +6,10 @@ class UnknownFormatError(LogPipeError):
     pass
 
 
+class IgnoredMessageTypeError(LogPipeError):
+    pass
+
+
 class UnknownMessageTypeError(LogPipeError):
     pass
 

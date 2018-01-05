@@ -159,6 +159,20 @@ class ConsumerTest(BaseTest):
         self.assertEqual(self.serializers['state'].save.call_count, 0)
 
 
+    @override_settings(LOGPIPE=LOGPIPE)
+    @mock_kinesis
+    def test_ignored_message_type_is_ignored(self):
+        self.make_stream_with_record('NY', b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}')
+        FakeStateSerializer = self.mock_state_serializer()
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer.add_ignored_message_type('us-state')
+        consumer.register(FakeStateSerializer)
+        consumer.run(iter_limit=1)
+        # Even though message is valid, the serializer should never get called since message type is explicitly ignored.
+        self.assertEqual(FakeStateSerializer.call_count, 0)
+        self.assertTrue('state' not in self.serializers)
+
+
     def make_stream_with_record(self, key, value, shard_count=1):
         client = boto3.client('kinesis', region_name='us-east-1')
         client.create_stream(

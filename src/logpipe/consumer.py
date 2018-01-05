@@ -1,6 +1,6 @@
 from django.db import transaction
 from rest_framework.exceptions import ValidationError
-from .exceptions import InvalidMessageError, UnknownMessageTypeError, UnknownMessageVersionError
+from .exceptions import InvalidMessageError, IgnoredMessageTypeError, UnknownMessageTypeError, UnknownMessageVersionError
 from .backend import get_offset_backend, get_consumer_backend
 from .format import parse
 from . import settings
@@ -23,17 +23,29 @@ def consumer_error_handler(inner):
         except StopIteration as e:
             raise e
 
-        # If the message was invalid for some reason, log the issue, and commit the message so that it gets skipped
-        except UnknownMessageTypeError as e:
-            logger.info("Skipping unknown message type in topic {}. Details: {}".format(inner.consumer.topic_name, e))
+        # Message format was invalid in some way: log error and move on.
+        except InvalidMessageError as e:
+            logger.error("Failed to deserialize message in topic {}. Details: {}".format(inner.consumer.topic_name, e))
             inner.commit(e.message)
 
+        # Message type has been explicitly ignored: skip it silently and move on.
+        except IgnoredMessageTypeError as e:
+            logger.debug("Skipping ignored message type in topic {}. Details: {}".format(inner.consumer.topic_name, e))
+            inner.commit(e.message)
+
+        # Message type is unknown: log error and move on.
+        except UnknownMessageTypeError as e:
+            logger.error("Skipping unknown message type in topic {}. Details: {}".format(inner.consumer.topic_name, e))
+            inner.commit(e.message)
+
+        # Message version is unknown: log error and move on.
         except UnknownMessageVersionError as e:
             logger.error("Skipping unknown message version in topic {}. Details: {}".format(inner.consumer.topic_name, e))
             inner.commit(e.message)
 
-        except (InvalidMessageError, ValidationError) as e:
-            logger.error("Skipping invalid message in topic {}. Details: {}".format(inner.consumer.topic_name, e))
+        # Serializer for message type flagged message as invalid: log warning and move on.
+        except ValidationError as e:
+            logger.warning("Skipping invalid message in topic {}. Details: {}".format(inner.consumer.topic_name, e))
             inner.commit(e.message)
 
         pass
@@ -47,6 +59,11 @@ class Consumer(object):
         self.consumer = get_consumer_backend(topic_name, **kwargs)
         self.throw_errors = throw_errors
         self.serializer_classes = {}
+        self.ignored_message_types = set([])
+
+
+    def add_ignored_message_type(self, message_type):
+        self.ignored_message_types.add(message_type)
 
 
     def commit(self, message):
@@ -126,6 +143,8 @@ class Consumer(object):
             raise InvalidMessageError('Received message missing missing a top-level "message" key.')
 
         message_type = data['type']
+        if message_type in self.ignored_message_types:
+            raise IgnoredMessageTypeError('Received message with ignored type "%s" in topic %s' % (message_type, message.topic))
         if message_type not in self.serializer_classes:
             raise UnknownMessageTypeError('Received message with unknown type "%s" in topic %s' % (message_type, message.topic))
 

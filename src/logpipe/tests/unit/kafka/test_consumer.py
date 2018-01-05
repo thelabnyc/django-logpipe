@@ -152,6 +152,20 @@ class ConsumerTest(BaseTest):
         self.assertEqual(self.serializers['state'].save.call_count, 0)
 
 
+    @patch('kafka.KafkaConsumer')
+    def test_ignored_message_type_is_ignored(self, KafkaConsumer):
+        self.mock_consumer(KafkaConsumer,
+            value=b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}')
+        FakeStateSerializer = self.mock_state_serializer()
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer.add_ignored_message_type('us-state')
+        consumer.register(FakeStateSerializer)
+        consumer.run(iter_limit=1)
+        # Even though message is valid, the serializer should never get called since message type is explicitly ignored.
+        self.assertEqual(FakeStateSerializer.call_count, 0)
+        self.assertTrue('state' not in self.serializers)
+
+
     def mock_consumer(self, KafkaConsumer, value, max_calls=1):
         # Mock a consumer object
         fake_kafka_consumer = MagicMock()
