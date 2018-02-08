@@ -21,7 +21,7 @@ extras_require = {
     'development': [
         'flake8>=3.3.0',
         'moto>=0.4.31',
-        'psycopg2>=2.7.1',
+        'psycopg2cffi>=2.7.7',
         'tox>=2.7.0',
         'versiontag>=1.2.0',
     ],

@@ -33,3 +33,8 @@ test_python36:
   stage: test
   image: python:3.6
   script: tox --skip-missing-interpreters
+
+test_pypy35:
+  stage: test
+  image: pypy:3-5
+  script: tox --skip-missing-interpreters
