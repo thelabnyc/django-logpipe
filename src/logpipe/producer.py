@@ -11,8 +11,8 @@ logger = logging.getLogger(__name__)
 class Producer(object):
     _client = None
 
-    def __init__(self, topic_name, serializer_class):
-        self.client = get_producer_backend()
+    def __init__(self, topic_name, serializer_class, **kwargs):
+        self.client = get_producer_backend(**kwargs)
         self.topic_name = topic_name
         self.serializer_class = serializer_class
 

@@ -58,13 +58,7 @@ class Consumer(object):
     def client(self):
         if not self._client:
             kwargs = self._get_client_config()
-            self._client = kafka.KafkaConsumer(**kwargs)
-            tps = self._get_topic_partitions()
-            self._client.assign(tps)
-            backend = get_offset_backend()
-            for tp in tps:
-                backend.seek(self, tp.topic, tp.partition)
-                self._client.committed(tp)
+            self._client = kafka.KafkaConsumer(self.topic_name, **kwargs)
         return self._client
 
 
@@ -113,6 +107,8 @@ class Consumer(object):
 class Producer(object):
     _client = None
 
+    def __init__(self, **kwargs):
+        self.client_kwargs = kwargs
 
     @property
     def client(self):
@@ -134,9 +130,9 @@ class Producer(object):
 
 
     def _get_client_config(self):
-        servers = settings.get('KAFKA_BOOTSTRAP_SERVERS')
-        retries = settings.get('KAFKA_MAX_SEND_RETRIES', 0)
-        return {
-            'bootstrap_servers': servers,
-            'retries': retries,
+        kwargs = {
+            'bootstrap_servers': settings.get('KAFKA_BOOTSTRAP_SERVERS'),
+            'retries': settings.get('KAFKA_MAX_SEND_RETRIES', 0),
         }
+        kwargs.update(self.client_kwargs)
+        return kwargs
