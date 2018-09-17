@@ -12,7 +12,7 @@ class KafkaOffsetAdmin(admin.ModelAdmin):
 
 @admin.register(models.KinesisOffset)
 class KinesisOffsetAdmin(admin.ModelAdmin):
-    fields = ['stream', 'shard', 'sequence_number']
-    list_display = ['stream', 'shard', 'sequence_number']
-    list_filter = ['stream', 'shard']
-    readonly_fields = ['stream', 'shard']
+    fields = ['region', 'stream', 'shard', 'sequence_number']
+    list_display = ['stream', 'region', 'shard', 'sequence_number']
+    list_filter = ['stream', 'region', 'shard']
+    readonly_fields = ['region', 'stream', 'shard']

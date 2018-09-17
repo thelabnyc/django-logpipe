@@ -23,9 +23,8 @@ class KinesisBase(object):
 
 
     def _get_client_config(self):
-        region = settings.get('KINESIS_REGION', 'us-east-1')
         return {
-            'region_name': region,
+            'region_name': settings.get_aws_region(),
         }
 
 
@@ -33,9 +32,11 @@ class KinesisBase(object):
 class ModelOffsetStore(object):
     def commit(self, consumer, message):
         KinesisOffset = apps.get_model(app_label='logpipe', model_name='KinesisOffset')
-        logger.debug('Commit offset "%s" for stream "%s", shard "%s" to %s' % (
-            message.offset, message.topic, message.partition, self.__class__.__name__))
+        region = settings.get_aws_region()
+        logger.debug('Commit offset "%s" for region "%s", stream "%s", shard "%s" to %s' % (
+            message.offset, region, message.topic, message.partition, self.__class__.__name__))
         obj, created = KinesisOffset.objects.get_or_create(
+            region=region,
             stream=message.topic,
             shard=message.partition)
         obj.sequence_number = message.offset
@@ -44,12 +45,13 @@ class ModelOffsetStore(object):
 
     def seek(self, consumer, stream, shard):
         KinesisOffset = apps.get_model(app_label='logpipe', model_name='KinesisOffset')
+        region = settings.get_aws_region()
         try:
-            obj = KinesisOffset.objects.get(stream=stream, shard=shard)
-            logger.debug('Seeking to offset "%s" on stream "%s", partition "%s"' % (obj.sequence_number, stream, shard))
+            obj = KinesisOffset.objects.get(region=settings.get_aws_region(), stream=stream, shard=shard)
+            logger.debug('Seeking to offset "%s" on region "%s", stream "%s", partition "%s"' % (obj.sequence_number, region, stream, shard))
             consumer.seek_to_sequence_number(shard, obj.sequence_number)
         except KinesisOffset.DoesNotExist:
-            logger.debug('Seeking to beginning of stream "%s", partition "%s"' % (stream, shard))
+            logger.debug('Seeking to beginning of region "%s", stream "%s", partition "%s"' % (region, stream, shard))
             consumer.seek_to_sequence_number(shard, None)
 
 
