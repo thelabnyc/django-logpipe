@@ -6,7 +6,7 @@ import os
 # Make sure settings are installed
 try:
     _ = settings.LOGPIPE
-except AttributeError as e:
+except AttributeError:
     raise ImproperlyConfigured('Please define `LOGPIPE` in your settings.py file.')
 
 
