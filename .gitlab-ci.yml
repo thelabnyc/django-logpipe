@@ -9,7 +9,7 @@ stages:
 
 services:
   - spotify/kafka
-  - postgres:9.4
+  - postgres:latest
 
 cache:
   key: "$CI_PROJECT_NAME"
