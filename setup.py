@@ -20,7 +20,7 @@ install_requires = [
 extras_require = {
     'development': [
         'flake8>=3.3.0',
-        'moto>=1.3.7',
+        'moto>=1.3.6,<1.3.7',
         'psycopg2cffi>=2.7.7',
         'tox>=2.7.0',
         'versiontag>=1.2.0',
