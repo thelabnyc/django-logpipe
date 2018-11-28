@@ -272,6 +272,8 @@ Changelog
 - In KinesisOffset model, track the AWS region for a stream. This allows a single database to subscribe to multiple streams in different regions, even it they have the same name.
 - Improved logic for detecting the current AWS region.
 - Add Django 2.1 to tox test suite.
+- Add support for Python 3.7.
+- Add support for python-kafka 1.4.4.
 
 0.2.1
 ------------------
