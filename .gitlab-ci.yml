@@ -32,7 +32,7 @@ test_python36:
 test_python37:
   stage: test
   image: python:3.7
-  script: tox -e 'py37-django{111,200,210}'
+  script: tox -e 'py37-django{200,210}'
 
 test_pypy35:
   stage: test

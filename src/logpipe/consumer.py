@@ -20,8 +20,8 @@ def consumer_error_handler(inner):
             yield next(inner)
 
         # Obey the laws of StopIteration
-        except StopIteration as e:
-            raise e
+        except StopIteration:
+            return
 
         # Message format was invalid in some way: log error and move on.
         except InvalidMessageError as e:

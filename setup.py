@@ -29,7 +29,7 @@ extras_require = {
         'kafka-python>=1.3.3',
     ],
     'kinesis': [
-        'boto3>=1.4.4',
+        'boto3>=1.7',
     ],
     'msgpack': [
         'msgpack-python>=0.4.8',
