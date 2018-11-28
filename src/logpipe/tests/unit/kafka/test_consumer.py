@@ -180,9 +180,11 @@ class ConsumerTest(BaseTest):
             timestamp_type=0,
             key=b'NY',
             value=value,
+            headers=None,
             checksum=binascii.crc32(value),
             serialized_key_size=b'NY',
-            serialized_value_size=value)
+            serialized_value_size=value,
+            serialized_header_size=0)
 
         meta = { 'i': 0 }
 

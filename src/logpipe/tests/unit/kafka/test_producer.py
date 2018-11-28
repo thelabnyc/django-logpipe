@@ -93,6 +93,8 @@ class ProducerTest(TestCase):
             timestamp_type=0,
             key=b'NY',
             value=b'foo',
+            headers=None,
             checksum=binascii.crc32(b'foo'),
             serialized_key_size=b'NY',
-            serialized_value_size=b'foo')
+            serialized_value_size=b'foo',
+            serialized_header_size=0)
