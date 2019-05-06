@@ -16,6 +16,9 @@ cache:
   paths:
     - $HOME/.cache/pip
 
+include:
+  template: SAST.gitlab-ci.yml
+
 before_script:
   - pip install tox
 
