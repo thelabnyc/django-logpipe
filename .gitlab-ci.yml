@@ -17,7 +17,8 @@ cache:
     - $HOME/.cache/pip
 
 include:
-  template: SAST.gitlab-ci.yml
+  - project: thelabnyc/gitlab-ci-templates
+    file: /ci/sast.gitlab-ci.yml
 
 test_python35:
   stage: test
