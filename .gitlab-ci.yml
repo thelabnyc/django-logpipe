@@ -16,25 +16,34 @@ cache:
   paths:
     - $HOME/.cache/pip
 
-before_script:
-  - pip install tox
+include:
+  - project: thelabnyc/gitlab-ci-templates
+    file: /ci/sast.gitlab-ci.yml
 
 test_python35:
   stage: test
   image: python:3.5
-  script: tox -e 'py35-django{111,200,210}'
+  script:
+    - pip install tox
+    - tox -e 'py35-django{111,200,210}'
 
 test_python36:
   stage: test
   image: python:3.6
-  script: tox -e 'py36-django{111,200,210}'
+  script:
+    - pip install tox
+    - tox -e 'py36-django{111,200,210}'
 
 test_python37:
   stage: test
   image: python:3.7
-  script: tox -e 'py37-django{200,210}'
+  script:
+    - pip install tox
+    - tox -e 'py37-django{200,210}'
 
 test_pypy35:
   stage: test
   image: pypy:3-5
-  script: tox -e 'pypy3-django{111,200,210}'
+  script:
+    - pip install tox
+    - tox -e 'pypy3-django{111,200,210}'
