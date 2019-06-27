@@ -1,18 +1,31 @@
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 from . import settings
 
 
 class KafkaOffset(models.Model):
-    topic = models.CharField(max_length=200,
-        help_text='The Kafka topic name')
+    # Translators: Internal Model Field Name
+    topic = models.CharField(_('Kafka Topic Name'),
+        # Translators: Interal Model Field Help Text
+        help_text=_('The Kafka topic name'),
+        max_length=200)
 
-    partition = models.PositiveIntegerField(
-        help_text='The Kafka partition identifier')
+    # Translators: Internal Model Field Name
+    partition = models.PositiveIntegerField(_('Kafka Partition ID'),
+        # Translators: Interal Model Field Help Text
+        help_text=_('The Kafka partition identifier'))
 
-    offset = models.PositiveIntegerField(default=0,
-        help_text='The current offset in the Kafka partition')
+    # Translators: Internal Model Field Name
+    offset = models.PositiveIntegerField(_('Kafka Offset'),
+        # Translators: Interal Model Field Help Text
+        help_text=_('The current offset in the Kafka partition'),
+        default=0)
 
     class Meta:
+        # Translators: Internal Model Name (singular)
+        verbose_name = _('Kafka Offset')
+        # Translators: Internal Model Name (plural)
+        verbose_name_plural = _('Kafka Offsets')
         unique_together = ('topic', 'partition')
         ordering = ('topic', 'partition', 'offset')
 
@@ -22,39 +35,74 @@ class KafkaOffset(models.Model):
 
 
 class KinesisOffset(models.Model):
-    region = models.CharField(max_length=20,
-        help_text='The Kinesis stream region name',
+    _region_choices = (
+        # Translators: AWS Region Name
+        ('us-east-1', _("US East (N. Virginia)")),
+        # Translators: AWS Region Name
+        ('us-east-2', _("US East (Ohio)")),
+        # Translators: AWS Region Name
+        ('us-west-1', _("US West (N. California)")),
+        # Translators: AWS Region Name
+        ('us-west-2', _("US West (Oregon)")),
+        # Translators: AWS Region Name
+        ('ap-south-1', _("Asia Pacific (Mumbai)")),
+        # Translators: AWS Region Name
+        ('ap-northeast-2', _("Asia Pacific (Seoul)")),
+        # Translators: AWS Region Name
+        ('ap-southeast-1', _("Asia Pacific (Singapore)")),
+        # Translators: AWS Region Name
+        ('ap-southeast-2', _("Asia Pacific (Sydney)")),
+        # Translators: AWS Region Name
+        ('ap-northeast-1', _("Asia Pacific (Tokyo)")),
+        # Translators: AWS Region Name
+        ('ca-central-1', _("Canada (Central)")),
+        # Translators: AWS Region Name
+        ('eu-central-1', _("EU (Frankfurt)")),
+        # Translators: AWS Region Name
+        ('eu-west-1', _("EU (Ireland)")),
+        # Translators: AWS Region Name
+        ('eu-west-2', _("EU (London)")),
+        # Translators: AWS Region Name
+        ('eu-west-3', _("EU (Paris)")),
+        # Translators: AWS Region Name
+        ('sa-east-1', _("South America (São Paulo)")),
+        # Translators: AWS Region Name
+        ('cn-north-1', _("China (Beijing)")),
+        # Translators: AWS Region Name
+        ('us-gov-west-1', _("AWS GovCloud (US)")),
+    )
+
+    # Translators: Internal Model Field Name
+    region = models.CharField(_('AWS Region'),
+        # Translators: Interal Model Field Help Text
+        help_text=_('The Kinesis stream region name'),
+        max_length=20,
         default=settings.get_aws_region,
-        choices=(
-            ('us-east-1', "US East (N. Virginia)"),
-            ('us-east-2', "US East (Ohio)"),
-            ('us-west-1', "US West (N. California)"),
-            ('us-west-2', "US West (Oregon)"),
-            ('ap-south-1', "Asia Pacific (Mumbai)"),
-            ('ap-northeast-2', "Asia Pacific (Seoul)"),
-            ('ap-southeast-1', "Asia Pacific (Singapore)"),
-            ('ap-southeast-2', "Asia Pacific (Sydney)"),
-            ('ap-northeast-1', "Asia Pacific (Tokyo)"),
-            ('ca-central-1', "Canada (Central)"),
-            ('eu-central-1', "EU (Frankfurt)"),
-            ('eu-west-1', "EU (Ireland)"),
-            ('eu-west-2', "EU (London)"),
-            ('eu-west-3', "EU (Paris)"),
-            ('sa-east-1', "South America (São Paulo)"),
-            ('cn-north-1', "China (Beijing)"),
-            ('us-gov-west-1', "AWS GovCloud (US)"),
-        ))
+        choices=_region_choices)
 
-    stream = models.CharField(max_length=200,
-        help_text='The Kinesis stream name')
+    # Translators: Internal Model Field Name
+    stream = models.CharField(_('Kinesis Stream Name'),
+        # Translators: Interal Model Field Help Text
+        help_text=_('The Kinesis stream name'),
+        max_length=200)
 
-    shard = models.CharField(max_length=200,
-        help_text='The Kinesis shard ID')
+    # Translators: Internal Model Field Name
+    shard = models.CharField(_('Kinesis Shard ID'),
+        # Translators: Interal Model Field Help Text
+        help_text=_('The Kinesis shard ID'),
+        max_length=200)
 
-    sequence_number = models.CharField(max_length=200,
-        help_text='The current sequence number in the Kinesis shard')
+    # Translators: Internal Model Field Name
+    sequence_number = models.CharField(_('Kinesis Sequence Number'),
+        # Translators: Interal Model Field Help Text
+        help_text=_('The current sequence number in the Kinesis shard'),
+        max_length=200)
 
     class Meta:
+        # Translators: Internal Model Name (singular)
+        verbose_name = _('AWS Kinesis Offset')
+        # Translators: Internal Model Name (plural)
+        verbose_name_plural = _('AWS Kinesis Offsets')
         unique_together = ('region', 'stream', 'shard')
         ordering = ('stream', 'shard', 'sequence_number')
 

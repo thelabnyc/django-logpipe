@@ -1,0 +1,195 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-06-24 21:51+0000\n"
+"PO-Revision-Date: 2019-06-24 17:55-0400\n"
+"Last-Translator: Craig Weber <craig@crgwbr.com>\n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 2.2.3\n"
+
+#. Translators: Backend Library Name
+#: config.py:9
+msgid "LogPipe"
+msgstr "LogPipe"
+
+#. Translators: Internal Model Field Name
+#: models.py:8
+msgid "Kafka Topic Name"
+msgstr ""
+
+#. Translators: Interal Model Field Help Text
+#: models.py:10
+msgid "The Kafka topic name"
+msgstr ""
+
+#. Translators: Internal Model Field Name
+#: models.py:14
+msgid "Kafka Partition ID"
+msgstr ""
+
+#. Translators: Interal Model Field Help Text
+#: models.py:16
+msgid "The Kafka partition identifier"
+msgstr ""
+
+#. Translators: Internal Model Field Name
+#. Translators: Internal Model Name (singular)
+#: models.py:19 models.py:26
+msgid "Kafka Offset"
+msgstr ""
+
+#. Translators: Interal Model Field Help Text
+#: models.py:21
+msgid "The current offset in the Kafka partition"
+msgstr ""
+
+#. Translators: Internal Model Name (plural)
+#: models.py:28
+msgid "Kafka Offsets"
+msgstr ""
+
+#. Translators: AWS Region Name
+#: models.py:40
+msgid "US East (N. Virginia)"
+msgstr "EE.UU. Este (Norte de Virginia)"
+
+#. Translators: AWS Region Name
+#: models.py:42
+msgid "US East (Ohio)"
+msgstr "EE.UU. Este (Ohio)"
+
+#. Translators: AWS Region Name
+#: models.py:44
+msgid "US West (N. California)"
+msgstr "EE.UU. Oeste (Norte de California)"
+
+#. Translators: AWS Region Name
+#: models.py:46
+msgid "US West (Oregon)"
+msgstr "EE.UU. Oeste (Oregón)"
+
+#. Translators: AWS Region Name
+#: models.py:48
+msgid "Asia Pacific (Mumbai)"
+msgstr "Asia Pacífico (Mumbai)"
+
+#. Translators: AWS Region Name
+#: models.py:50
+msgid "Asia Pacific (Seoul)"
+msgstr "Asia Pacífico (Seúl)"
+
+#. Translators: AWS Region Name
+#: models.py:52
+msgid "Asia Pacific (Singapore)"
+msgstr "Asia Pacífico (Singapur)"
+
+#. Translators: AWS Region Name
+#: models.py:54
+msgid "Asia Pacific (Sydney)"
+msgstr "Asia Pacífico (Sídney)"
+
+#. Translators: AWS Region Name
+#: models.py:56
+msgid "Asia Pacific (Tokyo)"
+msgstr "Asia Pacífico (Tokio)"
+
+#. Translators: AWS Region Name
+#: models.py:58
+msgid "Canada (Central)"
+msgstr "Canadá (Central)"
+
+#. Translators: AWS Region Name
+#: models.py:60
+msgid "EU (Frankfurt)"
+msgstr "UE (Fráncfort)"
+
+#. Translators: AWS Region Name
+#: models.py:62
+msgid "EU (Ireland)"
+msgstr "UE (Irlanda)"
+
+#. Translators: AWS Region Name
+#: models.py:64
+msgid "EU (London)"
+msgstr "UE (Londres)"
+
+#. Translators: AWS Region Name
+#: models.py:66
+msgid "EU (Paris)"
+msgstr "UE (París)"
+
+#. Translators: AWS Region Name
+#: models.py:68
+msgid "South America (São Paulo)"
+msgstr "América del Sur (São Paulo)"
+
+#. Translators: AWS Region Name
+#: models.py:70
+msgid "China (Beijing)"
+msgstr "China (Beijing)"
+
+#. Translators: AWS Region Name
+#: models.py:72
+msgid "AWS GovCloud (US)"
+msgstr "AWS GovCloud (US-East)"
+
+#. Translators: Internal Model Field Name
+#: models.py:76
+msgid "AWS Region"
+msgstr "Regiones AWS"
+
+#. Translators: Interal Model Field Help Text
+#: models.py:78
+msgid "The Kinesis stream region name"
+msgstr ""
+
+#. Translators: Internal Model Field Name
+#: models.py:84
+msgid "Kinesis Stream Name"
+msgstr ""
+
+#. Translators: Interal Model Field Help Text
+#: models.py:86
+msgid "The Kinesis stream name"
+msgstr ""
+
+#. Translators: Internal Model Field Name
+#: models.py:90
+msgid "Kinesis Shard ID"
+msgstr ""
+
+#. Translators: Interal Model Field Help Text
+#: models.py:92
+msgid "The Kinesis shard ID"
+msgstr ""
+
+#. Translators: Internal Model Field Name
+#: models.py:96
+msgid "Kinesis Sequence Number"
+msgstr ""
+
+#. Translators: Interal Model Field Help Text
+#: models.py:98
+msgid "The current sequence number in the Kinesis shard"
+msgstr ""
+
+#. Translators: Internal Model Name (singular)
+#: models.py:103
+msgid "AWS Kinesis Offset"
+msgstr ""
+
+#. Translators: Internal Model Name (plural)
+#: models.py:105
+msgid "AWS Kinesis Offsets"
+msgstr ""

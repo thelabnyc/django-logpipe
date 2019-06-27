@@ -4,6 +4,10 @@ ENV PYTHONUNBUFFERED 0
 RUN mkdir /code
 WORKDIR /code
 
+RUN apt-get update && \
+    apt-get install -y gettext && \
+    rm -rf /var/lib/apt/lists/*
+
 ADD requirements.txt /code/
 RUN pip install -r requirements.txt
 
