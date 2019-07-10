@@ -267,6 +267,10 @@ Finally, after all the old version 1 messages have been dropped (by log compacti
 Changelog
 =========
 
+0.3.1
+------------------
+- Internationalization
+
 0.3.0
 ------------------
 - In KinesisOffset model, track the AWS region for a stream. This allows a single database to subscribe to multiple streams in different regions, even it they have the same name.
