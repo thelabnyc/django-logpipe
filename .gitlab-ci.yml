@@ -25,25 +25,25 @@ test_python35:
   image: python:3.5
   script:
     - pip install tox
-    - tox -e 'py35-django{111,200,210,220}'
+    - tox -e 'py35-django{111,200,210,220}-drf{39,310}'
 
 test_python36:
   stage: test
   image: python:3.6
   script:
     - pip install tox
-    - tox -e 'py36-django{111,200,210,220}'
+    - tox -e 'py36-django{111,200,210,220}-drf{39,310}'
 
 test_python37:
   stage: test
   image: python:3.7
   script:
     - pip install tox
-    - tox -e 'py37-django{200,210,220}'
+    - tox -e 'py37-django{200,210,220}-drf{39,310}'
 
 test_pypy35:
   stage: test
   image: pypy:3-5
   script:
     - pip install tox
-    - tox -e 'pypy3-django{111,200,210,220}'
+    - tox -e 'pypy3-django{111,200,210,220}-drf{39,310}'
