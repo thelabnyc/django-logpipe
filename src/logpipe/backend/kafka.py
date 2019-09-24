@@ -88,7 +88,10 @@ class Consumer(object):
         p = []
         partitions = self.client.partitions_for_topic(self.topic_name)
         if not partitions:
-            raise MissingTopicError('Could not find topic %s. Does it exist?' % self.topic_name)
+            self.client.topics()  # populates cache
+            partitions = self.client.partitions_for_topic(self.topic_name)
+            if not partitions:
+                raise MissingTopicError('Could not find topic %s. Does it exist?' % self.topic_name)
         for partition in partitions:
             tp = kafka.TopicPartition(self.topic_name, partition=partition)
             p.append(tp)
