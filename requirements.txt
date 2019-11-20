@@ -41,7 +41,7 @@ pyflakes==2.0.0
 python-dateutil==2.7.5
 python-jose==2.0.2
 pytz==2018.7
-PyYAML==3.13
+PyYAML==5.1
 requests==2.20.1
 responses==0.10.4
 s3transfer==0.1.13
