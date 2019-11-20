@@ -52,6 +52,6 @@ urllib3==1.24.1
 versiontag==1.2.0
 virtualenv==16.1.0
 websocket-client==0.54.0
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 wrapt==1.10.11
 xmltodict==0.11.0
