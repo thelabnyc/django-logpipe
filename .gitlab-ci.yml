@@ -39,14 +39,14 @@ test_python37:
   image: python:3.7
   script:
     - pip install tox
-    - tox -e 'py37-django{200,220}-drf{39,310}'
+    - tox -e 'py37-django{220}-drf{39,310}'
 
 test_python38:
   stage: test
   image: python:3.8
   script:
     - pip install tox
-    - tox -e 'py38-django{200,220}-drf{39,310}'
+    - tox -e 'py38-django{220}-drf{39,310}'
 
 test_pypy35:
   stage: test
