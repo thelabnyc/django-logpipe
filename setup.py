@@ -19,21 +19,21 @@ install_requires = [
 
 extras_require = {
     'development': [
-        'flake8>=3.3.0',
-        'moto>=1.3.6,<1.3.7',
-        'boto3>=1.6.16,<1.8',
-        'psycopg2cffi>=2.7.7',
-        'tox>=2.7.0',
-        'versiontag>=1.2.0',
+        'flake8',
+        'moto',
+        'boto3',
+        'psycopg2cffi',
+        'tox',
+        'versiontag',
     ],
     'kafka': [
-        'kafka-python>=1.4.4',
+        'kafka-python',
     ],
     'kinesis': [
-        'boto3>=1.6.16',
+        'boto3',
     ],
     'msgpack': [
-        'msgpack-python>=0.4.8',
+        'msgpack-python',
     ],
 }
 
