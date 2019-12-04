@@ -20,13 +20,6 @@ include:
   - project: thelabnyc/gitlab-ci-templates
     file: /ci/sast.gitlab-ci.yml
 
-test_python35:
-  stage: test
-  image: python:3.5
-  script:
-    - pip install tox
-    - tox -e 'py35-django{111,220,300}-drf{310}'
-
 test_python36:
   stage: test
   image: python:3.6
@@ -48,9 +41,9 @@ test_python38:
     - pip install tox
     - tox -e 'py38-django{220,300}-drf{310}'
 
-test_pypy35:
+test_pypy3:
   stage: test
-  image: pypy:3-5
+  image: pypy:3
   script:
     - pip install tox
     - tox -e 'pypy3-django{111,220,300}-drf{310}'
