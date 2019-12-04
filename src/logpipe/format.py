@@ -1,4 +1,4 @@
-from django.utils.six import BytesIO
+from io import BytesIO
 from .exceptions import UnknownFormatError
 
 _delim = b':'

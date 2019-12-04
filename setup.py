@@ -13,7 +13,7 @@ packages = find_packages('src')
 
 install_requires = [
     'Django>=1.11',
-    'djangorestframework>=3.9',
+    'djangorestframework>=3.10',
     'lru-dict>=1.1.6',
 ]
 
