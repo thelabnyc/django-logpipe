@@ -9,6 +9,8 @@ services:
 
   postgres:
     image: postgres:latest
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
 
   test:
     build: .
