@@ -267,6 +267,10 @@ Finally, after all the old version 1 messages have been dropped (by log compacti
 Changelog
 =========
 
+1.0.0
+------------------
+- No changes.
+
 0.3.2
 ------------------
 - Fix compatibility issue with Django 3.0
