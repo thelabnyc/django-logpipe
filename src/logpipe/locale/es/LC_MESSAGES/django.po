@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-26 20:44+0000\n"
+"POT-Creation-Date: 2020-04-14 20:31+0000\n"
 "PO-Revision-Date: 2019-06-24 17:55-0400\n"
 "Last-Translator: Craig Weber <craig@crgwbr.com>\n"
 "Language-Team: \n"
@@ -26,38 +26,38 @@ msgstr "LogPipe"
 #. Translators: Internal Model Field Name
 #: logpipe/models.py:8
 msgid "Kafka Topic Name"
-msgstr ""
+msgstr "Nombre del tema de Kafka"
 
 #. Translators: Interal Model Field Help Text
 #: logpipe/models.py:10
 msgid "The Kafka topic name"
-msgstr ""
+msgstr "El nombre del tema de Kafka"
 
 #. Translators: Internal Model Field Name
 #: logpipe/models.py:14
 msgid "Kafka Partition ID"
-msgstr ""
+msgstr "ID de partición Kafka"
 
 #. Translators: Interal Model Field Help Text
 #: logpipe/models.py:16
 msgid "The Kafka partition identifier"
-msgstr ""
+msgstr "El identificador de partición Kafka"
 
 #. Translators: Internal Model Field Name
 #. Translators: Internal Model Name (singular)
 #: logpipe/models.py:19 logpipe/models.py:26
 msgid "Kafka Offset"
-msgstr ""
+msgstr "Kafka Offset"
 
 #. Translators: Interal Model Field Help Text
 #: logpipe/models.py:21
 msgid "The current offset in the Kafka partition"
-msgstr ""
+msgstr "El desplazamiento actual en la partición Kafka"
 
 #. Translators: Internal Model Name (plural)
 #: logpipe/models.py:28
 msgid "Kafka Offsets"
-msgstr ""
+msgstr "Kafka Offsets"
 
 #. Translators: AWS Region Name
 #: logpipe/models.py:40
@@ -152,44 +152,44 @@ msgstr "Regiones AWS"
 #. Translators: Interal Model Field Help Text
 #: logpipe/models.py:78
 msgid "The Kinesis stream region name"
-msgstr ""
+msgstr "El nombre de la región del arroyo Kinesis"
 
 #. Translators: Internal Model Field Name
 #: logpipe/models.py:84
 msgid "Kinesis Stream Name"
-msgstr ""
+msgstr "Nombre de Kinesis Stream"
 
 #. Translators: Interal Model Field Help Text
 #: logpipe/models.py:86
 msgid "The Kinesis stream name"
-msgstr ""
+msgstr "El nombre de la secuencia de Kinesis"
 
 #. Translators: Internal Model Field Name
 #: logpipe/models.py:90
 msgid "Kinesis Shard ID"
-msgstr ""
+msgstr "ID de fragmento de kinesis"
 
 #. Translators: Interal Model Field Help Text
 #: logpipe/models.py:92
 msgid "The Kinesis shard ID"
-msgstr ""
+msgstr "La identificación del fragmento de Kinesis"
 
 #. Translators: Internal Model Field Name
 #: logpipe/models.py:96
 msgid "Kinesis Sequence Number"
-msgstr ""
+msgstr "Número de secuencia de kinesis"
 
 #. Translators: Interal Model Field Help Text
 #: logpipe/models.py:98
 msgid "The current sequence number in the Kinesis shard"
-msgstr ""
+msgstr "El número de secuencia actual en el fragmento de Kinesis"
 
 #. Translators: Internal Model Name (singular)
 #: logpipe/models.py:103
 msgid "AWS Kinesis Offset"
-msgstr ""
+msgstr "AWS Kinesis Offset"
 
 #. Translators: Internal Model Name (plural)
 #: logpipe/models.py:105
 msgid "AWS Kinesis Offsets"
-msgstr ""
+msgstr "AWS Kinesis Offsets"
