@@ -3,6 +3,8 @@ variables:
   ADVERTISED_PORT: '9092'
   AUTO_CREATE_TOPICS: 'true'
   POSTGRES_HOST_AUTH_METHOD: 'trust'
+  # Set SAST / DAST testing version
+  SP_VERSION: 11-10-stable
 
 stages:
   - lint
