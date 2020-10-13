@@ -3,8 +3,6 @@ variables:
   ADVERTISED_PORT: '9092'
   AUTO_CREATE_TOPICS: 'true'
   POSTGRES_HOST_AUTH_METHOD: 'trust'
-  # Set SAST / DAST testing version
-  SP_VERSION: 11-10-stable
 
 stages:
   - lint
@@ -18,10 +16,6 @@ cache:
   key: "$CI_PROJECT_NAME"
   paths:
     - $HOME/.cache/pip
-
-include:
-  - project: thelabnyc/gitlab-ci-templates
-    file: /ci/sast.gitlab-ci.yml
 
 test_python36:
   stage: test
