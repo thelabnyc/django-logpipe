@@ -8,7 +8,7 @@ certifi==2019.9.11
 cffi==1.13.2
 cfn-lint==0.25.2
 chardet==3.0.4
-cryptography==2.8
+cryptography==3.2
 Django==2.2.7
 -e git+git@gitlab.com:thelabnyc/django-logpipe.git@19903ca7e940ef3a471c5505afdc1686d20278bc#egg=django_logpipe
 djangorestframework==3.10.3
