@@ -12,7 +12,7 @@ from versiontag import get_version, cache_git_tag  # NOQA
 packages = find_packages('src')
 
 install_requires = [
-    'Django>=1.11',
+    'Django>=2.2',
     'djangorestframework>=3.10',
     'lru-dict>=1.1.6',
 ]
@@ -59,17 +59,12 @@ setup(
         'Environment :: Console',
         'Environment :: Web Environment',
         'Framework :: Django',
-        'Framework :: Django :: 1.11',
-        'Framework :: Django :: 2.0',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: ISC License (ISCL)',
         'Operating System :: Unix',
         'Operating System :: MacOS :: MacOS X',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
     ],
     author='Craig Weber',
     author_email='crgwbr@gmail.com',

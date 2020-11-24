@@ -5,7 +5,6 @@ variables:
   POSTGRES_HOST_AUTH_METHOD: 'trust'
 
 stages:
-  - lint
   - test
 
 services:
@@ -17,30 +16,22 @@ cache:
   paths:
     - $HOME/.cache/pip
 
-test_python36:
+test:
   stage: test
-  image: python:3.6
+  image: $IMAGE
   script:
     - pip install tox
-    - tox -e 'py36-django{111,220,300}-drf{310}'
+    - tox -e $TOX_ENVS
+  parallel:
+    matrix:
+      - IMAGE: python:3.7
+        TOX_ENVS: py37-django{220,300}-drf{310,311,312},py37-django{310}-drf{311,312}
 
-test_python37:
-  stage: test
-  image: python:3.7
-  script:
-    - pip install tox
-    - tox -e 'py37-django{220,300}-drf{310}'
+      - IMAGE: python:3.8
+        TOX_ENVS: py38-django{220,300}-drf{310,311,312},py38-django{310}-drf{311,312}
 
-test_python38:
-  stage: test
-  image: python:3.8
-  script:
-    - pip install tox
-    - tox -e 'py38-django{220,300}-drf{310}'
+      - IMAGE: python:3.9
+        TOX_ENVS: py39-django{220,300}-drf{310,311,312},py39-django{310}-drf{311,312}
 
-test_pypy3:
-  stage: test
-  image: pypy:3
-  script:
-    - pip install tox
-    - tox -e 'pypy3-django{111,220,300}-drf{310}'
+      - IMAGE: pypy:3
+        TOX_ENVS: pypy3-django{220,300}-drf{310,311,312},pypy3-django{310}-drf{311,312}
