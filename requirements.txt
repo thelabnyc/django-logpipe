@@ -37,7 +37,7 @@ msgpack-python==0.5.6
 packaging==19.2
 pluggy==0.13.1
 psycopg2cffi==2.8.1
-py==1.8.0
+py==1.10.0
 pyasn1==0.4.8
 pycodestyle==2.5.0
 pycparser==2.19
