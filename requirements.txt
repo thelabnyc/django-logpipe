@@ -57,7 +57,7 @@ sqlparse==0.3.0
 sshpubkeys==3.1.0
 toml==0.10.0
 tox==3.14.1
-urllib3==1.25.7
+urllib3==1.25.8
 versiontag==1.2.0
 virtualenv==16.7.7
 websocket-client==0.56.0
