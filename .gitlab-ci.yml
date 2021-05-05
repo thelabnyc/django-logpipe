@@ -6,6 +6,7 @@ variables:
 
 stages:
   - test
+  - release
 
 services:
   - spotify/kafka
@@ -25,13 +26,47 @@ test:
   parallel:
     matrix:
       - IMAGE: python:3.7
-        TOX_ENVS: py37-django{220,300}-drf{310,311,312},py37-django{310}-drf{311,312}
+        TOX_ENVS: py37-django{220,300}-drf{310,311,312},py37-django{310,320}-drf{311,312}
 
       - IMAGE: python:3.8
-        TOX_ENVS: py38-django{220,300}-drf{310,311,312},py38-django{310}-drf{311,312}
+        TOX_ENVS: py38-django{220,300}-drf{310,311,312},py38-django{310,320}-drf{311,312}
 
       - IMAGE: python:3.9
-        TOX_ENVS: py39-django{220,300}-drf{310,311,312},py39-django{310}-drf{311,312}
+        TOX_ENVS: py39-django{220,300}-drf{310,311,312},py39-django{310,320}-drf{311,312}
 
       - IMAGE: pypy:3
-        TOX_ENVS: pypy3-django{220,300}-drf{310,311,312},pypy3-django{310}-drf{311,312}
+        TOX_ENVS: pypy3-django{220,300}-drf{310,311,312},pypy3-django{310,320}-drf{311,312}
+
+publish_pkg:
+  image: python:3.9
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
+  script:
+    - pip install twine
+    - python setup.py sdist bdist_wheel
+    # Publish to PyPI
+    - export TWINE_USERNAME=__token__
+    - export TWINE_PASSWORD=${PYPI_TOKEN}
+    - python -m twine upload
+        --repository-url https://upload.pypi.org/legacy/
+        dist/*
+    # Publish to Gitlab
+    - export TWINE_USERNAME=gitlab-ci-token
+    - export TWINE_PASSWORD=${CI_JOB_TOKEN}
+    - python -m twine upload
+        --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi
+        dist/*
+
+publish_gitlab_release:
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  stage: release
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
+  script:
+    - echo 'release job'
+  release:
+    name: 'Release $CI_COMMIT_TAG'
+    description: 'Release $CI_COMMIT_TAG. Tagged by $GITLAB_USER_LOGIN'
+    tag_name: '$CI_COMMIT_TAG'
+    ref: '$CI_COMMIT_TAG'
