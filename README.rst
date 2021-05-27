@@ -267,6 +267,11 @@ Finally, after all the old version 1 messages have been dropped (by log compacti
 Changelog
 =========
 
+1.1.0
+------------------
+- Add Python 3.9 to test suite
+- Add Django 3.2 to test suite
+
 1.0.0
 ------------------
 - No changes.
