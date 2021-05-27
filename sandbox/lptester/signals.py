@@ -1,3 +1,4 @@
 import django.dispatch
 
-person_altered = django.dispatch.Signal(providing_args=["person"])
+# providing_args=["person"]
+person_altered = django.dispatch.Signal()
