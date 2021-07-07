@@ -18,42 +18,53 @@ class KinesisBase(object):
     def client(self):
         if not self._client:
             kwargs = self._get_client_config()
-            self._client = boto3.client('kinesis', **kwargs)
+            self._client = boto3.client("kinesis", **kwargs)
         return self._client
-
 
     def _get_client_config(self):
         return {
-            'region_name': settings.get_aws_region(),
+            "region_name": settings.get_aws_region(),
         }
-
 
 
 class ModelOffsetStore(object):
     def commit(self, consumer, message):
-        KinesisOffset = apps.get_model(app_label='logpipe', model_name='KinesisOffset')
+        KinesisOffset = apps.get_model(app_label="logpipe", model_name="KinesisOffset")
         region = settings.get_aws_region()
-        logger.debug('Commit offset "%s" for region "%s", stream "%s", shard "%s" to %s' % (
-            message.offset, region, message.topic, message.partition, self.__class__.__name__))
+        logger.debug(
+            'Commit offset "%s" for region "%s", stream "%s", shard "%s" to %s'
+            % (
+                message.offset,
+                region,
+                message.topic,
+                message.partition,
+                self.__class__.__name__,
+            )
+        )
         obj, created = KinesisOffset.objects.get_or_create(
-            region=region,
-            stream=message.topic,
-            shard=message.partition)
+            region=region, stream=message.topic, shard=message.partition
+        )
         obj.sequence_number = message.offset
         obj.save()
 
-
     def seek(self, consumer, stream, shard):
-        KinesisOffset = apps.get_model(app_label='logpipe', model_name='KinesisOffset')
+        KinesisOffset = apps.get_model(app_label="logpipe", model_name="KinesisOffset")
         region = settings.get_aws_region()
         try:
-            obj = KinesisOffset.objects.get(region=settings.get_aws_region(), stream=stream, shard=shard)
-            logger.debug('Seeking to offset "%s" on region "%s", stream "%s", partition "%s"' % (obj.sequence_number, region, stream, shard))
+            obj = KinesisOffset.objects.get(
+                region=settings.get_aws_region(), stream=stream, shard=shard
+            )
+            logger.debug(
+                'Seeking to offset "%s" on region "%s", stream "%s", partition "%s"'
+                % (obj.sequence_number, region, stream, shard)
+            )
             consumer.seek_to_sequence_number(shard, obj.sequence_number)
         except KinesisOffset.DoesNotExist:
-            logger.debug('Seeking to beginning of region "%s", stream "%s", partition "%s"' % (region, stream, shard))
+            logger.debug(
+                'Seeking to beginning of region "%s", stream "%s", partition "%s"'
+                % (region, stream, shard)
+            )
             consumer.seek_to_sequence_number(shard, None)
-
 
 
 class Consumer(KinesisBase):
@@ -66,31 +77,30 @@ class Consumer(KinesisBase):
         self.shard_iters = {}
 
         shards = self._list_shard_ids()
-        logger.debug('Found {} kinesis shards.'.format(len(shards)))
+        logger.debug("Found {} kinesis shards.".format(len(shards)))
         backend = get_offset_backend()
         for shard in shards:
             self.shards.append(shard)
             backend.seek(self, self.topic_name, shard)
-
 
     def seek_to_sequence_number(self, shard, sequence_number=None):
         if sequence_number is None:
             resp = self.client.get_shard_iterator(
                 StreamName=self.topic_name,
                 ShardId=shard,
-                ShardIteratorType='TRIM_HORIZON')
+                ShardIteratorType="TRIM_HORIZON",
+            )
         else:
             resp = self.client.get_shard_iterator(
                 StreamName=self.topic_name,
                 ShardId=shard,
-                ShardIteratorType='AFTER_SEQUENCE_NUMBER',
-                StartingSequenceNumber=sequence_number)
-        self.shard_iters[shard] = resp['ShardIterator']
-
+                ShardIteratorType="AFTER_SEQUENCE_NUMBER",
+                StartingSequenceNumber=sequence_number,
+            )
+        self.shard_iters[shard] = resp["ShardIterator"]
 
     def __iter__(self):
         return self
-
 
     def __next__(self):
         # Try and load records. Keep trying until either (1) we have some records or (2) current_lag drops to 0
@@ -111,7 +121,6 @@ class Consumer(KinesisBase):
         # Return the left most record in the queue
         return self.records.popleft()
 
-
     def _load_next_page(self):
         # Load a page from the left-most shard in the queue
         try:
@@ -125,93 +134,111 @@ class Consumer(KinesisBase):
             return 0
 
         # Fetch the records from Kinesis
-        logger.debug('Loading page of records from {}.{}'.format(self.topic_name, shard))
-        fetch_limit = settings.get('KINESIS_FETCH_LIMIT', 25)
+        logger.debug(
+            "Loading page of records from {}.{}".format(self.topic_name, shard)
+        )
+        fetch_limit = settings.get("KINESIS_FETCH_LIMIT", 25)
         response = self._get_records(shard_iter, fetch_limit)
         if response is None:
             return 0
 
         # This default value is mostly just for testing with Moto. Real Kinesis should always return a value for MillisBehindLatest.
-        num_records = len(response['Records'])
-        if 'MillisBehindLatest' in response:
-            current_stream_lag = response['MillisBehindLatest']
+        num_records = len(response["Records"])
+        if "MillisBehindLatest" in response:
+            current_stream_lag = response["MillisBehindLatest"]
         else:
             current_stream_lag = 0 if num_records == 0 else 1
-        logger.debug('Loaded {} records from {}.{}. Currently {}ms behind stream head.'.format(num_records, self.topic_name, shard, current_stream_lag))
+        logger.debug(
+            "Loaded {} records from {}.{}. Currently {}ms behind stream head.".format(
+                num_records, self.topic_name, shard, current_stream_lag
+            )
+        )
 
         # Add the records page into the queue
         timestamp = (time.time() * 1000) - current_stream_lag
-        for r in response['Records']:
+        for r in response["Records"]:
             record = Record(
                 topic=self.topic_name,
                 partition=shard,
-                offset=r['SequenceNumber'],
+                offset=r["SequenceNumber"],
                 timestamp=timestamp,
-                key=r['PartitionKey'],
-                value=r['Data'])
+                key=r["PartitionKey"],
+                value=r["Data"],
+            )
             self.records.append(record)
 
         # Add the shard back to the right of the queue and save the shard iterator for next time we need
         # to get records from this shard. If NextShardIterator is None, the shard has been closed and
         # we should remove it from the pool.
-        if response.get('NextShardIterator', None):
-            self.shard_iters[shard] = response['NextShardIterator']
+        if response.get("NextShardIterator", None):
+            self.shard_iters[shard] = response["NextShardIterator"]
             self.shards.append(shard)
         else:
-            logger.info('Shard {}.{} has been closed. Removing it from the fetch pool.'.format(self.topic_name, shard))
+            logger.info(
+                "Shard {}.{} has been closed. Removing it from the fetch pool.".format(
+                    self.topic_name, shard
+                )
+            )
 
         return current_stream_lag
-
 
     def _get_records(self, shard_iter, fetch_limit, retries=1):
         i = 0
         while i <= retries:
             try:
-                response = self.client.get_records(ShardIterator=shard_iter, Limit=fetch_limit)
+                response = self.client.get_records(
+                    ShardIterator=shard_iter, Limit=fetch_limit
+                )
                 return response
             except ClientError as e:
-                if e.response['Error']['Code'] == 'ProvisionedThroughputExceededException':
-                    logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
+                if (
+                    e.response["Error"]["Code"]
+                    == "ProvisionedThroughputExceededException"
+                ):
+                    logger.warning(
+                        "Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds."
+                    )
                     time.sleep(5)
                 else:
-                    logger.warning("Received {} from AWS API: {}".format(e.response['Error']['Code'], e.response['Error']['Message']))
+                    logger.warning(
+                        "Received {} from AWS API: {}".format(
+                            e.response["Error"]["Code"], e.response["Error"]["Message"]
+                        )
+                    )
             i += 1
-        logger.warning("After {} attempts, couldn't get records from Kinesis. Giving up.".format(i))
+        logger.warning(
+            "After {} attempts, couldn't get records from Kinesis. Giving up.".format(i)
+        )
         return None
-
 
     def _list_shard_ids(self):
         resp = self.client.describe_stream(StreamName=self.topic_name)
-        return [shard['ShardId'] for shard in resp['StreamDescription']['Shards']]
-
+        return [shard["ShardId"] for shard in resp["StreamDescription"]["Shards"]]
 
 
 class Producer(KinesisBase):
-    _last_sequence_numbers = LRU(settings.get('KINESIS_SEQ_NUM_CACHE_SIZE', 1000))
+    _last_sequence_numbers = LRU(settings.get("KINESIS_SEQ_NUM_CACHE_SIZE", 1000))
 
     def send(self, topic_name, key, value):
         kwargs = {
-            'StreamName': topic_name,
-            'Data': value,
-            'PartitionKey': key,
+            "StreamName": topic_name,
+            "Data": value,
+            "PartitionKey": key,
         }
 
         if topic_name not in self._last_sequence_numbers:
             self._last_sequence_numbers[topic_name] = {}
         last_seq_num = self._last_sequence_numbers[topic_name].get(key)
         if last_seq_num:
-            kwargs['SequenceNumberForOrdering'] = last_seq_num
+            kwargs["SequenceNumberForOrdering"] = last_seq_num
 
         metadata = self._send_and_retry(kwargs)
 
-        shard_id = metadata['ShardId']
-        seq_num = str(metadata['SequenceNumber'])
+        shard_id = metadata["ShardId"]
+        seq_num = str(metadata["SequenceNumber"])
         self._last_sequence_numbers[topic_name][key] = seq_num
 
-        return RecordMetadata(
-            topic=topic_name,
-            partition=shard_id,
-            offset=seq_num)
+        return RecordMetadata(topic=topic_name, partition=shard_id, offset=seq_num)
 
     def _send_and_retry(self, data, retries=1):
         i = 0
@@ -220,10 +247,21 @@ class Producer(KinesisBase):
                 metadata = self.client.put_record(**data)
                 return metadata
             except ClientError as e:
-                if e.response['Error']['Code'] == 'ProvisionedThroughputExceededException':
-                    logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
+                if (
+                    e.response["Error"]["Code"]
+                    == "ProvisionedThroughputExceededException"
+                ):
+                    logger.warning(
+                        "Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds."
+                    )
                     time.sleep(5)
                 else:
-                    logger.warning("Received {} from AWS API: {}".format(e.response['Error']['Code'], e.response['Error']['Message']))
+                    logger.warning(
+                        "Received {} from AWS API: {}".format(
+                            e.response["Error"]["Code"], e.response["Error"]["Message"]
+                        )
+                    )
             i += 1
-        logger.warning("After {} attempts, couldn't send message to Kinesis. Giving up.".format(i))
+        logger.warning(
+            "After {} attempts, couldn't send message to Kinesis. Giving up.".format(i)
+        )

@@ -9,24 +9,31 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Offset',
+            name="Offset",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('topic', models.CharField(max_length=200)),
-                ('partition', models.PositiveIntegerField()),
-                ('offset', models.PositiveIntegerField(default=0)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("topic", models.CharField(max_length=200)),
+                ("partition", models.PositiveIntegerField()),
+                ("offset", models.PositiveIntegerField(default=0)),
             ],
             options={
-                'ordering': ('topic', 'partition', 'offset'),
+                "ordering": ("topic", "partition", "offset"),
             },
         ),
         migrations.AlterUniqueTogether(
-            name='offset',
-            unique_together=set([('topic', 'partition')]),
+            name="offset",
+            unique_together=set([("topic", "partition")]),
         ),
     ]

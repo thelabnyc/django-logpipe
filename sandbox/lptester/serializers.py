@@ -4,12 +4,11 @@ from . import models
 
 class PersonSerializer(serializers.ModelSerializer):
     VERSION = 1
-    KEY_FIELD = 'uuid'
+    KEY_FIELD = "uuid"
 
     class Meta:
         model = models.Person
-        fields = ['uuid', 'first_name', 'last_name']
-
+        fields = ["uuid", "first_name", "last_name"]
 
     @classmethod
     def lookup_instance(cls, uuid, **kwargs):

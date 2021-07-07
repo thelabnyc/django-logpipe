@@ -16,7 +16,6 @@ class Producer(object):
         self.topic_name = topic_name
         self.serializer_class = serializer_class
 
-
     def send(self, instance, renderer=None):
         # Instantiate the serialize
         ser = self.serializer_class(instance=instance)
@@ -26,21 +25,26 @@ class Producer(object):
         version = self.serializer_class.VERSION
 
         # Get the message's partition key
-        key_field = getattr(self.serializer_class, 'KEY_FIELD', None)
+        key_field = getattr(self.serializer_class, "KEY_FIELD", None)
         key = None
         if key_field:
             key = str(ser.data[key_field])
 
         # Render everything into a string
-        renderer = settings.get('DEFAULT_FORMAT', FORMAT_JSON)
+        renderer = settings.get("DEFAULT_FORMAT", FORMAT_JSON)
         body = {
-            'type': message_type,
-            'version': version,
-            'message': ser.data,
+            "type": message_type,
+            "version": version,
+            "message": ser.data,
         }
         serialized_data = render(renderer, body)
 
         # Send the message data into the backend
-        record_metadata = self.client.send(self.topic_name, key=key, value=serialized_data)
-        logger.debug('Sent message with type "%s", key "%s" to topic "%s"' % (message_type, key, self.topic_name))
+        record_metadata = self.client.send(
+            self.topic_name, key=key, value=serialized_data
+        )
+        logger.debug(
+            'Sent message with type "%s", key "%s" to topic "%s"'
+            % (message_type, key, self.topic_name)
+        )
         return record_metadata

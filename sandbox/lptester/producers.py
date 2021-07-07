@@ -3,7 +3,11 @@ from logpipe import Producer
 from . import constants, signals, models, serializers
 
 
-@receiver(signals.person_altered, sender=models.Person, dispatch_uid="send_person_altered_message")
+@receiver(
+    signals.person_altered,
+    sender=models.Person,
+    dispatch_uid="send_person_altered_message",
+)
 def send_person_altered_message(sender, person, **kwargs):
     producer = Producer(constants.TOPIC_PEOPLE, serializers.PersonSerializer)
     producer.send(person)

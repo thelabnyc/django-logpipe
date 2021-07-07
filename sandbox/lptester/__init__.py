@@ -1,1 +1,1 @@
-default_app_config = 'lptester.apps.LPTesterConfig'
+default_app_config = "lptester.apps.LPTesterConfig"

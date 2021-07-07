@@ -9,10 +9,10 @@ except ImportError as e:
 
 
 class MsgPackRenderer(renderers.BaseRenderer):
-    media_type = 'application/msgpack'
-    format = 'msgpack'
+    media_type = "application/msgpack"
+    format = "msgpack"
     charset = None
-    render_style = 'binary'
+    render_style = "binary"
 
     def render(self, data, media_type=None, renderer_context=None):
         if not msgpack:
@@ -21,12 +21,12 @@ class MsgPackRenderer(renderers.BaseRenderer):
 
 
 class MsgPackParser(parsers.BaseParser):
-    media_type = 'application/msgpack'
+    media_type = "application/msgpack"
 
     def parse(self, stream, media_type=None, parser_context=None):
         if not msgpack:
             raise _import_error
-        return msgpack.unpack(stream, use_list=False, encoding='utf-8')
+        return msgpack.unpack(stream, use_list=False, encoding="utf-8")
 
 
-__all__ = ['MsgPackRenderer', 'MsgPackParser']
+__all__ = ["MsgPackRenderer", "MsgPackParser"]
