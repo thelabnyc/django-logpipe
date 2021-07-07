@@ -8,39 +8,65 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('logpipe', '0002_auto_20170427_1451'),
+        ("logpipe", "0002_auto_20170427_1451"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='KinesisOffset',
+            name="KinesisOffset",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('stream', models.CharField(help_text='The Kinesis stream name', max_length=200)),
-                ('shard', models.CharField(help_text='The Kinesis shard ID', max_length=20)),
-                ('sequence_number', models.CharField(help_text='The current sequence number in the Kinesis shard', max_length=20)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "stream",
+                    models.CharField(
+                        help_text="The Kinesis stream name", max_length=200
+                    ),
+                ),
+                (
+                    "shard",
+                    models.CharField(help_text="The Kinesis shard ID", max_length=20),
+                ),
+                (
+                    "sequence_number",
+                    models.CharField(
+                        help_text="The current sequence number in the Kinesis shard",
+                        max_length=20,
+                    ),
+                ),
             ],
             options={
-                'ordering': ('stream', 'shard', 'sequence_number'),
+                "ordering": ("stream", "shard", "sequence_number"),
             },
         ),
         migrations.AlterField(
-            model_name='kafkaoffset',
-            name='offset',
-            field=models.PositiveIntegerField(default=0, help_text='The current offset in the Kafka partition'),
+            model_name="kafkaoffset",
+            name="offset",
+            field=models.PositiveIntegerField(
+                default=0, help_text="The current offset in the Kafka partition"
+            ),
         ),
         migrations.AlterField(
-            model_name='kafkaoffset',
-            name='partition',
-            field=models.PositiveIntegerField(help_text='The Kafka partition identifier'),
+            model_name="kafkaoffset",
+            name="partition",
+            field=models.PositiveIntegerField(
+                help_text="The Kafka partition identifier"
+            ),
         ),
         migrations.AlterField(
-            model_name='kafkaoffset',
-            name='topic',
-            field=models.CharField(help_text='The Kafka topic name', max_length=200),
+            model_name="kafkaoffset",
+            name="topic",
+            field=models.CharField(help_text="The Kafka topic name", max_length=200),
         ),
         migrations.AlterUniqueTogether(
-            name='kinesisoffset',
-            unique_together=set([('stream', 'shard')]),
+            name="kinesisoffset",
+            unique_together=set([("stream", "shard")]),
         ),
     ]

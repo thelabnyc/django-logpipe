@@ -17,6 +17,18 @@ cache:
   paths:
     - $HOME/.cache/pip
 
+precommit:
+  stage: test
+  image: python:3
+  variables:
+    PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
+  script:
+    - pip3 install pre-commit
+    - pre-commit run --all-files
+  cache:
+    paths:
+      - ${PRE_COMMIT_HOME}
+
 test:
   stage: test
   image: $IMAGE

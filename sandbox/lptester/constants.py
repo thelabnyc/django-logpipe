@@ -1,1 +1,1 @@
-TOPIC_PEOPLE = 'people'
+TOPIC_PEOPLE = "people"

@@ -8,9 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('logpipe', '0001_initial'),
+        ("logpipe", "0001_initial"),
     ]
 
-    operations = [
-        migrations.RenameModel("Offset", "KafkaOffset")
-    ]
+    operations = [migrations.RenameModel("Offset", "KafkaOffset")]
