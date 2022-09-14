@@ -12,8 +12,8 @@ from versiontag import get_version, cache_git_tag  # NOQA
 packages = find_packages("src")
 
 install_requires = [
-    "Django>=2.2",
-    "djangorestframework>=3.10",
+    "Django>=3.2",
+    "djangorestframework>=3.11",
     "lru-dict>=1.1.6",
 ]
 
@@ -22,7 +22,7 @@ extras_require = {
         "flake8",
         "moto",
         "boto3",
-        "psycopg2cffi",
+        "psycopg2-binary",
         "tox",
         "versiontag",
     ],

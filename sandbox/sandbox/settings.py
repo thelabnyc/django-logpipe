@@ -1,8 +1,5 @@
 import os
 from django.utils.translation import gettext_lazy as _
-from psycopg2cffi import compat
-
-compat.register()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
