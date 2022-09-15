@@ -10,7 +10,6 @@ from . import format, settings
 import logging
 
 
-default_app_config = "logpipe.config.LogpipeConfig"
 logger = logging.getLogger(__name__)
 
 
