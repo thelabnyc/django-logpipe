@@ -25,6 +25,7 @@ extras_require = {
         "psycopg2-binary",
         "tox",
         "versiontag",
+        "pytz",
     ],
     "kafka": [
         "kafka-python",
