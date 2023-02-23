@@ -17,7 +17,7 @@ ecdsa==0.14.1
 entrypoints==0.3
 filelock==3.0.12
 flake8==3.7.9
-future==0.18.2
+future==0.18.3
 idna==2.8
 Jinja2==2.10.3
 jmespath==0.9.4
