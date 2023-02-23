@@ -37,9 +37,9 @@ test:
     - tox --skip-missing-interpreters
   parallel:
     matrix:
-      - IMAGE: python:3.8
       - IMAGE: python:3.9
       - IMAGE: python:3.10
+      - IMAGE: python:3.11
 
 publish_pkg:
   image: python:3
