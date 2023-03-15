@@ -267,6 +267,14 @@ Finally, after all the old version 1 messages have been dropped (by log compacti
 Changelog
 =========
 
+1.2.0
+------------------
+- Add Python 3.10 and 3.11 to test suite.
+- Add Django 4.0 and 4.1 to test suite.
+- Drop Python 3.8 from test suite.
+- Drop Django 2.2, 3.0, and 3.1 from test suite.
+- Added missing DB migrations (though no actual DB changes exist).
+
 1.1.0
 ------------------
 - Add Python 3.9 to test suite
