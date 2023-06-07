@@ -11,10 +11,13 @@ logger = logging.getLogger(__name__)
 class Producer(object):
     _client = None
 
-    def __init__(self, topic_name, serializer_class):
+    def __init__(self, topic_name, serializer_class, producer_id=None):
         self.client = get_producer_backend()
         self.topic_name = topic_name
         self.serializer_class = serializer_class
+        self.producer_id = producer_id
+        if not self.producer_id:
+            self.producer_id = settings.get("PRODUCER_ID", "")
 
     def send(self, instance, renderer=None):
         # Instantiate the serialize
@@ -37,6 +40,8 @@ class Producer(object):
             "version": version,
             "message": ser.data,
         }
+        if self.producer_id:
+            body["producer"] = self.producer_id
         serialized_data = render(renderer, body)
 
         # Send the message data into the backend

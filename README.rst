@@ -53,6 +53,7 @@ Add connection settings to your ``settings.py`` file. If you're using Kafka, thi
         # 'KAFKA_MAX_SEND_RETRIES': 0,
         # 'MIN_MESSAGE_LAG_MS': 0,
         # 'DEFAULT_FORMAT': 'json',
+        # 'PRODUCER_ID': 'my-application-name',
     }
 
 If you're using AWS Kinesis instead of Kafka, it will look like this:
@@ -71,6 +72,7 @@ If you're using AWS Kinesis instead of Kafka, it will look like this:
         # 'KINESIS_SEQ_NUM_CACHE_SIZE': 1000,
         # 'MIN_MESSAGE_LAG_MS': 0,
         # 'DEFAULT_FORMAT': 'json',
+        # 'PRODUCER_ID': 'my-application-name',
     }
 
 Run migrations. This will create the model used to store Kafka log position offsets.::
@@ -137,7 +139,7 @@ The above sample code would result in the following message being sent to the Ka
 
 ::
 
-    json:{"type":"person","version":1,"message":{"first_name":"Joe","last_name":"Schmoe","uuid":"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"}}
+    json:{"type":"person","version":1,"producer":"my-application-name","message":{"first_name":"Joe","last_name":"Schmoe","uuid":"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"}}
 
 
 Receiving Messages
@@ -266,6 +268,10 @@ Finally, after all the old version 1 messages have been dropped (by log compacti
 
 Changelog
 =========
+
+1.3.0
+------------------
+- Add PRODUCER_ID setting to aid in debugging which systems sent which messages, especially when interrogating logged messages.
 
 1.2.0
 ------------------
