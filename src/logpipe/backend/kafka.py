@@ -141,6 +141,7 @@ class Consumer(ConsumerBackend):
             enable_auto_commit=False,
             consumer_timeout_ms=1000,
         )
+        kwargs.update(settings.get("KAFKA_KWARGS", {}))
         kwargs.update(settings.get("KAFKA_CONSUMER_KWARGS", {}))
         kwargs.update(self.client_kwargs)  # type: ignore[typeddict-item]
         return kwargs
@@ -170,7 +171,9 @@ class Producer(ProducerBackend):
     def _get_client_config(self) -> KafkaClientConfig:
         servers = settings.get("KAFKA_BOOTSTRAP_SERVERS")
         retries = settings.get("KAFKA_MAX_SEND_RETRIES", 0)
-        return KafkaClientConfig(
+        kwargs = KafkaClientConfig(
             bootstrap_servers=servers,
             retries=retries,
         )
+        kwargs.update(settings.get("KAFKA_KWARGS", {}))
+        return kwargs
