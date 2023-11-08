@@ -34,11 +34,15 @@ test:
   image: $IMAGE
   script:
     - pip install tox
-    - tox --skip-missing-interpreters
+    - tox
   parallel:
     matrix:
       - IMAGE: python:3.10
+        TOX_SKIP_ENV: "^(?!py310-)"
       - IMAGE: python:3.11
+        TOX_SKIP_ENV: "^(?!py311-)"
+      # - IMAGE: python:3.12
+      #   TOX_SKIP_ENV: "^(?!py312-)"
 
 publish_pkg:
   image: python:3
