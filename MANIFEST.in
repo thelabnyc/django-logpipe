@@ -1,2 +1,0 @@
-include *.txt *.md *.rst
-recursive-include src/logpipe/locale *.po *.mo
