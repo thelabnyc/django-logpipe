@@ -1,5 +1,4 @@
-FROM python:3.11
-ENV PYTHONUNBUFFERED 1
+FROM registry.gitlab.com/thelabnyc/python:py311
 
 RUN mkdir /code
 WORKDIR /code
@@ -9,7 +8,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ADD . /code/
-RUN pip install -e .[development,msgpack,kafka,kinesis]
+RUN poetry install
 
 RUN mkdir /tox
 ENV TOX_WORK_DIR='/tox'
