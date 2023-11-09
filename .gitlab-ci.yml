@@ -31,27 +31,28 @@ precommit:
 
 test:
   stage: test
-  image: $IMAGE
+  image: "registry.gitlab.com/thelabnyc/python:${IMAGE}"
   script:
     - pip install tox
     - tox
+  coverage: '/^TOTAL.+?(\d+\%)$/'
   parallel:
     matrix:
-      - IMAGE: python:3.10
+      - IMAGE: py310
         TOX_SKIP_ENV: "^(?!py310-)"
-      - IMAGE: python:3.11
+      - IMAGE: py311
         TOX_SKIP_ENV: "^(?!py311-)"
-      # - IMAGE: python:3.12
+      # - IMAGE: py312
       #   TOX_SKIP_ENV: "^(?!py312-)"
 
 publish_pkg:
-  image: python:3
+  image: registry.gitlab.com/thelabnyc/python:py311
   stage: release
   rules:
     - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
   script:
     - pip install twine
-    - python setup.py sdist bdist_wheel
+    - poetry build
     # Publish to PyPI
     - export TWINE_USERNAME=__token__
     - export TWINE_PASSWORD=${PYPI_TOKEN}
