@@ -75,6 +75,38 @@ If you're using AWS Kinesis instead of Kafka, it will look like this:
         # 'PRODUCER_ID': 'my-application-name',
     }
 
+If you're need to set any other attributes, you cas use "KAFKA_KWARGS"
+
+For example with Confluent Cloud will look like this:
+
+::
+
+    LOGPIPE = {
+        ...
+        # Optional Settings
+        'KAFKA_KWARGS': {
+            'security_protocol': 'SASL_SSL',
+            'sasl_mechanism': 'PLAIN',
+            'sasl_plain_username': '<api_key>',
+            'sasl_plain_password': '<api_secret>',
+        }
+    }
+
+or with OVHcloud will look like this:
+
+::
+
+    LOGPIPE = {
+        ...
+        # Optional Settings
+        'KAFKA_KWARGS': {
+            'security_protocol': 'SSL',
+            'ssl_cafile': '<ca.pem or ca.certificate.pem>',
+            'ssl_certfile': '<service.cert or access.certificate.pem>',
+            'ssl_keyfile': '<service.key or access.key>',
+        }
+    }
+
 Run migrations. This will create the model used to store Kafka log position offsets.::
 
     $ python manage.py migrate logpipe

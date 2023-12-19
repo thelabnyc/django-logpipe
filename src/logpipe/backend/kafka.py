@@ -115,6 +115,7 @@ class Consumer(object):
             "enable_auto_commit": False,
             "consumer_timeout_ms": 1000,
         }
+        kwargs.update(settings.get("KAFKA_KWARGS", {}))
         kwargs.update(settings.get("KAFKA_CONSUMER_KWARGS", {}))
         kwargs.update(self.client_kwargs)
         kwargs.update(
@@ -145,9 +146,9 @@ class Producer(object):
         )
 
     def _get_client_config(self):
-        servers = settings.get("KAFKA_BOOTSTRAP_SERVERS")
-        retries = settings.get("KAFKA_MAX_SEND_RETRIES", 0)
-        return {
-            "bootstrap_servers": servers,
-            "retries": retries,
+        kwargs = {
+            "bootstrap_servers": settings.get("KAFKA_BOOTSTRAP_SERVERS"),
+            "retries": settings.get("KAFKA_MAX_SEND_RETRIES", 0),
         }
+        kwargs.update(settings.get("KAFKA_KWARGS", {}))
+        return kwargs
