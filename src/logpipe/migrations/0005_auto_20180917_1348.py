@@ -7,7 +7,6 @@ import logpipe.settings
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("logpipe", "0004_auto_20170502_1403"),
     ]
