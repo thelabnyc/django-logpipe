@@ -1,19 +1,21 @@
 from __future__ import annotations
-from typing import Any, TypedDict, NotRequired
-from django.apps import apps
-from ..exceptions import MissingTopicError
-from .. import settings
-from ..abc import (
-    RecordMetadata,
-    Record,
-    ConsumerBackend,
-    ProducerBackend,
-    OffsetStoreBackend,
-)
-from . import get_offset_backend
-import kafka
+
+from typing import Any, NotRequired, TypedDict
 import logging
 
+from django.apps import apps
+import kafka
+
+from .. import settings
+from ..abc import (
+    ConsumerBackend,
+    OffsetStoreBackend,
+    ProducerBackend,
+    Record,
+    RecordMetadata,
+)
+from ..exceptions import MissingTopicError
+from . import get_offset_backend
 
 logger = logging.getLogger(__name__)
 

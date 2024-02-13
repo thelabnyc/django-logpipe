@@ -1,7 +1,8 @@
 from io import BytesIO
-from typing import TypedDict, Any
+from typing import Any, TypedDict
+
+from .abc import Parser, Renderer
 from .exceptions import UnknownFormatError
-from .abc import Renderer, Parser
 
 
 class FormatRegistryEntry(TypedDict):

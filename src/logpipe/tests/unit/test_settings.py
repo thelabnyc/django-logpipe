@@ -1,5 +1,6 @@
-from django.test import TestCase, override_settings
 from django.core.exceptions import ImproperlyConfigured
+from django.test import TestCase, override_settings
+
 from logpipe import settings
 
 

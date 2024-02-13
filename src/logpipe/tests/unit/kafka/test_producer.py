@@ -1,10 +1,11 @@
-from django.test import TestCase, override_settings
-from kafka.consumer.fetcher import ConsumerRecord
 from unittest.mock import MagicMock, patch
-from logpipe import Producer
-from logpipe.tests.common import StateSerializer, StateModel, TOPIC_STATES
 import binascii
 
+from django.test import TestCase, override_settings
+from kafka.consumer.fetcher import ConsumerRecord
+
+from logpipe import Producer
+from logpipe.tests.common import TOPIC_STATES, StateModel, StateSerializer
 
 LOGPIPE = {
     "KAFKA_BOOTSTRAP_SERVERS": ["kafka:9092"],

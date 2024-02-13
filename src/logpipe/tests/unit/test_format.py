@@ -1,9 +1,11 @@
+import pickle
+
 from django.test import TestCase, override_settings
+
 from logpipe.constants import FORMAT_PICKLE
 from logpipe.exceptions import UnknownFormatError
-from logpipe.formats.pickle import PickleRenderer, PickleParser
+from logpipe.formats.pickle import PickleParser, PickleRenderer
 import logpipe.format
-import pickle
 
 
 class JSONFormatTest(TestCase):

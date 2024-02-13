@@ -1,21 +1,22 @@
 from typing import Any, Generator, Iterator
-from django.db import transaction
-from rest_framework import serializers
-from .exceptions import (
-    InvalidMessageError,
-    ValidationError,
-    IgnoredMessageTypeError,
-    UnknownMessageTypeError,
-    UnknownMessageVersionError,
-)
-from .backend import get_offset_backend, get_consumer_backend
-from .format import parse
-from .abc import Record, DRFSerializer, ConsumerBackend, MessageType, MessageVersion
-from . import settings
 import itertools
 import logging
 import time
 
+from django.db import transaction
+from rest_framework import serializers
+
+from . import settings
+from .abc import ConsumerBackend, DRFSerializer, MessageType, MessageVersion, Record
+from .backend import get_consumer_backend, get_offset_backend
+from .exceptions import (
+    IgnoredMessageTypeError,
+    InvalidMessageError,
+    UnknownMessageTypeError,
+    UnknownMessageVersionError,
+    ValidationError,
+)
+from .format import parse
 
 logger = logging.getLogger(__name__)
 

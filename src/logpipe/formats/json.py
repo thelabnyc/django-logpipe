@@ -1,8 +1,10 @@
 from collections.abc import Mapping
 from typing import IO, Any
-from rest_framework.renderers import JSONRenderer as _JSONRenderer
+
 from rest_framework.parsers import JSONParser as _JSONParser
-from ..abc import Renderer, Parser
+from rest_framework.renderers import JSONRenderer as _JSONRenderer
+
+from ..abc import Parser, Renderer
 
 
 class JSONRenderer(_JSONRenderer, Renderer):

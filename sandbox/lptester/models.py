@@ -1,6 +1,8 @@
-from django.db import models
-from .signals import person_altered
 import uuid
+
+from django.db import models
+
+from .signals import person_altered
 
 
 class Person(models.Model):

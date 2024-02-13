@@ -1,12 +1,13 @@
-from django.db import models
 from typing import Any
+import logging
+
+from django.db import models
+
+from . import settings
+from .abc import DRFSerializer, ProducerBackend, RecordMetadata
 from .backend import get_producer_backend
 from .constants import FORMAT_JSON
 from .format import render
-from .abc import ProducerBackend, DRFSerializer, RecordMetadata
-from . import settings
-import logging
-
 
 logger = logging.getLogger(__name__)
 

@@ -1,8 +1,8 @@
 from typing import Any
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 import os
 
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 # Make sure settings are installed
 try:

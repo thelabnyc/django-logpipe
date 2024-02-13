@@ -1,5 +1,6 @@
 from typing import Callable
 import functools
+
 from .consumer import Consumer
 
 ConsumerFactory = Callable[[], Consumer]

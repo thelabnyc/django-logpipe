@@ -1,12 +1,11 @@
 from __future__ import annotations
+
 from typing import Any
+
 from django.utils.module_loading import import_string
-from ..abc import (
-    ConsumerBackend,
-    ProducerBackend,
-    OffsetStoreBackend,
-)
+
 from .. import settings
+from ..abc import ConsumerBackend, OffsetStoreBackend, ProducerBackend
 
 
 def get_offset_backend() -> OffsetStoreBackend:

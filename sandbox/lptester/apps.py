@@ -7,4 +7,4 @@ class LPTesterConfig(AppConfig):
     default = True
 
     def ready(self):
-        from . import producers, consumers  # NOQA
+        from . import consumers, producers  # NOQA

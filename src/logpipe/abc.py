@@ -1,14 +1,10 @@
 from __future__ import annotations
+
 from abc import abstractmethod
 from collections.abc import Mapping
+from typing import IO, Any, Iterable, NamedTuple, Protocol
+
 from django.db import models
-from typing import (
-    Protocol,
-    Any,
-    IO,
-    NamedTuple,
-    Iterable,
-)
 from rest_framework import serializers
 
 MessageType = str
@@ -35,7 +31,7 @@ class ConsumerBackend(Iterable[Record]):
     topic_name: TopicName
 
     def __init__(self, topic_name: TopicName, **kwargs: Any):
-        ...
+        pass
 
     def seek_to_sequence_number(
         self, shard: str, sequence_number: str | None = None
@@ -44,26 +40,26 @@ class ConsumerBackend(Iterable[Record]):
 
     @abstractmethod
     def __iter__(self) -> ConsumerBackend:
-        ...
+        pass
 
     @abstractmethod
     def __next__(self) -> Record:
-        ...
+        pass
 
 
 class ProducerBackend(Protocol):
     def send(
         self, topic_name: TopicName, key: str, value: bytes
     ) -> RecordMetadata | None:
-        ...
+        pass
 
 
 class OffsetStoreBackend(Protocol):
     def commit(self, consumer: ConsumerBackend, message: Record) -> None:
-        ...
+        pass
 
     def seek(self, consumer: ConsumerBackend, topic: TopicName, partition: str) -> None:
-        ...
+        pass
 
 
 class Renderer(Protocol):
@@ -78,7 +74,7 @@ class Renderer(Protocol):
         media_type: str | None = None,
         renderer_context: Mapping[str, Any] | None = None,
     ) -> bytes:
-        ...
+        pass
 
 
 class Parser(Protocol):
@@ -90,7 +86,7 @@ class Parser(Protocol):
         media_type: str | None = None,
         parser_context: Mapping[str, Any] | None = None,
     ) -> dict[str, Any]:
-        ...
+        pass
 
 
 class DRFSerializer(serializers.Serializer[Any]):

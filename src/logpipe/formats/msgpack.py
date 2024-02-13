@@ -1,7 +1,9 @@
 from collections.abc import Mapping
 from typing import IO, Any
-from rest_framework import renderers, parsers
-from ..abc import Renderer, Parser
+
+from rest_framework import parsers, renderers
+
+from ..abc import Parser, Renderer
 
 _import_error: ImportError
 try:

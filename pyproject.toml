@@ -76,3 +76,7 @@ ignore_errors = true
 
 [tool.django-stubs]
 django_settings_module = "sandbox.settings"
+
+[tool.isort]
+profile = "black"
+from_first = true

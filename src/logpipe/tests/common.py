@@ -1,7 +1,7 @@
-from django.test import TestCase
-from rest_framework import serializers
 from unittest.mock import MagicMock
 
+from django.test import TestCase
+from rest_framework import serializers
 
 TOPIC_STATES = "us-states"
 
