@@ -111,11 +111,11 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "verbose"}},
     "loggers": {
         "logpipe": {
-            "level": "DEBUG",
+            "level": "CRITICAL",
         }
     },
     "root": {
         "handlers": ["console"],
-        "level": "ERROR",
+        "level": "CRITICAL",
     },
 }

@@ -92,7 +92,6 @@ from_first = true
 
 [tool.coverage.run]
 branch = true
-source = ["./src/logpipe"]
 source_pkgs = ["logpipe"]
 omit = [
     "*/migrations/*",

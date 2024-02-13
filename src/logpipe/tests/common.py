@@ -60,19 +60,9 @@ class BaseTest(TestCase):
         return FakeStateSerializer
 
     def mock_state_serializer_pydantic(self, save=None):
-        def make(*args, **kwargs):
-            ser = StateSerializer_Pydantic(*args, **kwargs)
-            ser.save = MagicMock()
-            if save:
-                ser.save.side_effect = lambda *args, **kwargs: save(
-                    ser, *args, **kwargs
-                )
-            self.serializers["state"] = ser
-            return ser
+        class MockState_Pydantic(State_Pydantic):
+            def save(self):
+                if save:
+                    save(self)
 
-        FakeStateSerializer = MagicMock()
-        FakeStateSerializer.MESSAGE_TYPE = StateSerializer_Pydantic.MESSAGE_TYPE
-        FakeStateSerializer.VERSION = StateSerializer_Pydantic.VERSION
-        FakeStateSerializer.side_effect = make
-
-        return FakeStateSerializer
+        return MockState_Pydantic

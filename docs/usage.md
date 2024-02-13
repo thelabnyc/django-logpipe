@@ -71,12 +71,19 @@ class PersonSchema(PydanticModel):
     first_name: str
     last_name: str
 
-    @classmethod
-    def lookup_instance(cls, uuid: uuid.UUID, **kwargs):
+    def save(self) -> Person:
+        """
+        The save method is called when a `person` message is consumed from the
+        data stream.
+        """
         try:
-            return Person.objects.get(uuid=uuid)
-        except models.Person.DoesNotExist:
-            pass
+            person = Person.objects.get(uuid=self.uuid)
+        except Person.DoesNotExist:
+            person = Person()
+        person.first_name = self.first_name
+        person.last_name = self.last_name
+        person.save()
+        return person
 ```
 
 ## Sending Messages
@@ -129,10 +136,11 @@ json:{"type":"person","version":1,"producer":"my-application-name","message":{"f
 
 ## Receiving Messages
 
-To processing incoming messages, we can reuse the same model and serializer. We just need to instantiate a Consumer object.
+To processing incoming messages, we can reuse the same model and serializer. We just need to instantiate a Consumer object. Unlike Producers, there's not separate Consumer classes for DRF vs. Pydantic serializers. Either type of serializer can be passed into the `Consumer.register` method.
 
 ```py
 from logpipe import Consumer
+from .models import PersonSerializer, PersonSchema
 
 # Watch for messages, but timeout after 1000ms of no messages
 consumer = Consumer('people', consumer_timeout_ms=1000)
@@ -143,14 +151,24 @@ consumer.run()
 consumer = Consumer('people')
 consumer.register(PersonSerializer)
 consumer.run()
+
+# Pydantic serializers work here too.
+consumer = Consumer('people')
+consumer.register(PersonSchema)
+consumer.run()
 ```
 
 The consumer object uses Django REST Framework's built-in `save`, `create`, and `update` methods to apply the message. If your messages aren't tied directly to a Django model, skip defining the `lookup_instance` class method and override the `save` method to house your custom import logic.
 
+### Consuming Multiple Data-Types Per Topic
+
 If you have multiple data-types in a single topic or stream, you can consume them all by registering multiple serializers with the consumer.
 
 ```py
-consumer = Consumer('people')
+from logpipe import Consumer
+from .models import PersonSerializer, PlaceSerializer, ThingSerializer
+
+consumer = Consumer('nouns')
 consumer.register(PersonSerializer)
 consumer.register(PlaceSerializer)
 consumer.register(ThingSerializer)
@@ -160,7 +178,15 @@ consumer.run()
 You can also support multiple incompatible version of message types by defining a serializer for each message type version and registering them all with the consumer.
 
 ```py
-consumer = Consumer('people')
+from logpipe import Consumer
+from .models import (
+    PersonSerializerVersion1,
+    PersonSerializerVersion2,
+    PlaceSerializer,
+    ThingSerializer,
+)
+
+consumer = Consumer('nouns')
 consumer.register(PersonSerializerVersion1)
 consumer.register(PersonSerializerVersion2)
 consumer.register(PlaceSerializer)
@@ -168,19 +194,30 @@ consumer.register(ThingSerializer)
 consumer.run()
 ```
 
+### Consuming from Multiple Topics
+
 If you have multiple streams or topics to watch, make a consumers for each, and watch them all simultaneously in the same process by using a MultiConsumer.
 
 ```py
-from logpipe import MultiConsumer
+from logpipe import MultiConsumer, Consumer
+from .models import (
+    PersonSerializer,
+    PlaceSerializer,
+)
+
 people_consumer = Consumer('people')
 people_consumer.register(PersonSerializer)
+
 places_consumer = Consumer('places')
 places_consumer.register(PlaceSerializer)
+
 multi = MultiConsumer(people_consumer, places_consumer)
 
 # Watch for 'people' and 'places' topics indefinitely
 multi.run()
 ```
+
+### Management Commands
 
 Finally, consumers can be registered and run automatically by the build in `run_kafka_consumer` management command.
 
