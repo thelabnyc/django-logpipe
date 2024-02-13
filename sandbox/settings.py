@@ -1,9 +1,6 @@
 import os
 
 from django.utils.translation import gettext_lazy as _
-import django_stubs_ext
-
-django_stubs_ext.monkeypatch()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -111,11 +108,11 @@ LOGGING = {
     "handlers": {"console": {"class": "logging.StreamHandler", "formatter": "verbose"}},
     "loggers": {
         "logpipe": {
-            "level": "DEBUG",
+            "level": "CRITICAL",
         }
     },
     "root": {
         "handlers": ["console"],
-        "level": "ERROR",
+        "level": "CRITICAL",
     },
 }

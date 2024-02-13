@@ -31,7 +31,7 @@ class ConsumerTest(BaseTest):
             self.assertEqual(ser.validated_data["code"], "NY")
             self.assertEqual(ser.validated_data["name"], "New York")
 
-        FakeStateSerializer = self.mock_state_serializer(save)
+        FakeStateSerializer = self.mock_state_serializer_drf(save)
 
         # Consume a message
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
@@ -70,7 +70,7 @@ class ConsumerTest(BaseTest):
         self.mock_consumer(
             KafkaConsumer, value=b'json:{"message":{"code":"NY","name":"New York"}}'
         )
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         with self.assertRaises(InvalidMessageError):
             consumer.run(iter_limit=1)
@@ -81,7 +81,7 @@ class ConsumerTest(BaseTest):
         self.mock_consumer(
             KafkaConsumer, value=b'json:{"message":{"code":"NY","name":"New York"}}'
         )
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
         consumer.run(iter_limit=1)
         self.assertEqual(FakeStateSerializer.call_count, 0)
@@ -89,7 +89,7 @@ class ConsumerTest(BaseTest):
     @patch("kafka.KafkaConsumer")
     def test_missing_message_throws(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer, value=b'json:{"version":1}')
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         with self.assertRaises(InvalidMessageError):
             consumer.run(iter_limit=1)
@@ -98,7 +98,7 @@ class ConsumerTest(BaseTest):
     @patch("kafka.KafkaConsumer")
     def test_missing_message_ignored(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer, value=b'json:{"version":1}')
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
         consumer.run(iter_limit=1)
         self.assertEqual(FakeStateSerializer.call_count, 0)
@@ -109,7 +109,7 @@ class ConsumerTest(BaseTest):
             KafkaConsumer,
             value=b'json:{"message":{"code":"NY","name":"New York"},"version":2,"type":"us-state"}',
         )
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
 
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         consumer.register(FakeStateSerializer)
@@ -123,7 +123,7 @@ class ConsumerTest(BaseTest):
             KafkaConsumer,
             value=b'json:{"message":{"code":"NY","name":"New York"},"version":2,"type":"us-state"}',
         )
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
 
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
         consumer.register(FakeStateSerializer)
@@ -136,7 +136,7 @@ class ConsumerTest(BaseTest):
             KafkaConsumer,
             value=b'json:{"message":{"code":"NYC","name":"New York"},"version":1,"type":"us-state"}',
         )
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
 
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         consumer.register(FakeStateSerializer)
@@ -151,7 +151,7 @@ class ConsumerTest(BaseTest):
             KafkaConsumer,
             value=b'json:{"message":{"code":"NYC","name":"New York"},"version":1,"type":"us-state"}',
         )
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
         consumer.register(FakeStateSerializer)
         consumer.run(iter_limit=1)
@@ -164,7 +164,7 @@ class ConsumerTest(BaseTest):
             KafkaConsumer,
             value=b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}',
         )
-        FakeStateSerializer = self.mock_state_serializer()
+        FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
         consumer.add_ignored_message_type("us-state")
         consumer.register(FakeStateSerializer)

@@ -17,9 +17,18 @@ cache:
   paths:
     - $HOME/.cache/pip
 
+.rules_mrs_and_protected:
+  - if: $CI_PIPELINE_SOURCE == "schedule"
+    when: never
+  - if: $CI_COMMIT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"
+  - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"
+  - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+
 precommit:
   stage: test
   image: python:3
+  rules:
+    - !reference [.rules_mrs_and_protected]
   variables:
     PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
   script:
@@ -29,9 +38,11 @@ precommit:
     paths:
       - ${PRE_COMMIT_HOME}
 
-test:
+test:lib:
   stage: test
   image: "registry.gitlab.com/thelabnyc/python:${IMAGE}"
+  rules:
+    - !reference [.rules_mrs_and_protected]
   script:
     - pip install tox
     - tox
@@ -43,9 +54,37 @@ test:
       - IMAGE: py312
         TOX_SKIP_ENV: "^(?!py312-)"
 
+test:docs:
+  stage: test
+  image: "registry.gitlab.com/thelabnyc/python:py311"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  stage: test
+  script:
+    - poetry install
+    - make docs
+
+pages:
+  stage: release
+  image: "registry.gitlab.com/thelabnyc/python:py311"
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"
+  needs:
+    - precommit
+    - test:lib
+  script:
+    - poetry install
+    - make docs
+  artifacts:
+    paths:
+      - public
+
 publish_pkg:
   image: registry.gitlab.com/thelabnyc/python:py311
   stage: release
+  needs:
+    - precommit
+    - test:lib
   rules:
     - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
   script:
@@ -67,6 +106,9 @@ publish_pkg:
 publish_gitlab_release:
   image: registry.gitlab.com/gitlab-org/release-cli:latest
   stage: release
+  needs:
+    - precommit
+    - test:lib
   rules:
     - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
   script:

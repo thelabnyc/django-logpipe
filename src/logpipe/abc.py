@@ -2,9 +2,11 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Mapping
-from typing import IO, Any, Iterable, NamedTuple, Protocol
+from enum import Enum, auto
+from typing import IO, Any, ClassVar, Iterable, Literal, NamedTuple, Protocol
 
 from django.db import models
+from pydantic import BaseModel
 from rest_framework import serializers
 
 MessageType = str
@@ -89,11 +91,27 @@ class Parser(Protocol):
         pass
 
 
+class SerializerType(Enum):
+    DRF = auto()
+    PYDANTIC = auto()
+
+
 class DRFSerializer(serializers.Serializer[Any]):
-    MESSAGE_TYPE: str
-    VERSION: int
-    KEY_FIELD: str
+    _tag: ClassVar[Literal[SerializerType.DRF]] = SerializerType.DRF
+    MESSAGE_TYPE: ClassVar[str]
+    VERSION: ClassVar[int]
+    KEY_FIELD: ClassVar[str]
 
     @classmethod
     def lookup_instance(cls, **kwargs: dict[str, Any]) -> models.Model | None:
-        pass
+        raise NotImplementedError()
+
+
+class PydanticModel(BaseModel):
+    _tag: ClassVar[Literal[SerializerType.PYDANTIC]] = SerializerType.PYDANTIC
+    MESSAGE_TYPE: ClassVar[str]
+    VERSION: ClassVar[int]
+    KEY_FIELD: ClassVar[str]
+
+    def save(self) -> Any:
+        raise NotImplementedError()

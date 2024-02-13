@@ -1,6 +1,6 @@
 from logpipe import Consumer, Producer
 
-from ..common import TOPIC_STATES, BaseTest, StateSerializer
+from ..common import TOPIC_STATES, BaseTest, StateSerializer_DRF
 
 
 class RoundTripTest(BaseTest):
@@ -9,9 +9,9 @@ class RoundTripTest(BaseTest):
             self.assertEqual(ser.validated_data["code"], "NY")
             self.assertEqual(ser.validated_data["name"], "New York")
 
-        FakeStateSerializer = self.mock_state_serializer(save)
+        FakeStateSerializer = self.mock_state_serializer_drf(save)
 
-        producer = Producer(TOPIC_STATES, StateSerializer)
+        producer = Producer(TOPIC_STATES, StateSerializer_DRF)
         record = producer.send({"code": "NY", "name": "New York"})
         self.assertEqual(record.topic, "us-states")
         self.assertEqual(record.partition, 0)

@@ -3,11 +3,19 @@ import itertools
 import logging
 import time
 
-from django.db import transaction
+from django.db import models, transaction
 from rest_framework import serializers
 
 from . import settings
-from .abc import ConsumerBackend, DRFSerializer, MessageType, MessageVersion, Record
+from .abc import (
+    ConsumerBackend,
+    DRFSerializer,
+    MessageType,
+    MessageVersion,
+    PydanticModel,
+    Record,
+    SerializerType,
+)
 from .backend import get_consumer_backend, get_offset_backend
 from .exceptions import (
     IgnoredMessageTypeError,
@@ -21,71 +29,13 @@ from .format import parse
 logger = logging.getLogger(__name__)
 
 
-def consumer_error_handler(
-    inner: "Consumer",
-) -> Generator[tuple[Record, DRFSerializer], None, None]:
-    while True:
-        # Try to get the next message
-        try:
-            yield next(inner)
-
-        # Obey the laws of StopIteration
-        except StopIteration:
-            return
-
-        # Message format was invalid in some way: log error and move on.
-        except InvalidMessageError as e:
-            logger.error(
-                "Failed to deserialize message in topic {}. Details: {}".format(
-                    inner.consumer.topic_name, e
-                )
-            )
-            inner.commit(e.message)
-
-        # Message type has been explicitly ignored: skip it silently and move on.
-        except IgnoredMessageTypeError as e:
-            logger.debug(
-                "Skipping ignored message type in topic {}. Details: {}".format(
-                    inner.consumer.topic_name, e
-                )
-            )
-            inner.commit(e.message)
-
-        # Message type is unknown: log error and move on.
-        except UnknownMessageTypeError as e:
-            logger.error(
-                "Skipping unknown message type in topic {}. Details: {}".format(
-                    inner.consumer.topic_name, e
-                )
-            )
-            inner.commit(e.message)
-
-        # Message version is unknown: log error and move on.
-        except UnknownMessageVersionError as e:
-            logger.error(
-                "Skipping unknown message version in topic {}. Details: {}".format(
-                    inner.consumer.topic_name, e
-                )
-            )
-            inner.commit(e.message)
-
-        # Serializer for message type flagged message as invalid: log warning and move on.
-        except ValidationError as e:
-            logger.warning(
-                "Skipping invalid message in topic {}. Details: {}".format(
-                    inner.consumer.topic_name, e
-                )
-            )
-            inner.commit(e.message)
-
-        pass
+Serializer = DRFSerializer | PydanticModel
 
 
-class Consumer(Iterator[tuple[Record, DRFSerializer]]):
-    _client = None
+class Consumer(Iterator[tuple[Record, Serializer]]):
     consumer: ConsumerBackend
     throw_errors: bool
-    serializer_classes: dict[MessageType, dict[MessageVersion, type[DRFSerializer]]]
+    serializer_classes: dict[MessageType, dict[MessageVersion, type[Serializer]]]
     ignored_message_types: set[MessageType]
 
     def __init__(self, topic_name: str, throw_errors: bool = False, **kwargs: Any):
@@ -94,13 +44,21 @@ class Consumer(Iterator[tuple[Record, DRFSerializer]]):
         self.serializer_classes = {}
         self.ignored_message_types = set([])
 
+    def __iter__(self) -> Iterator[tuple[Record, Serializer]]:
+        if self.throw_errors:
+            return self
+        return self._error_handler()
+
+    def __next__(self) -> tuple[Record, Serializer]:
+        return self._get_next_message()
+
     def add_ignored_message_type(self, message_type: MessageType) -> None:
         self.ignored_message_types.add(message_type)
 
     def commit(self, message: Record) -> None:
         get_offset_backend().commit(self.consumer, message)
 
-    def register(self, serializer_class: type[DRFSerializer]) -> None:
+    def register(self, serializer_class: type[Serializer]) -> None:
         message_type = serializer_class.MESSAGE_TYPE
         version = serializer_class.VERSION
         if message_type not in self.serializer_classes:
@@ -130,18 +88,64 @@ class Consumer(Iterator[tuple[Record, DRFSerializer]]):
             if iter_limit > 0 and i >= iter_limit:
                 break
 
-    def __iter__(self) -> Iterator[tuple[Record, DRFSerializer]]:
-        if self.throw_errors:
-            return self
-        return consumer_error_handler(self)
+    def _error_handler(self) -> Generator[tuple[Record, Serializer], None, None]:
+        while True:
+            # Try to get the next message
+            try:
+                yield next(self)
 
-    def __next__(self) -> tuple[Record, DRFSerializer]:
-        return self._get_next_message()
+            # Obey the laws of StopIteration
+            except StopIteration:
+                return
 
-    def __str__(self) -> str:
-        return '<logpipe.consumer.Consumer topic="%s">' % self.consumer.topic_name
+            # Message format was invalid in some way: log error and move on.
+            except InvalidMessageError as e:
+                logger.error(
+                    "Failed to deserialize message in topic {}. Details: {}".format(
+                        self.consumer.topic_name, e
+                    )
+                )
+                self.commit(e.message)
 
-    def _get_next_message(self) -> tuple[Record, DRFSerializer]:
+            # Message type has been explicitly ignored: skip it silently and move on.
+            except IgnoredMessageTypeError as e:
+                logger.debug(
+                    "Skipping ignored message type in topic {}. Details: {}".format(
+                        self.consumer.topic_name, e
+                    )
+                )
+                self.commit(e.message)
+
+            # Message type is unknown: log error and move on.
+            except UnknownMessageTypeError as e:
+                logger.error(
+                    "Skipping unknown message type in topic {}. Details: {}".format(
+                        self.consumer.topic_name, e
+                    )
+                )
+                self.commit(e.message)
+
+            # Message version is unknown: log error and move on.
+            except UnknownMessageVersionError as e:
+                logger.error(
+                    "Skipping unknown message version in topic {}. Details: {}".format(
+                        self.consumer.topic_name, e
+                    )
+                )
+                self.commit(e.message)
+
+            # Serializer for message type flagged message as invalid: log warning and move on.
+            except ValidationError as e:
+                logger.warning(
+                    "Skipping invalid message in topic {}. Details: {}".format(
+                        self.consumer.topic_name, e
+                    )
+                )
+                self.commit(e.message)
+
+            pass
+
+    def _get_next_message(self) -> tuple[Record, Serializer]:
         message = next(self.consumer)
 
         info = (message.key, message.topic, message.partition, message.offset)
@@ -167,7 +171,7 @@ class Consumer(Iterator[tuple[Record, DRFSerializer]]):
 
         return message, serializer
 
-    def _unserialize(self, message: Record) -> DRFSerializer:
+    def _unserialize(self, message: Record) -> Serializer:
         data = parse(message.value)
         if "type" not in data:
             raise InvalidMessageError(
@@ -209,13 +213,58 @@ class Consumer(Iterator[tuple[Record, DRFSerializer]]):
         instance = None
         if hasattr(serializer_class, "lookup_instance"):
             instance = serializer_class.lookup_instance(**data["message"])
-        serializer = serializer_class(instance=instance, data=data["message"])
+        serializer = self._construct_serializer_instance(
+            serializer_class=serializer_class,
+            message=message,
+            instance=instance,
+            data=data["message"],
+        )
+        return serializer
 
+    def _construct_serializer_instance(
+        self,
+        serializer_class: type[Serializer],
+        message: Record,
+        instance: models.Model | None,
+        data: Any,
+    ) -> Serializer:
+        if serializer_class._tag == SerializerType.PYDANTIC:
+            return self._construct_pydantic_serializer_instance(
+                serializer_class=serializer_class,
+                message=message,
+                instance=instance,
+                data=data,
+            )
+        return self._construct_drf_serializer_instance(
+            serializer_class=serializer_class,
+            message=message,
+            instance=instance,
+            data=data,
+        )
+
+    def _construct_drf_serializer_instance(
+        self,
+        serializer_class: type[DRFSerializer],
+        message: Record,
+        instance: models.Model | None,
+        data: Any,
+    ) -> DRFSerializer:
+        serializer = serializer_class(instance=instance, data=data)
         try:
             serializer.is_valid(raise_exception=True)
         except serializers.ValidationError as e:
             raise ValidationError(e, message)
+        return serializer
 
+    def _construct_pydantic_serializer_instance(
+        self,
+        serializer_class: type[PydanticModel],
+        message: Record,
+        instance: models.Model | None,
+        data: Any,
+    ) -> PydanticModel:
+        serializer = serializer_class.model_validate(data)
+        serializer._instance = instance
         return serializer
 
 
@@ -225,6 +274,10 @@ class MultiConsumer:
     def __init__(self, *consumers: Consumer):
         self.consumers = list(consumers)
 
-    def run(self) -> None:
+    def run(self, iter_limit: int = 0) -> None:
+        i = 0
         for consumer in itertools.cycle(self.consumers):
             consumer.run(iter_limit=1)
+            i += 1
+            if iter_limit > 0 and i >= iter_limit:
+                break

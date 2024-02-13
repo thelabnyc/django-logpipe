@@ -1,4 +1,4 @@
-# django-logpipe
+# Welcome
 
 [![](https://gitlab.com/thelabnyc/django-logpipe/badges/master/build.svg)](https://gitlab.com/thelabnyc/django-logpipe/commits/master)
 [![](https://img.shields.io/pypi/l/django-logpipe.svg)](https://pypi.python.org/pypi/)
@@ -11,11 +11,3 @@ Django-logpipe is a library that serves as a universal pipe for moving data arou
 [pydantic]: https://docs.pydantic.dev/
 [kafka]: https://kafka.apache.org/
 [kinesis]: https://aws.amazon.com/kinesis/
-
-## Documentation
-
-See [https://thelabnyc.gitlab.io/django-logpipe/](https://thelabnyc.gitlab.io/django-logpipe/)
-
-## Change log
-
-See [Release Notes](./docs/releases.md)
