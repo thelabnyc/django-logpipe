@@ -2,9 +2,10 @@ from __future__ import annotations
 
 from abc import abstractmethod
 from collections.abc import Mapping
-from typing import IO, Any, Iterable, NamedTuple, Protocol
+from typing import IO, Any, ClassVar, Iterable, NamedTuple, Protocol
 
 from django.db import models
+from pydantic import BaseModel
 from rest_framework import serializers
 
 MessageType = str
@@ -97,3 +98,13 @@ class DRFSerializer(serializers.Serializer[Any]):
     @classmethod
     def lookup_instance(cls, **kwargs: dict[str, Any]) -> models.Model | None:
         pass
+
+
+class PydanticModel(BaseModel):
+    MESSAGE_TYPE: ClassVar[str]
+    VERSION: ClassVar[int]
+    KEY_FIELD: ClassVar[str]
+
+    @classmethod
+    def lookup_instance(cls, **kwargs: dict[str, Any]) -> models.Model | None:
+        raise NotImplementedError()

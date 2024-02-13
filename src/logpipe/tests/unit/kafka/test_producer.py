@@ -5,7 +5,7 @@ from django.test import TestCase, override_settings
 from kafka.consumer.fetcher import ConsumerRecord
 
 from logpipe import Producer
-from logpipe.tests.common import TOPIC_STATES, StateModel, StateSerializer
+from logpipe.tests.common import TOPIC_STATES, StateModel, StateSerializer_DRF
 
 LOGPIPE = {
     "KAFKA_BOOTSTRAP_SERVERS": ["kafka:9092"],
@@ -14,7 +14,7 @@ LOGPIPE = {
 }
 
 
-class ProducerTest(TestCase):
+class DRFProducerTest(TestCase):
     @override_settings(LOGPIPE=LOGPIPE)
     @patch("kafka.KafkaProducer")
     def test_normal_send(self, KafkaProducer):
@@ -35,7 +35,7 @@ class ProducerTest(TestCase):
         client.send.side_effect = test_send_call
         KafkaProducer.return_value = client
 
-        producer = Producer(TOPIC_STATES, StateSerializer)
+        producer = Producer(TOPIC_STATES, StateSerializer_DRF)
         ret = producer.send({"code": "NY", "name": "New York"})
         self.assertEqual(ret.topic, TOPIC_STATES)
         self.assertEqual(ret.partition, 0)
@@ -66,10 +66,11 @@ class ProducerTest(TestCase):
         client.send.side_effect = test_send_call
         KafkaProducer.return_value = client
 
-        producer = Producer(TOPIC_STATES, StateSerializer)
-        obj = StateModel()
-        obj.code = "NY"
-        obj.name = "New York"
+        producer = Producer(TOPIC_STATES, StateSerializer_DRF)
+        obj = StateModel(
+            code="NY",
+            name="New York",
+        )
         ret = producer.send(obj)
         self.assertEqual(ret.topic, TOPIC_STATES)
         self.assertEqual(ret.partition, 0)

@@ -3,7 +3,7 @@ from moto import mock_kinesis
 import boto3
 
 from logpipe import Producer
-from logpipe.tests.common import TOPIC_STATES, StateModel, StateSerializer
+from logpipe.tests.common import TOPIC_STATES, StateModel, StateSerializer_DRF
 
 LOGPIPE = {
     "OFFSET_BACKEND": "logpipe.backend.kinesis.ModelOffsetStore",
@@ -12,14 +12,14 @@ LOGPIPE = {
 }
 
 
-class ProducerTest(TestCase):
+class DRFProducerTest(TestCase):
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_kinesis
     def test_normal_send(self):
         client = boto3.client("kinesis", region_name="us-east-1")
         client.create_stream(StreamName=TOPIC_STATES, ShardCount=1)
 
-        producer = Producer(TOPIC_STATES, StateSerializer)
+        producer = Producer(TOPIC_STATES, StateSerializer_DRF)
 
         ret = producer.send({"code": "NY", "name": "New York"})
         self.assertEqual(ret.topic, TOPIC_STATES)
@@ -72,19 +72,21 @@ class ProducerTest(TestCase):
         client = boto3.client("kinesis", region_name="us-east-1")
         client.create_stream(StreamName=TOPIC_STATES, ShardCount=1)
 
-        producer = Producer(TOPIC_STATES, StateSerializer)
+        producer = Producer(TOPIC_STATES, StateSerializer_DRF)
 
-        obj = StateModel()
-        obj.code = "NY"
-        obj.name = "New York"
+        obj = StateModel(
+            code="NY",
+            name="New York",
+        )
         ret = producer.send(obj)
         self.assertEqual(ret.topic, TOPIC_STATES)
         self.assertEqual(ret.partition, "shardId-000000000000")
         self.assertEqual(ret.offset, "1")
 
-        obj = StateModel()
-        obj.code = "PA"
-        obj.name = "Pennsylvania"
+        obj = StateModel(
+            code="PA",
+            name="Pennsylvania",
+        )
         ret = producer.send(obj)
         self.assertEqual(ret.topic, TOPIC_STATES)
         self.assertEqual(ret.partition, "shardId-000000000000")

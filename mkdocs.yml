@@ -1,0 +1,45 @@
+---
+site_name: django-logpipe
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/git-alt
+  features:
+    - search.suggest
+    - search.highlight
+    - navigation.footer
+
+repo_name: django-logpipe
+repo_url: https://gitlab.com/thelabnyc/django-logpipe
+edit_uri: -/edit/master/docs/
+
+docs_dir: docs/
+site_dir: build/mkdocs/
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  # - extra
+  - abbr
+  # - attr_list
+  - def_list
+  # - fenced_code
+  - footnotes
+  - md_in_html
+  # - tables
+  - codehilite
+  - smarty
+  - admonition
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_div_format
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+      clickable_checkbox: true
+
+use_directory_urls: false
