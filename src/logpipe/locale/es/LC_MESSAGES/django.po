@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-13 16:05+0000\n"
+"POT-Creation-Date: 2024-02-13 22:05+0000\n"
 "PO-Revision-Date: 2019-06-24 17:55-0400\n"
 "Last-Translator: Craig Weber <craig@crgwbr.com>\n"
 "Language-Team: \n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Generator: Poedit 2.2.3\n"
 
 #. Translators: Backend Library Name
-#: logpipe/config.py:9
+#: logpipe/apps.py:9
 msgid "LogPipe"
 msgstr "LogPipe"
 
