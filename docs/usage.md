@@ -1,4 +1,4 @@
-# Usage
+# Usage Guide
 
 Usage of django-logpipe differs slightly based on if you choose to use [django-rest-framework (DRF)](https://www.django-rest-framework.org/) serializers or [Pydandic](https://docs.pydantic.dev) serializers. Continue reading to see how to handle each case.
 

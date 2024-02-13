@@ -11,5 +11,3 @@ Django-logpipe is a library that serves as a universal pipe for moving data arou
 [pydantic]: https://docs.pydantic.dev/
 [kafka]: https://kafka.apache.org/
 [kinesis]: https://aws.amazon.com/kinesis/
-
-To get started, continue to

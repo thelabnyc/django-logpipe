@@ -1,9 +1,6 @@
 import os
 
 from django.utils.translation import gettext_lazy as _
-import django_stubs_ext
-
-django_stubs_ext.monkeypatch()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 

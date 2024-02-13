@@ -15,11 +15,11 @@ test_precommit: install_precommit
 
 .PHONY: docs_serve
 docs_serve:
-	DJANGO_SETTINGS_MODULE=sandbox.settings poetry run mkdocs serve --strict
+	DJANGO_SETTINGS_MODULE=logpipe.docgen_setup poetry run mkdocs serve --strict
 
 .PHONY: docs_build
 docs_build:
-	DJANGO_SETTINGS_MODULE=sandbox.settings poetry run mkdocs build --strict
+	DJANGO_SETTINGS_MODULE=logpipe.docgen_setup poetry run mkdocs build --strict
 
 docs: docs_build
 	rm -rf public/ && \

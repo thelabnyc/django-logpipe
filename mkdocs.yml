@@ -17,6 +17,9 @@ edit_uri: -/edit/master/docs/
 docs_dir: docs/
 site_dir: build/mkdocs/
 
+extra_css:
+  - custom-styles.css
+
 markdown_extensions:
   - toc:
       permalink: True
@@ -41,5 +44,6 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
       clickable_checkbox: true
+  - mkautodoc
 
 use_directory_urls: false

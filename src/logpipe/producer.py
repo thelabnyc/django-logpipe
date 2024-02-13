@@ -60,6 +60,11 @@ class BaseProducer:
 
 
 class DRFProducer(BaseProducer):
+    """
+    Producer class for sending messages that are serialized using a Django Rest
+    Framework serializer.
+    """
+
     serializer_class: type[DRFSerializer]
 
     def __init__(
@@ -72,6 +77,10 @@ class DRFProducer(BaseProducer):
         self.serializer_class = serializer_class
 
     def send(self, instance: dict[str, Any] | models.Model) -> RecordMetadata | None:
+        """
+        Serialize the given object using the previously specified serializer, then
+        write it to the log backend (Kafka or Kinesis).
+        """
         # Get the message type and version
         message_type = self.serializer_class.MESSAGE_TYPE
         version = self.serializer_class.VERSION

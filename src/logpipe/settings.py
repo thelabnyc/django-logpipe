@@ -4,12 +4,6 @@ import os
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 
-# Make sure settings are installed
-try:
-    _ = settings.LOGPIPE
-except AttributeError:
-    raise ImproperlyConfigured("Please define `LOGPIPE` in your settings.py file.")
-
 
 def get(key: str, default: Any = None) -> Any:
     if default is None and key not in settings.LOGPIPE:
