@@ -1,7 +1,8 @@
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
+from typing import Any
 import os
 
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 
 # Make sure settings are installed
 try:
@@ -10,7 +11,7 @@ except AttributeError:
     raise ImproperlyConfigured("Please define `LOGPIPE` in your settings.py file.")
 
 
-def get(key, default=None):
+def get(key: str, default: Any = None) -> Any:
     if default is None and key not in settings.LOGPIPE:
         raise ImproperlyConfigured(
             'Please ensure LOGPIPE["%s"] is defined in your settings.py file.' % key
@@ -18,7 +19,7 @@ def get(key, default=None):
     return settings.LOGPIPE.get(key, default)
 
 
-def get_aws_region(_default="us-east-1"):
+def get_aws_region(_default: str = "us-east-1") -> str:
     # Try to use the explicit KINESIS_REGION setting
     region = get("KINESIS_REGION", "")
     if region:

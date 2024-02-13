@@ -1,9 +1,9 @@
 from django.test import TestCase, override_settings
-from logpipe import Producer
-from logpipe.tests.common import StateSerializer, StateModel, TOPIC_STATES
 from moto import mock_kinesis
 import boto3
 
+from logpipe import Producer
+from logpipe.tests.common import TOPIC_STATES, StateModel, StateSerializer
 
 LOGPIPE = {
     "OFFSET_BACKEND": "logpipe.backend.kinesis.ModelOffsetStore",

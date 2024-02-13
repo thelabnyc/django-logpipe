@@ -1,11 +1,11 @@
 from django.test import override_settings
-from rest_framework.exceptions import ValidationError
-from logpipe import Consumer
-from logpipe.exceptions import InvalidMessageError, UnknownMessageVersionError
-from logpipe.tests.common import BaseTest, TOPIC_STATES
 from moto import mock_kinesis
+from rest_framework.exceptions import ValidationError
 import boto3
 
+from logpipe import Consumer
+from logpipe.exceptions import InvalidMessageError, UnknownMessageVersionError
+from logpipe.tests.common import TOPIC_STATES, BaseTest
 
 LOGPIPE = {
     "OFFSET_BACKEND": "logpipe.backend.kinesis.ModelOffsetStore",

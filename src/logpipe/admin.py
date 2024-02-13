@@ -1,9 +1,10 @@
 from django.contrib import admin
+
 from . import models
 
 
 @admin.register(models.KafkaOffset)
-class KafkaOffsetAdmin(admin.ModelAdmin):
+class KafkaOffsetAdmin(admin.ModelAdmin[models.KafkaOffset]):
     fields = ["topic", "partition", "offset"]
     list_display = ["topic", "partition", "offset"]
     list_filter = ["topic", "partition"]
@@ -11,7 +12,7 @@ class KafkaOffsetAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.KinesisOffset)
-class KinesisOffsetAdmin(admin.ModelAdmin):
+class KinesisOffsetAdmin(admin.ModelAdmin[models.KinesisOffset]):
     fields = ["region", "stream", "shard", "sequence_number"]
     list_display = ["stream", "region", "shard", "sequence_number"]
     list_filter = ["stream", "region", "shard"]

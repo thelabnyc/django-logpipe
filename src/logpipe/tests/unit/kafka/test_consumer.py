@@ -1,13 +1,14 @@
-from django.test import override_settings
 from unittest.mock import MagicMock, patch
+import binascii
+
+from django.test import override_settings
 from kafka.consumer.fetcher import ConsumerRecord
 from kafka.structs import TopicPartition
 from rest_framework.exceptions import ValidationError
+
 from logpipe import Consumer
 from logpipe.exceptions import InvalidMessageError, UnknownMessageVersionError
-from logpipe.tests.common import BaseTest, TOPIC_STATES
-import binascii
-
+from logpipe.tests.common import TOPIC_STATES, BaseTest
 
 LOGPIPE = {
     "KAFKA_BOOTSTRAP_SERVERS": ["kafka:9092"],

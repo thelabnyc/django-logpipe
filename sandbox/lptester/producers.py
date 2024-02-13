@@ -1,6 +1,8 @@
 from django.dispatch import receiver
+
 from logpipe import Producer
-from . import constants, signals, models, serializers
+
+from . import constants, models, serializers, signals
 
 
 @receiver(

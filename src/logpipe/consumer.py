@@ -1,23 +1,29 @@
-from django.db import transaction
-from rest_framework.exceptions import ValidationError
-from .exceptions import (
-    InvalidMessageError,
-    IgnoredMessageTypeError,
-    UnknownMessageTypeError,
-    UnknownMessageVersionError,
-)
-from .backend import get_offset_backend, get_consumer_backend
-from .format import parse
-from . import settings
+from typing import Any, Generator, Iterator
 import itertools
 import logging
 import time
 
+from django.db import transaction
+from rest_framework import serializers
+
+from . import settings
+from .abc import ConsumerBackend, DRFSerializer, MessageType, MessageVersion, Record
+from .backend import get_consumer_backend, get_offset_backend
+from .exceptions import (
+    IgnoredMessageTypeError,
+    InvalidMessageError,
+    UnknownMessageTypeError,
+    UnknownMessageVersionError,
+    ValidationError,
+)
+from .format import parse
 
 logger = logging.getLogger(__name__)
 
 
-def consumer_error_handler(inner):
+def consumer_error_handler(
+    inner: "Consumer",
+) -> Generator[tuple[Record, DRFSerializer], None, None]:
     while True:
         # Try to get the next message
         try:
@@ -75,29 +81,33 @@ def consumer_error_handler(inner):
         pass
 
 
-class Consumer(object):
+class Consumer(Iterator[tuple[Record, DRFSerializer]]):
     _client = None
+    consumer: ConsumerBackend
+    throw_errors: bool
+    serializer_classes: dict[MessageType, dict[MessageVersion, type[DRFSerializer]]]
+    ignored_message_types: set[MessageType]
 
-    def __init__(self, topic_name, throw_errors=False, **kwargs):
+    def __init__(self, topic_name: str, throw_errors: bool = False, **kwargs: Any):
         self.consumer = get_consumer_backend(topic_name, **kwargs)
         self.throw_errors = throw_errors
         self.serializer_classes = {}
         self.ignored_message_types = set([])
 
-    def add_ignored_message_type(self, message_type):
+    def add_ignored_message_type(self, message_type: MessageType) -> None:
         self.ignored_message_types.add(message_type)
 
-    def commit(self, message):
+    def commit(self, message: Record) -> None:
         get_offset_backend().commit(self.consumer, message)
 
-    def register(self, serializer_class):
+    def register(self, serializer_class: type[DRFSerializer]) -> None:
         message_type = serializer_class.MESSAGE_TYPE
         version = serializer_class.VERSION
         if message_type not in self.serializer_classes:
             self.serializer_classes[message_type] = {}
         self.serializer_classes[message_type][version] = serializer_class
 
-    def run(self, iter_limit=0):
+    def run(self, iter_limit: int = 0) -> None:
         i = 0
         for message, serializer in self:
             with transaction.atomic():
@@ -120,18 +130,18 @@ class Consumer(object):
             if iter_limit > 0 and i >= iter_limit:
                 break
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[tuple[Record, DRFSerializer]]:
         if self.throw_errors:
             return self
         return consumer_error_handler(self)
 
-    def __next__(self):
+    def __next__(self) -> tuple[Record, DRFSerializer]:
         return self._get_next_message()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return '<logpipe.consumer.Consumer topic="%s">' % self.consumer.topic_name
 
-    def _get_next_message(self):
+    def _get_next_message(self) -> tuple[Record, DRFSerializer]:
         message = next(self.consumer)
 
         info = (message.key, message.topic, message.partition, message.offset)
@@ -153,43 +163,45 @@ class Consumer(object):
         try:
             serializer = self._unserialize(message)
         except Exception as e:
-            e.message = message
             raise e
 
         return message, serializer
 
-    def _unserialize(self, message):
+    def _unserialize(self, message: Record) -> DRFSerializer:
         data = parse(message.value)
         if "type" not in data:
             raise InvalidMessageError(
-                'Received message missing missing a top-level "type" key.'
+                'Received message missing missing a top-level "type" key.', message
             )
         if "version" not in data:
             raise InvalidMessageError(
-                'Received message missing missing a top-level "version" key.'
+                'Received message missing missing a top-level "version" key.', message
             )
         if "message" not in data:
             raise InvalidMessageError(
-                'Received message missing missing a top-level "message" key.'
+                'Received message missing missing a top-level "message" key.', message
             )
 
         message_type = data["type"]
         if message_type in self.ignored_message_types:
             raise IgnoredMessageTypeError(
                 'Received message with ignored type "%s" in topic %s'
-                % (message_type, message.topic)
+                % (message_type, message.topic),
+                message,
             )
         if message_type not in self.serializer_classes:
             raise UnknownMessageTypeError(
                 'Received message with unknown type "%s" in topic %s'
-                % (message_type, message.topic)
+                % (message_type, message.topic),
+                message,
             )
 
         version = data["version"]
         if version not in self.serializer_classes[message_type]:
             raise UnknownMessageVersionError(
                 'Received message of type "%s" with unknown version "%s" in topic %s'
-                % (message_type, version, message.topic)
+                % (message_type, version, message.topic),
+                message,
             )
 
         serializer_class = self.serializer_classes[message_type][version]
@@ -198,14 +210,21 @@ class Consumer(object):
         if hasattr(serializer_class, "lookup_instance"):
             instance = serializer_class.lookup_instance(**data["message"])
         serializer = serializer_class(instance=instance, data=data["message"])
-        serializer.is_valid(raise_exception=True)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except serializers.ValidationError as e:
+            raise ValidationError(e, message)
+
         return serializer
 
 
-class MultiConsumer(object):
-    def __init__(self, *consumers):
-        self.consumers = consumers
+class MultiConsumer:
+    consumers: list[Consumer]
 
-    def run(self):
+    def __init__(self, *consumers: Consumer):
+        self.consumers = list(consumers)
+
+    def run(self) -> None:
         for consumer in itertools.cycle(self.consumers):
             consumer.run(iter_limit=1)

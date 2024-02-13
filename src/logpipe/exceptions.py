@@ -1,24 +1,43 @@
+from typing import Any
+
+from rest_framework import serializers
+
+from .abc import Record
+
+
 class LogPipeError(Exception):
     pass
+
+
+class LogPipeMessageError(LogPipeError):
+    message: Record
+
+    def __init__(self, descr: Any, message: Record):
+        super().__init__(Any)
+        self.message = message
 
 
 class UnknownFormatError(LogPipeError):
     pass
 
 
-class IgnoredMessageTypeError(LogPipeError):
+class IgnoredMessageTypeError(LogPipeMessageError):
     pass
 
 
-class UnknownMessageTypeError(LogPipeError):
+class UnknownMessageTypeError(LogPipeMessageError):
     pass
 
 
-class UnknownMessageVersionError(LogPipeError):
+class UnknownMessageVersionError(LogPipeMessageError):
     pass
 
 
-class InvalidMessageError(LogPipeError):
+class InvalidMessageError(LogPipeMessageError):
+    pass
+
+
+class ValidationError(LogPipeMessageError, serializers.ValidationError):
     pass
 
 

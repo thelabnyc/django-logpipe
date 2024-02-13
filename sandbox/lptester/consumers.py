@@ -1,4 +1,5 @@
 from logpipe import Consumer, register_consumer
+
 from . import constants, serializers
 
 

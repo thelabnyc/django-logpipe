@@ -1,32 +1,47 @@
-from rest_framework import renderers, parsers
+from collections.abc import Mapping
+from typing import IO, Any
 
-_import_error = None
+from rest_framework import parsers, renderers
+
+from ..abc import Parser, Renderer
+
+_import_error: ImportError
 try:
     import msgpack
 except ImportError as e:
-    msgpack = None
+    msgpack = None  # type: ignore[assignment]
     _import_error = e
 
 
-class MsgPackRenderer(renderers.BaseRenderer):
+class MsgPackRenderer(renderers.BaseRenderer, Renderer):
     media_type = "application/msgpack"
     format = "msgpack"
     charset = None
     render_style = "binary"
 
-    def render(self, data, media_type=None, renderer_context=None):
+    def render(
+        self,
+        data: dict[str, Any],
+        media_type: str | None = None,
+        renderer_context: Mapping[str, Any] | None = None,
+    ) -> bytes:
         if not msgpack:
             raise _import_error
         return msgpack.packb(data, use_bin_type=True)
 
 
-class MsgPackParser(parsers.BaseParser):
+class MsgPackParser(parsers.BaseParser, Parser):
     media_type = "application/msgpack"
 
-    def parse(self, stream, media_type=None, parser_context=None):
+    def parse(
+        self,
+        stream: IO[Any],
+        media_type: str | None = None,
+        parser_context: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
         if not msgpack:
             raise _import_error
-        return msgpack.unpack(stream, use_list=False, encoding="utf-8")
+        return msgpack.unpack(stream, use_list=False)
 
 
 __all__ = ["MsgPackRenderer", "MsgPackParser"]

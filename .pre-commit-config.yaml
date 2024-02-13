@@ -16,7 +16,11 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/psf/black
-    rev: "23.12.1"
+    rev: "24.1.1"
     hooks:
       - id: black
-        types: [file, python]
+
+  - repo: https://github.com/pycqa/isort
+    rev: "5.13.2"
+    hooks:
+      - id: isort

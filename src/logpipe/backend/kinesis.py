@@ -1,34 +1,62 @@
-from django.apps import apps
-from lru import LRU
-from .. import settings
-from . import RecordMetadata, Record, get_offset_backend
-from botocore.exceptions import ClientError
-import boto3
+from __future__ import annotations
+
+from typing import Any, NotRequired, TypedDict
 import collections
 import logging
 import time
 
+from botocore.exceptions import ClientError
+from django.apps import apps
+from lru import LRU
+from mypy_boto3_kinesis import KinesisClient
+from mypy_boto3_kinesis.type_defs import GetRecordsOutputTypeDef, PutRecordOutputTypeDef
+import boto3
+
+from .. import settings
+from ..abc import (
+    ConsumerBackend,
+    OffsetStoreBackend,
+    ProducerBackend,
+    Record,
+    RecordMetadata,
+)
+from . import get_offset_backend
+
 logger = logging.getLogger(__name__)
 
+ShardID = str
+ShardIterator = str
 
-class KinesisBase(object):
-    _client = None
+
+class KinesisClientConfig(TypedDict):
+    region_name: str
+
+
+class PutRecordKwargs(TypedDict):
+    StreamName: str
+    Data: bytes
+    PartitionKey: str
+    SequenceNumberForOrdering: NotRequired[str]
+
+
+class KinesisBase:
+    _client: KinesisClient | None = None
 
     @property
-    def client(self):
+    def client(self) -> KinesisClient:
         if not self._client:
             kwargs = self._get_client_config()
             self._client = boto3.client("kinesis", **kwargs)
         return self._client
 
-    def _get_client_config(self):
-        return {
-            "region_name": settings.get_aws_region(),
-        }
+    def _get_client_config(self) -> KinesisClientConfig:
+        return KinesisClientConfig(
+            region_name=settings.get_aws_region(),
+        )
 
 
-class ModelOffsetStore(object):
-    def commit(self, consumer, message):
+class ModelOffsetStore(OffsetStoreBackend):
+    def commit(self, consumer: ConsumerBackend, message: Record) -> None:
         KinesisOffset = apps.get_model(app_label="logpipe", model_name="KinesisOffset")
         region = settings.get_aws_region()
         logger.debug(
@@ -47,7 +75,7 @@ class ModelOffsetStore(object):
         obj.sequence_number = message.offset
         obj.save()
 
-    def seek(self, consumer, stream, shard):
+    def seek(self, consumer: ConsumerBackend, stream: str, shard: str) -> None:
         KinesisOffset = apps.get_model(app_label="logpipe", model_name="KinesisOffset")
         region = settings.get_aws_region()
         try:
@@ -67,14 +95,14 @@ class ModelOffsetStore(object):
             consumer.seek_to_sequence_number(shard, None)
 
 
-class Consumer(KinesisBase):
-    def __init__(self, topic_name, **kwargs):
+class Consumer(KinesisBase, ConsumerBackend):
+    def __init__(self, topic_name: str, **kwargs: Any):
         self.topic_name = topic_name
         self.client_kwargs = kwargs
 
-        self.shards = collections.deque()
-        self.records = collections.deque()
-        self.shard_iters = {}
+        self.shards: collections.deque[ShardID] = collections.deque()
+        self.records: collections.deque[Record] = collections.deque()
+        self.shard_iters: dict[ShardID, ShardIterator] = {}
 
         shards = self._list_shard_ids()
         logger.debug("Found {} kinesis shards.".format(len(shards)))
@@ -83,7 +111,9 @@ class Consumer(KinesisBase):
             self.shards.append(shard)
             backend.seek(self, self.topic_name, shard)
 
-    def seek_to_sequence_number(self, shard, sequence_number=None):
+    def seek_to_sequence_number(
+        self, shard: str, sequence_number: str | None = None
+    ) -> None:
         if sequence_number is None:
             resp = self.client.get_shard_iterator(
                 StreamName=self.topic_name,
@@ -99,10 +129,10 @@ class Consumer(KinesisBase):
             )
         self.shard_iters[shard] = resp["ShardIterator"]
 
-    def __iter__(self):
+    def __iter__(self) -> Consumer:
         return self
 
-    def __next__(self):
+    def __next__(self) -> Record:
         # Try and load records. Keep trying until either (1) we have some records or (2) current_lag drops to 0
         while len(self.records) <= 0:
             # Load a page from each shard and sum the shard lags
@@ -121,7 +151,7 @@ class Consumer(KinesisBase):
         # Return the left most record in the queue
         return self.records.popleft()
 
-    def _load_next_page(self):
+    def _load_next_page(self) -> int:
         # Load a page from the left-most shard in the queue
         try:
             shard = self.shards.popleft()
@@ -182,7 +212,12 @@ class Consumer(KinesisBase):
 
         return current_stream_lag
 
-    def _get_records(self, shard_iter, fetch_limit, retries=1):
+    def _get_records(
+        self,
+        shard_iter: ShardIterator,
+        fetch_limit: int,
+        retries: int = 1,
+    ) -> GetRecordsOutputTypeDef | None:
         i = 0
         while i <= retries:
             try:
@@ -211,20 +246,22 @@ class Consumer(KinesisBase):
         )
         return None
 
-    def _list_shard_ids(self):
+    def _list_shard_ids(self) -> list[ShardID]:
         resp = self.client.describe_stream(StreamName=self.topic_name)
         return [shard["ShardId"] for shard in resp["StreamDescription"]["Shards"]]
 
 
-class Producer(KinesisBase):
-    _last_sequence_numbers = LRU(settings.get("KINESIS_SEQ_NUM_CACHE_SIZE", 1000))
+class Producer(KinesisBase, ProducerBackend):
+    _last_sequence_numbers: LRU[str, dict[str, str]] = LRU(
+        settings.get("KINESIS_SEQ_NUM_CACHE_SIZE", 1000)
+    )
 
-    def send(self, topic_name, key, value):
-        kwargs = {
-            "StreamName": topic_name,
-            "Data": value,
-            "PartitionKey": key,
-        }
+    def send(self, topic_name: str, key: str, value: bytes) -> RecordMetadata | None:
+        kwargs = PutRecordKwargs(
+            StreamName=topic_name,
+            Data=value,
+            PartitionKey=key,
+        )
 
         if topic_name not in self._last_sequence_numbers:
             self._last_sequence_numbers[topic_name] = {}
@@ -233,6 +270,8 @@ class Producer(KinesisBase):
             kwargs["SequenceNumberForOrdering"] = last_seq_num
 
         metadata = self._send_and_retry(kwargs)
+        if metadata is None:
+            return None
 
         shard_id = metadata["ShardId"]
         seq_num = str(metadata["SequenceNumber"])
@@ -240,7 +279,9 @@ class Producer(KinesisBase):
 
         return RecordMetadata(topic=topic_name, partition=shard_id, offset=seq_num)
 
-    def _send_and_retry(self, data, retries=1):
+    def _send_and_retry(
+        self, data: PutRecordKwargs, retries: int = 1
+    ) -> PutRecordOutputTypeDef | None:
         i = 0
         while i <= retries:
             try:
@@ -257,11 +298,12 @@ class Producer(KinesisBase):
                     time.sleep(5)
                 else:
                     logger.warning(
-                        "Received {} from AWS API: {}".format(
-                            e.response["Error"]["Code"], e.response["Error"]["Message"]
-                        )
+                        "Received %s from AWS API: %s",
+                        e.response["Error"]["Code"],
+                        e.response["Error"]["Message"],
                     )
             i += 1
         logger.warning(
             "After {} attempts, couldn't send message to Kinesis. Giving up.".format(i)
         )
+        return None

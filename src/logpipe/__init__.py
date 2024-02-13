@@ -1,14 +1,15 @@
-from django.core.exceptions import ImproperlyConfigured
-from .constants import FORMAT_JSON, FORMAT_MSGPACK, FORMAT_PICKLE
-from .formats.json import JSONRenderer, JSONParser
-from .formats.msgpack import MsgPackRenderer, MsgPackParser
-from .formats.pickle import PickleRenderer, PickleParser
-from .producer import Producer
-from .consumer import Consumer, MultiConsumer
-from .registry import register_consumer
-from . import format, settings
 import logging
 
+from django.core.exceptions import ImproperlyConfigured
+
+from . import format, settings
+from .constants import FORMAT_JSON, FORMAT_MSGPACK, FORMAT_PICKLE
+from .consumer import Consumer, MultiConsumer
+from .formats.json import JSONParser, JSONRenderer
+from .formats.msgpack import MsgPackParser, MsgPackRenderer
+from .formats.pickle import PickleParser, PickleRenderer
+from .producer import Producer
+from .registry import register_consumer
 
 logger = logging.getLogger(__name__)
 

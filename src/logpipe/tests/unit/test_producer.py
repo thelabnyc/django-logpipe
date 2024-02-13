@@ -1,8 +1,10 @@
+from unittest import mock
+
 from django.test import TestCase
 from rest_framework import serializers
+
 from logpipe import Producer
-from logpipe.tests.common import StateSerializer, StateModel, TOPIC_STATES
-from unittest import mock
+from logpipe.tests.common import TOPIC_STATES, StateModel, StateSerializer
 
 
 class CustomStateSerializer(StateSerializer):
