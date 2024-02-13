@@ -36,7 +36,9 @@ djangorestframework-stubs = "^3.14.5"
 msgpack-types = "^0.2.0"
 
 [tool.poetry.group.kafka.dependencies]
-kafka-python = "*"
+# Install Kafka from github until they pulish a Py3.12 version on PyPi
+# kafka-python = "*"
+kafka-python = {git = "https://github.com/dpkp/kafka-python.git", rev = "master"}
 
 [tool.poetry.group.kinesis.dependencies]
 boto3 = "*"
