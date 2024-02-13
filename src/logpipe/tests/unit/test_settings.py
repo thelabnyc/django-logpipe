@@ -3,7 +3,7 @@ from django.core.exceptions import ImproperlyConfigured
 from logpipe import settings
 
 
-class ProducerTest(TestCase):
+class SettingsTest(TestCase):
     @override_settings(LOGPIPE={"KAFKA_BOOTSTRAP_SERVERS": ["kafka:9092"]})
     def test_normal_required_key(self):
         self.assertEqual(settings.get("KAFKA_BOOTSTRAP_SERVERS"), ["kafka:9092"])

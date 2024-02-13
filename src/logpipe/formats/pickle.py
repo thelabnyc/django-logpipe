@@ -1,21 +1,34 @@
+from collections.abc import Mapping
+from typing import IO, Any
 from rest_framework import renderers, parsers
+from ..abc import Renderer, Parser
 import pickle
 
 
-class PickleRenderer(renderers.BaseRenderer):
+class PickleRenderer(renderers.BaseRenderer, Renderer):
     media_type = "application/python-pickle"
     format = "pickle"
     charset = None
     render_style = "binary"
 
-    def render(self, data, media_type=None, renderer_context=None):
+    def render(
+        self,
+        data: dict[str, Any],
+        media_type: str | None = None,
+        renderer_context: Mapping[str, Any] | None = None,
+    ) -> bytes:
         return pickle.dumps(data)
 
 
-class PickleParser(parsers.BaseParser):
+class PickleParser(parsers.BaseParser, Parser):
     media_type = "application/python-pickle"
 
-    def parse(self, stream, media_type=None, parser_context=None):
+    def parse(
+        self,
+        stream: IO[Any],
+        media_type: str | None = None,
+        parser_context: Mapping[str, Any] | None = None,
+    ) -> dict[str, Any]:
         return pickle.load(stream)
 
 

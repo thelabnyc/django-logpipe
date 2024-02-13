@@ -16,7 +16,7 @@ class StateSerializer(serializers.Serializer):
     name = serializers.CharField()
 
 
-class StateModel(object):
+class StateModel:
     code = ""
     name = ""
 

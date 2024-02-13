@@ -2,7 +2,8 @@ from django.apps import AppConfig
 
 
 class LPTesterConfig(AppConfig):
-    name = "lptester"
+    name = "sandbox.lptester"
+    label = "lptester"
     default = True
 
     def ready(self):

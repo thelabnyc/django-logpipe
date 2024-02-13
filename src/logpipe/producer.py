@@ -1,25 +1,38 @@
+from django.db import models
+from typing import Any
 from .backend import get_producer_backend
 from .constants import FORMAT_JSON
 from .format import render
+from .abc import ProducerBackend, DRFSerializer, RecordMetadata
 from . import settings
 import logging
 
 
 logger = logging.getLogger(__name__)
 
+Sendable = dict[str, Any] | models.Model
 
-class Producer(object):
-    _client = None
 
-    def __init__(self, topic_name, serializer_class, producer_id=None):
+class Producer:
+    _client: ProducerBackend
+    topic_name: str
+    serializer_class: type[DRFSerializer]
+    producer_id: str
+
+    def __init__(
+        self,
+        topic_name: str,
+        serializer_class: type[DRFSerializer],
+        producer_id: str | None = None,
+    ):
         self.client = get_producer_backend()
         self.topic_name = topic_name
         self.serializer_class = serializer_class
-        self.producer_id = producer_id
-        if not self.producer_id:
-            self.producer_id = settings.get("PRODUCER_ID", "")
+        self.producer_id = (
+            producer_id if producer_id else settings.get("PRODUCER_ID", "")
+        )
 
-    def send(self, instance, renderer=None):
+    def send(self, instance: Sendable) -> RecordMetadata | None:
         # Instantiate the serialize
         ser = self.serializer_class(instance=instance)
 
@@ -29,7 +42,7 @@ class Producer(object):
 
         # Get the message's partition key
         key_field = getattr(self.serializer_class, "KEY_FIELD", None)
-        key = None
+        key = ""
         if key_field:
             key = str(ser.data[key_field])
 

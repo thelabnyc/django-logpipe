@@ -35,10 +35,8 @@ class KafkaOffset(models.Model):
         unique_together = ("topic", "partition")
         ordering = ("topic", "partition", "offset")
 
-    def __str__(self):
-        return 'topic="{}", partition="{}", offset="{}"'.format(
-            self.topic, self.partition, self.offset
-        )
+    def __str__(self) -> str:
+        return f'topic="{self.topic}", partition="{self.partition}", offset="{self.offset}"'
 
 
 class KinesisOffset(models.Model):
@@ -121,7 +119,5 @@ class KinesisOffset(models.Model):
         unique_together = ("region", "stream", "shard")
         ordering = ("stream", "shard", "sequence_number")
 
-    def __str__(self):
-        return 'region="{}", stream="{}", shard="{}", sequence_number="{}"'.format(
-            self.region, self.stream, self.shard, self.sequence_number
-        )
+    def __str__(self) -> str:
+        return f'region="{self.region}", stream="{self.stream}", shard="{self.shard}", sequence_number="{self.sequence_number}"'
