@@ -68,6 +68,8 @@ pages:
   stage: release
   image: "registry.gitlab.com/thelabnyc/python:py311"
   rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+      when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"
   needs:
     - precommit
