@@ -24,19 +24,12 @@ cache:
   - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"
   - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
-precommit:
-  stage: test
-  image: python:3
-  rules:
-    - !reference [.rules_mrs_and_protected]
-  variables:
-    PRE_COMMIT_HOME: ${CI_PROJECT_DIR}/.cache/pre-commit
-  script:
-    - pip3 install pre-commit
-    - pre-commit run --all-files
-  cache:
-    paths:
-      - ${PRE_COMMIT_HOME}
+include:
+  - component: gitlab.com/thelabnyc/thelab-ci-components/precommit@0.0.1
+    rules:
+      - !reference [.rules_mrs_and_protected]
+  - component: gitlab.com/thelabnyc/thelab-ci-components/publish-gitlab-release@0.0.1
+  - component: gitlab.com/thelabnyc/thelab-ci-components/publish-to-pypi@0.0.1
 
 test:lib:
   stage: test
@@ -80,43 +73,3 @@ pages:
   artifacts:
     paths:
       - public
-
-publish_pkg:
-  image: registry.gitlab.com/thelabnyc/python:py311
-  stage: release
-  needs:
-    - precommit
-    - test:lib
-  rules:
-    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
-  script:
-    - pip install twine
-    - poetry build
-    # Publish to PyPI
-    - export TWINE_USERNAME=__token__
-    - export TWINE_PASSWORD=${PYPI_TOKEN}
-    - python -m twine upload
-        --repository-url https://upload.pypi.org/legacy/
-        dist/*
-    # Publish to Gitlab
-    - export TWINE_USERNAME=gitlab-ci-token
-    - export TWINE_PASSWORD=${CI_JOB_TOKEN}
-    - python -m twine upload
-        --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi
-        dist/*
-
-publish_gitlab_release:
-  image: registry.gitlab.com/gitlab-org/release-cli:latest
-  stage: release
-  needs:
-    - precommit
-    - test:lib
-  rules:
-    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED
-  script:
-    - echo 'release job'
-  release:
-    name: 'Release $CI_COMMIT_TAG'
-    description: 'Release $CI_COMMIT_TAG. Tagged by $GITLAB_USER_LOGIN'
-    tag_name: '$CI_COMMIT_TAG'
-    ref: '$CI_COMMIT_TAG'
