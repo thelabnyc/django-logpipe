@@ -56,7 +56,6 @@ test:docs:
   image: "registry.gitlab.com/thelabnyc/python:py311"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  stage: test
   script:
     - poetry install
     - make docs
@@ -69,7 +68,6 @@ pages:
       when: never
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"
   needs:
-    - precommit
     - test:lib
   script:
     - poetry install
