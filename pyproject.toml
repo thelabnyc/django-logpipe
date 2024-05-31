@@ -46,7 +46,7 @@ mkautodoc = "^0.2.0"
 [tool.poetry.group.kafka.dependencies]
 # Install Kafka from github until they pulish a Py3.12 version on PyPi
 # kafka-python = "*"
-kafka-python = {git = "https://github.com/dpkp/kafka-python.git", rev = "master"}
+kafka-python = {git = "https://github.com/dpkp/kafka-python.git", rev = "a6d0579d3cadd3826dd364b01bc12a2173139abc"}
 
 [tool.poetry.group.kinesis.dependencies]
 boto3 = "*"
