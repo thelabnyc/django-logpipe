@@ -264,7 +264,7 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
         data: Any,
     ) -> PydanticModel:
         serializer = serializer_class.model_validate(data)
-        serializer._instance = instance
+        serializer._instance = instance  # type: ignore[attr-defined]
         return serializer
 
 
