@@ -21,7 +21,7 @@ python = "^3.11"
 Django = ">=4.2"
 djangorestframework = ">=3.14"
 lru-dict = ">=1.1.6"
-pydantic = "^2.6.1"
+pydantic = "^2.7.4"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "*"
