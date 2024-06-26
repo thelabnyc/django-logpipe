@@ -17,7 +17,7 @@ include = "logpipe"
 from = "src"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12.4"
 Django = ">=5.0.6"
 djangorestframework = ">=3.15.2"
 lru-dict = ">=1.3.0"
