@@ -1,10 +1,4 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-    "extends": ["config:recommended"],
-    "lockFileMaintenance": {
-        "enabled": true,
-        "schedule": ["before 11am on tuesday"]
-    },
-    "rangeStrategy": "bump",
-    "timezone": "America/New_York"
+    "extends": ["gitlab>thelabnyc/renovate-config:library"]
 }
