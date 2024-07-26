@@ -40,7 +40,7 @@ coverage = "^7.6.0"
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.0"
 pymdown-extensions = "^10.8.1"
-mkdocs-material = "^9.5.29"
+mkdocs-material = "^9.5.30"
 mkautodoc = "^0.2.0"
 
 [tool.poetry.group.kafka.dependencies]
