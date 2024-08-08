@@ -108,7 +108,6 @@ ignore_errors = true
 name = "cz_conventional_commits"
 annotated_tag = true
 gpg_sign = true
-major_version_zero = true
 tag_format = "v$version"
 update_changelog_on_bump = true
 changelog_merge_prerelease = true
