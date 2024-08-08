@@ -103,3 +103,23 @@ omit = [
 [tool.coverage.report]
 show_missing = true
 ignore_errors = true
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+annotated_tag = true
+gpg_sign = true
+major_version_zero = true
+tag_format = "v$version"
+update_changelog_on_bump = true
+changelog_merge_prerelease = true
+version_provider = "poetry"
+version_scheme = "pep440"
+version_files = [
+    "pyproject.toml:version",
+]
+pre_bump_hooks = [
+    "pre-commit run --all-files || true",
+]
+post_bump_hooks = [
+    "git push origin master $CZ_POST_CURRENT_TAG_VERSION"
+]
