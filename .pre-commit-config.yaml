@@ -1,6 +1,6 @@
 repos:
   - repo: https://gitlab.com/thelabnyc/thelab-pre-commit-hooks
-    rev: r0.0.1
+    rev: v0.0.2
     hooks:
       - id: update-copyright-year
 
