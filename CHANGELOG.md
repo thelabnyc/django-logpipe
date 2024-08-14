@@ -1,3 +1,9 @@
+## v1.4.2 (2024-08-14)
+
+### Fix
+
+- fix errant pkg extra definitions
+
 ## v1.4.1 (2024-08-14)
 
 ### Fix

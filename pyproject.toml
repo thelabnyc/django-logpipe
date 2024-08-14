@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.poetry]
 name = "django-logpipe"
-version = "1.4.1"
+version = "1.4.2"
 description = "Move data around between Python services using Kafka and/or AWS Kinesis and Django Rest Framework serializers."
 authors = ["thelab <thelabdev@thelab.co>"]
 readme = "README.md"
