@@ -1,3 +1,9 @@
+## v1.4.1 (2024-08-14)
+
+### Fix
+
+- fix missing dependency on boto3-stubs when using Kinesis
+
 ## v1.4.1b0 (2024-08-08)
 
 ### Fix
