@@ -1,3 +1,9 @@
+## v1.4.4 (2024-08-14)
+
+### Fix
+
+- kafka-python dep declaration
+
 ## v1.4.3 (2024-08-14)
 
 ### Fix
