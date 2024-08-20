@@ -228,7 +228,10 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
         instance: models.Model | None,
         data: Any,
     ) -> Serializer:
-        if serializer_class._tag == SerializerType.PYDANTIC:
+        if (
+            hasattr(serializer_class, "_tag")
+            and serializer_class._tag == SerializerType.PYDANTIC
+        ):
             return self._construct_pydantic_serializer_instance(
                 serializer_class=serializer_class,
                 message=message,
@@ -236,7 +239,7 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
                 data=data,
             )
         return self._construct_drf_serializer_instance(
-            serializer_class=serializer_class,
+            serializer_class=serializer_class,  # type:ignore[arg-type]
             message=message,
             instance=instance,
             data=data,
