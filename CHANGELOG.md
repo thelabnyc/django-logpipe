@@ -1,3 +1,16 @@
+## v1.4.5 (2024-08-20)
+
+### Fix
+
+- AttributeError: type object Serializer has no attribute _tag
+- **deps**: update dependency boto3-stubs to ^1.35.0
+- **deps**: update dependency boto3 to ^1.35.0
+- **deps**: update dependency boto3-stubs to ^1.34.162
+- **deps**: update dependency boto3 to ^1.34.162
+- **deps**: update dependency boto3-stubs to ^1.34.160
+- **deps**: update dependency botocore-stubs to ^1.34.159
+- **deps**: update dependency boto3-stubs to ^1.34.159
+
 ## v1.4.4 (2024-08-14)
 
 ### Fix
