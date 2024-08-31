@@ -1,3 +1,20 @@
+## v1.4.6 (2024-08-31)
+
+### Fix
+
+- **deps**: update dependency boto3 to ^1.35.7
+- **deps**: update dependency botocore-stubs to ^1.35.6
+- **deps**: update dependency boto3-stubs to ^1.35.6
+- **deps**: update dependency boto3 to ^1.35.6
+- **deps**: update dependency botocore-stubs to ^1.35.5
+- **deps**: update dependency boto3-stubs to ^1.35.5
+- **deps**: update dependency boto3 to ^1.35.5
+- **deps**: update dependency boto3 to ^1.35.4
+- **deps**: update dependency boto3 to ^1.35.2
+- **deps**: update dependency boto3-stubs to ^1.35.1
+- **deps**: update dependency boto3 to ^1.35.1
+- **deps**: update dependency botocore-stubs to ^1.35.0
+
 ## v1.4.5 (2024-08-20)
 
 ### Fix
