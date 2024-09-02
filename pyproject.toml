@@ -47,7 +47,7 @@ msgpack-types = "^0.3.0"
 coverage = "^7.6.1"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs = "^1.6.0"
+mkdocs = "^1.6.1"
 pymdown-extensions = "^10.8.1"
 mkdocs-material = "^9.5.33"
 mkautodoc = "^0.2.0"
