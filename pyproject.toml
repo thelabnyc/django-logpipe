@@ -25,7 +25,7 @@ pydantic = "^2.9.0"
 kafka-python = {version = "*", optional = true}
 boto3 = {version = "^1.35.14", optional = true}
 boto3-stubs = {version = "^1.35.14", extras = ["kinesis"], optional = true}
-botocore-stubs = {version = "^1.35.10", optional = true}
+botocore-stubs = {version = "^1.35.14", optional = true}
 msgpack = {version = "^1.0.8", optional = true}
 
 [tool.poetry.extras]
