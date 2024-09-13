@@ -26,7 +26,7 @@ kafka-python = {version = "*", optional = true}
 boto3 = {version = "^1.35.14", optional = true}
 boto3-stubs = {version = "^1.35.14", extras = ["kinesis"], optional = true}
 botocore-stubs = {version = "^1.35.14", optional = true}
-msgpack = {version = "^1.0.8", optional = true}
+msgpack = {version = "^1.1.0", optional = true}
 
 [tool.poetry.extras]
 kafka = ["kafka-python"]
