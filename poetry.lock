@@ -1436,7 +1436,7 @@ xray = ["aws-xray-sdk (>=0.93,!=0.96)", "setuptools"]
 name = "msgpack"
 version = "1.1.0"
 description = "MessagePack serializer"
-optional = true
+optional = false
 python-versions = ">=3.8"
 files = [
     {file = "msgpack-1.1.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:7ad442d527a7e358a469faf43fda45aaf4ac3249c8310a82f0ccff9164e5dccd"},
@@ -1507,14 +1507,17 @@ files = [
 
 [[package]]
 name = "msgpack-types"
-version = "0.3.0"
+version = "0.4.0"
 description = "Type stubs for msgpack"
 optional = false
-python-versions = "<4.0,>=3.7"
+python-versions = "<4.0,>=3.8"
 files = [
-    {file = "msgpack_types-0.3.0-py3-none-any.whl", hash = "sha256:44933978973cf1f09a97fc830676b10ba848cc103d73628af5c57f14ec4d6e92"},
-    {file = "msgpack_types-0.3.0.tar.gz", hash = "sha256:e14faa08ab56ce529738f04d585e601c90f415d11d84f8089883d00d731d1ebf"},
+    {file = "msgpack_types-0.4.0-py3-none-any.whl", hash = "sha256:ee8b4eb14049639d096e570ea3d3a74cf1534d6b82a91dae9c8cbf917d983047"},
+    {file = "msgpack_types-0.4.0.tar.gz", hash = "sha256:01d32665d3c7ccebe2406fd63863287f8645525c4ddd25b915322cffcaf5bcc7"},
 ]
+
+[package.dependencies]
+msgpack = ">=1.1.0,<1.2.0"
 
 [[package]]
 name = "mypy"
@@ -2440,4 +2443,4 @@ msgpack = ["msgpack"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "b4578e0998cc2e5da2c6892167d3067ac34bd4b9408c4dbbdc04d7c5b3ccbf74"
+content-hash = "3bea8dcf6e259d1ca0299b271cff40075acf5acdc6b6085379ed3d3bc3e6b1a5"
