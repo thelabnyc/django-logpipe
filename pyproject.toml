@@ -48,7 +48,7 @@ coverage = "^7.6.1"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
-pymdown-extensions = "^10.8.1"
+pymdown-extensions = "^10.10.1"
 mkdocs-material = "^9.5.36"
 mkautodoc = "^0.2.0"
 
