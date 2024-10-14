@@ -44,7 +44,7 @@ kafka-python = {git = "https://github.com/dpkp/kafka-python.git", rev = "master"
 django-stubs = {extras = ["compatible-mypy"], version = "^5.1.0"}
 djangorestframework-stubs = "^3.15.1"
 msgpack-types = "^0.5.0"
-coverage = "^7.6.1"
+coverage = "^7.6.2"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
