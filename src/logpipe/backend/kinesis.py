@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, NotRequired, TypedDict
+from typing import TYPE_CHECKING, Any, NotRequired, TypedDict
 import collections
 import logging
 import time
@@ -8,8 +8,6 @@ import time
 from botocore.exceptions import ClientError
 from django.apps import apps
 from lru import LRU
-from mypy_boto3_kinesis import KinesisClient
-from mypy_boto3_kinesis.type_defs import GetRecordsOutputTypeDef, PutRecordOutputTypeDef
 import boto3
 
 from .. import settings
@@ -22,6 +20,12 @@ from ..abc import (
 )
 from . import get_offset_backend
 
+if TYPE_CHECKING:
+    from mypy_boto3_kinesis import KinesisClient
+    from mypy_boto3_kinesis.type_defs import (
+        GetRecordsOutputTypeDef,
+        PutRecordOutputTypeDef,
+    )
 logger = logging.getLogger(__name__)
 
 ShardID = str
