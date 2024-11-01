@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/thelabnyc/python:py312
+FROM registry.gitlab.com/thelabnyc/python:py313
 
 RUN mkdir /code
 WORKDIR /code
