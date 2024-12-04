@@ -2475,4 +2475,4 @@ msgpack = ["msgpack"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "9bb6badbaed3c7cfe0d00948131937c32bc44b00002be690ae32b792ca0ea34a"
+content-hash = "b3bfab4414ed013f56b8bea20a7d4cf74378f18d7f30053717c9b5725170f65f"
