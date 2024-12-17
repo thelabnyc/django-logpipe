@@ -42,7 +42,7 @@ tox = "*"
 pytz = "*"
 kafka-python = {git = "https://github.com/dpkp/kafka-python.git", rev = "master", optional = true}
 django-stubs = {extras = ["compatible-mypy"], version = "^5.1.1"}
-djangorestframework-stubs = "^3.15.1"
+djangorestframework-stubs = "^3.15.2"
 msgpack-types = "^0.5.0"
 coverage = "^7.6.9"
 
