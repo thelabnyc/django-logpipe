@@ -1,3 +1,44 @@
+## v1.4.7 (2025-01-14)
+
+### Fix
+
+- **deps**: update dependency pydantic to ^2.10.5
+- **deps**: update boto to ^1.35.96
+- **deps**: update boto to ^1.35.91
+- **deps**: update boto to ^1.35.88
+- **deps**: update dependency pydantic to ^2.10.4
+- **deps**: update boto to ^1.35.85
+- **deps**: update boto to ^1.35.80
+- **deps**: update boto to ^1.35.76
+- **deps**: update dependency pydantic to ^2.10.3
+- **deps**: update boto to ^1.35.71
+- **deps**: update dependency pydantic to ^2.10.2
+- **deps**: update dependency pydantic to ^2.10.1
+- **deps**: update boto to ^1.35.67
+- **deps**: update boto to ^1.35.63
+- **deps**: update boto
+- **deps**: update boto to ^1.35.53
+- **deps**: update boto
+- lint
+- **deps**: update boto to ^1.35.43
+- **deps**: update boto to ^1.35.33
+- **deps**: update boto to ^1.35.23
+- **deps**: update dependency pydantic to ^2.9.2
+- **deps**: update boto to ^1.35.18
+- **deps**: update dependency msgpack to ^1.1.0
+- **deps**: update dependency pydantic to ^2.9.1
+- **deps**: update dependency botocore-stubs to ^1.35.14
+- **deps**: update dependency pydantic to ^2.9.0
+- **deps**: update dependency boto3-stubs to ^1.35.14
+- **deps**: update dependency boto3 to ^1.35.14
+- **deps**: update dependency boto3-stubs to ^1.35.13
+- **deps**: update dependency boto3 to ^1.35.13
+- **deps**: update dependency boto3 to ^1.35.11
+- **deps**: update dependency botocore-stubs to ^1.35.10
+- **deps**: update dependency boto3-stubs to ^1.35.10
+- **deps**: update dependency boto3 to ^1.35.10
+- **deps**: update dependency boto3 to ^1.35.9
+
 ## v1.4.6 (2024-08-31)
 
 ### Fix
