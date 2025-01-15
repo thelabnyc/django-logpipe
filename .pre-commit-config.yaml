@@ -27,6 +27,6 @@ repos:
       - id: isort
 
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v3.31.0
+    rev: v4.1.0
     hooks:
       - id: commitizen
