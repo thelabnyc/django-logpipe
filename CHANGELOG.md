@@ -1,3 +1,12 @@
+## v1.4.8 (2025-01-23)
+
+### Fix
+
+- add type checking to sandbox app
+- add django 5.1 and Python 3.13 to tests
+- incorrect type annotations in DRFSerializer.lookup_instance
+- **deps**: update boto to ^1.36.1
+
 ## v1.4.7 (2025-01-14)
 
 ### Fix
