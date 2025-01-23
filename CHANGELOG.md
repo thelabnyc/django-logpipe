@@ -1,3 +1,9 @@
+## v1.4.9 (2025-01-23)
+
+### Fix
+
+- allow the customization of ShardIteratorType through the settings (!224)
+
 ## v1.4.8 (2025-01-23)
 
 ### Fix
