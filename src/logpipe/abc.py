@@ -3,7 +3,17 @@ from __future__ import annotations
 from abc import abstractmethod
 from collections.abc import Mapping
 from enum import Enum, auto
-from typing import IO, Any, ClassVar, Iterable, Literal, NamedTuple, Protocol
+from typing import (
+    IO,
+    Any,
+    ClassVar,
+    Iterable,
+    Literal,
+    NamedTuple,
+    Protocol,
+    TypeGuard,
+    TypeVar,
+)
 
 from django.db import models
 from pydantic import BaseModel
@@ -12,6 +22,8 @@ from rest_framework import serializers
 MessageType = str
 MessageVersion = int
 TopicName = str
+
+_IN = TypeVar("_IN", bound=models.Model)  # Instance Type
 
 
 class Record(NamedTuple):
@@ -96,14 +108,14 @@ class SerializerType(Enum):
     PYDANTIC = auto()
 
 
-class DRFSerializer(serializers.Serializer[Any]):
+class DRFSerializer(serializers.Serializer[_IN]):
     _tag: ClassVar[Literal[SerializerType.DRF]] = SerializerType.DRF
     MESSAGE_TYPE: ClassVar[str]
     VERSION: ClassVar[int]
     KEY_FIELD: ClassVar[str]
 
     @classmethod
-    def lookup_instance(cls, **kwargs: dict[str, Any]) -> models.Model | None:
+    def lookup_instance(cls, **kwargs: Any) -> _IN | None:
         raise NotImplementedError()
 
 
@@ -115,3 +127,13 @@ class PydanticModel(BaseModel):
 
     def save(self) -> Any:
         raise NotImplementedError()
+
+
+SerializerClass = type[DRFSerializer[Any]] | type[PydanticModel]
+Serializer = DRFSerializer[Any] | PydanticModel
+
+
+def is_pydantic_serializer_class(
+    cls: SerializerClass,
+) -> TypeGuard[type[PydanticModel]]:
+    return hasattr(cls, "_tag") and cls._tag == SerializerType.PYDANTIC

@@ -26,6 +26,7 @@ if TYPE_CHECKING:
         GetRecordsOutputTypeDef,
         PutRecordOutputTypeDef,
     )
+
 logger = logging.getLogger(__name__)
 
 ShardID = str
@@ -44,10 +45,10 @@ class PutRecordKwargs(TypedDict):
 
 
 class KinesisBase:
-    _client: KinesisClient | None = None
+    _client: "KinesisClient | None" = None
 
     @property
-    def client(self) -> KinesisClient:
+    def client(self) -> "KinesisClient":
         if not self._client:
             kwargs = self._get_client_config()
             self._client = boto3.client("kinesis", **kwargs)
@@ -221,7 +222,7 @@ class Consumer(KinesisBase, ConsumerBackend):
         shard_iter: ShardIterator,
         fetch_limit: int,
         retries: int = 1,
-    ) -> GetRecordsOutputTypeDef | None:
+    ) -> "GetRecordsOutputTypeDef | None":
         i = 0
         while i <= retries:
             try:
@@ -285,7 +286,7 @@ class Producer(KinesisBase, ProducerBackend):
 
     def _send_and_retry(
         self, data: PutRecordKwargs, retries: int = 1
-    ) -> PutRecordOutputTypeDef | None:
+    ) -> "PutRecordOutputTypeDef | None":
         i = 0
         while i <= retries:
             try:
