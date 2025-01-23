@@ -123,7 +123,9 @@ class Consumer(KinesisBase, ConsumerBackend):
             resp = self.client.get_shard_iterator(
                 StreamName=self.topic_name,
                 ShardId=shard,
-                ShardIteratorType="TRIM_HORIZON",
+                ShardIteratorType=settings.get(
+                    "KINESIS_SHARD_ITERATOR_TYPE", default="TRIM_HORIZON"
+                ),
             )
         else:
             resp = self.client.get_shard_iterator(
