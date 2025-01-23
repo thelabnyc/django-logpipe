@@ -1,3 +1,4 @@
+from typing import Any
 import uuid
 
 from django.db import models
@@ -12,7 +13,7 @@ class Person(models.Model):
 
     _disable_kafka_signals = False
 
-    def save(self, *args, **kwargs):
+    def save(self, *args: Any, **kwargs: Any) -> None:
         ret = super().save(*args, **kwargs)
         if not self._disable_kafka_signals:
             person_altered.send(sender=self.__class__, person=self)

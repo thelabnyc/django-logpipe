@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Generic, TypeVar
 import logging
 
 from django.db import models
@@ -10,6 +10,9 @@ from .constants import FORMAT_JSON
 from .format import render
 
 logger = logging.getLogger(__name__)
+
+
+_DRFSerType = TypeVar("_DRFSerType", bound=type[DRFSerializer[Any]])
 
 
 class BaseProducer:
@@ -59,18 +62,18 @@ class BaseProducer:
         return record_metadata
 
 
-class DRFProducer(BaseProducer):
+class DRFProducer(BaseProducer, Generic[_DRFSerType]):
     """
     Producer class for sending messages that are serialized using a Django Rest
     Framework serializer.
     """
 
-    serializer_class: type[DRFSerializer]
+    serializer_class: _DRFSerType
 
     def __init__(
         self,
         topic_name: str,
-        serializer_class: type[DRFSerializer],
+        serializer_class: _DRFSerType,
         producer_id: str | None = None,
     ):
         super().__init__(topic_name, producer_id)

@@ -1,4 +1,4 @@
-from typing import Any, Generator, Iterator
+from typing import Any, Generator, Iterator, TypeVar, cast
 import itertools
 import logging
 import time
@@ -14,7 +14,9 @@ from .abc import (
     MessageVersion,
     PydanticModel,
     Record,
-    SerializerType,
+    Serializer,
+    SerializerClass,
+    is_pydantic_serializer_class,
 )
 from .backend import get_consumer_backend, get_offset_backend
 from .exceptions import (
@@ -28,14 +30,14 @@ from .format import parse
 
 logger = logging.getLogger(__name__)
 
-
-Serializer = DRFSerializer | PydanticModel
+_Ser = TypeVar("_Ser", bound=Serializer)
+_DRFSer = TypeVar("_DRFSer", bound=DRFSerializer[Any])
 
 
 class Consumer(Iterator[tuple[Record, Serializer]]):
     consumer: ConsumerBackend
     throw_errors: bool
-    serializer_classes: dict[MessageType, dict[MessageVersion, type[Serializer]]]
+    serializer_classes: dict[MessageType, dict[MessageVersion, SerializerClass]]
     ignored_message_types: set[MessageType]
 
     def __init__(self, topic_name: str, throw_errors: bool = False, **kwargs: Any):
@@ -58,7 +60,7 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
     def commit(self, message: Record) -> None:
         get_offset_backend().commit(self.consumer, message)
 
-    def register(self, serializer_class: type[Serializer]) -> None:
+    def register(self, serializer_class: SerializerClass) -> None:
         message_type = serializer_class.MESSAGE_TYPE
         version = serializer_class.VERSION
         if message_type not in self.serializer_classes:
@@ -223,23 +225,23 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
 
     def _construct_serializer_instance(
         self,
-        serializer_class: type[Serializer],
+        serializer_class: SerializerClass,
         message: Record,
         instance: models.Model | None,
         data: Any,
     ) -> Serializer:
-        if (
-            hasattr(serializer_class, "_tag")
-            and serializer_class._tag == SerializerType.PYDANTIC
-        ):
+        if is_pydantic_serializer_class(serializer_class):
             return self._construct_pydantic_serializer_instance(
                 serializer_class=serializer_class,
                 message=message,
                 instance=instance,
                 data=data,
             )
+        # TODO: this cast can go away once we can use TypeIs instead of
+        # TypeGuard (added in Python 3.13).
+        serializer_class = cast(type[DRFSerializer[Any]], serializer_class)
         return self._construct_drf_serializer_instance(
-            serializer_class=serializer_class,  # type:ignore[arg-type]
+            serializer_class=serializer_class,
             message=message,
             instance=instance,
             data=data,
@@ -247,11 +249,11 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
 
     def _construct_drf_serializer_instance(
         self,
-        serializer_class: type[DRFSerializer],
+        serializer_class: type[_DRFSer],
         message: Record,
         instance: models.Model | None,
         data: Any,
-    ) -> DRFSerializer:
+    ) -> _DRFSer:
         serializer = serializer_class(instance=instance, data=data)
         try:
             serializer.is_valid(raise_exception=True)

@@ -6,5 +6,5 @@ class LPTesterConfig(AppConfig):
     label = "lptester"
     default = True
 
-    def ready(self):
+    def ready(self) -> None:
         from . import consumers, producers  # NOQA
