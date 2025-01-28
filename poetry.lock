@@ -44,18 +44,18 @@ dev = ["freezegun (>=1.0,<2.0)", "pytest (>=6.0)", "pytest-cov"]
 
 [[package]]
 name = "boto3"
-version = "1.36.6"
+version = "1.36.7"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">=3.8"
 groups = ["main", "dev"]
 files = [
-    {file = "boto3-1.36.6-py3-none-any.whl", hash = "sha256:6d473f0f340d02b4e9ad5b8e68786a09728101a8b950231b89ebdaf72b6dca21"},
-    {file = "boto3-1.36.6.tar.gz", hash = "sha256:b36feae061dc0793cf311468956a0a9e99215ce38bc99a1a4e55a5b105f16297"},
+    {file = "boto3-1.36.7-py3-none-any.whl", hash = "sha256:ab501f75557863e2d2c9fa731e4fe25c45f35e0d92ea0ee11a4eaa63929d3ede"},
+    {file = "boto3-1.36.7.tar.gz", hash = "sha256:ae98634efa7b47ced1b0d7342e2940b32639eee913f33ab406590b8ed55ee94b"},
 ]
 
 [package.dependencies]
-botocore = ">=1.36.6,<1.37.0"
+botocore = ">=1.36.7,<1.37.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.11.0,<0.12.0"
 
@@ -64,14 +64,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "boto3-stubs"
-version = "1.36.6"
-description = "Type annotations for boto3 1.36.6 generated with mypy-boto3-builder 8.8.0"
+version = "1.36.7"
+description = "Type annotations for boto3 1.36.7 generated with mypy-boto3-builder 8.8.0"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "boto3_stubs-1.36.6-py3-none-any.whl", hash = "sha256:fa601aa025e328848b6159d1e8c8cb374e4a8421f2514d962d5f468d26e92b37"},
-    {file = "boto3_stubs-1.36.6.tar.gz", hash = "sha256:f5ec1a5a6ecb92912903631163482f6ce84f092d5bc36ec08f770700befccc7b"},
+    {file = "boto3_stubs-1.36.7-py3-none-any.whl", hash = "sha256:d5d3f1f537c4d317f1f11b1cb4ce8f427822204936e29419b43c709ec54758ea"},
+    {file = "boto3_stubs-1.36.7.tar.gz", hash = "sha256:197bdbacd3a9085c6310a06f21616f30f6103ed8be67705962620ac4587ba1fb"},
 ]
 
 [package.dependencies]
@@ -128,7 +128,7 @@ bedrock-data-automation-runtime = ["mypy-boto3-bedrock-data-automation-runtime (
 bedrock-runtime = ["mypy-boto3-bedrock-runtime (>=1.36.0,<1.37.0)"]
 billing = ["mypy-boto3-billing (>=1.36.0,<1.37.0)"]
 billingconductor = ["mypy-boto3-billingconductor (>=1.36.0,<1.37.0)"]
-boto3 = ["boto3 (==1.36.6)"]
+boto3 = ["boto3 (==1.36.7)"]
 braket = ["mypy-boto3-braket (>=1.36.0,<1.37.0)"]
 budgets = ["mypy-boto3-budgets (>=1.36.0,<1.37.0)"]
 ce = ["mypy-boto3-ce (>=1.36.0,<1.37.0)"]
@@ -491,14 +491,14 @@ xray = ["mypy-boto3-xray (>=1.36.0,<1.37.0)"]
 
 [[package]]
 name = "botocore"
-version = "1.36.6"
+version = "1.36.7"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">=3.8"
 groups = ["main", "dev"]
 files = [
-    {file = "botocore-1.36.6-py3-none-any.whl", hash = "sha256:f77bbbb03fb420e260174650fb5c0cc142ec20a96967734eed2b0ef24334ef34"},
-    {file = "botocore-1.36.6.tar.gz", hash = "sha256:4864c53d638da191a34daf3ede3ff1371a3719d952cc0c6bd24ce2836a38dd77"},
+    {file = "botocore-1.36.7-py3-none-any.whl", hash = "sha256:a6c6772d777af2957ac9975207fac1ccc4ce101408b85e9b5e3c5ba0bb949102"},
+    {file = "botocore-1.36.7.tar.gz", hash = "sha256:9abc64bde5e7d8f814ea91d6fc0a8142511fc96427c19fe9209677c20a0c9e6e"},
 ]
 
 [package.dependencies]
@@ -511,14 +511,14 @@ crt = ["awscrt (==0.23.4)"]
 
 [[package]]
 name = "botocore-stubs"
-version = "1.36.6"
+version = "1.36.7"
 description = "Type annotations and code completion for botocore"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "botocore_stubs-1.36.6-py3-none-any.whl", hash = "sha256:e4b35ed9557e15d6ba0cb110bffe89f5ed6a8a202e7cf4c9a67667e7e4a7790c"},
-    {file = "botocore_stubs-1.36.6.tar.gz", hash = "sha256:f47c30036a5e3c842ef7347aeb2067a952959a7b9c32c7dc0ed27040a231350d"},
+    {file = "botocore_stubs-1.36.7-py3-none-any.whl", hash = "sha256:77052e3a86a3f77383c638db63379652bafac3a2b310954392e0cfb3dacd3dad"},
+    {file = "botocore_stubs-1.36.7.tar.gz", hash = "sha256:51c51da5379d3e4c4cb7e3dbe8451f572ecbfe6a5ced3a76a6b958941ef72409"},
 ]
 
 [package.dependencies]
@@ -529,14 +529,14 @@ botocore = ["botocore"]
 
 [[package]]
 name = "cachetools"
-version = "5.5.0"
+version = "5.5.1"
 description = "Extensible memoizing collections and decorators"
 optional = false
 python-versions = ">=3.7"
 groups = ["dev"]
 files = [
-    {file = "cachetools-5.5.0-py3-none-any.whl", hash = "sha256:02134e8439cdc2ffb62023ce1debca2944c3f289d66bb17ead3ab3dede74b292"},
-    {file = "cachetools-5.5.0.tar.gz", hash = "sha256:2cc24fb4cbe39633fb7badd9db9ca6295d766d9c2995f245725a46715d050f2a"},
+    {file = "cachetools-5.5.1-py3-none-any.whl", hash = "sha256:b76651fdc3b24ead3c648bbdeeb940c1b04d365b38b4af66788f9ec4a81d42bb"},
+    {file = "cachetools-5.5.1.tar.gz", hash = "sha256:70f238fbba50383ef62e55c6aff6d9673175fe59f7c6782c7a0b9e38f4a9df95"},
 ]
 
 [[package]]
@@ -1012,19 +1012,19 @@ markdown = ["types-Markdown (>=0.1.5)"]
 
 [[package]]
 name = "filelock"
-version = "3.16.1"
+version = "3.17.0"
 description = "A platform independent file lock."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "filelock-3.16.1-py3-none-any.whl", hash = "sha256:2082e5703d51fbf98ea75855d9d5527e33d8ff23099bec374a134febee6946b0"},
-    {file = "filelock-3.16.1.tar.gz", hash = "sha256:c249fbfcd5db47e5e2d6d62198e565475ee65e4831e2561c8e313fa7eb961435"},
+    {file = "filelock-3.17.0-py3-none-any.whl", hash = "sha256:533dc2f7ba78dc2f0f531fc6c4940addf7b70a481e269a5a3b93be94ffbe8338"},
+    {file = "filelock-3.17.0.tar.gz", hash = "sha256:ee4e77401ef576ebb38cd7f13b9b28893194acc20a8e68e18730ba9c0e54660e"},
 ]
 
 [package.extras]
-docs = ["furo (>=2024.8.6)", "sphinx (>=8.0.2)", "sphinx-autodoc-typehints (>=2.4.1)"]
-testing = ["covdefaults (>=2.3)", "coverage (>=7.6.1)", "diff-cover (>=9.2)", "pytest (>=8.3.3)", "pytest-asyncio (>=0.24)", "pytest-cov (>=5)", "pytest-mock (>=3.14)", "pytest-timeout (>=2.3.1)", "virtualenv (>=20.26.4)"]
+docs = ["furo (>=2024.8.6)", "sphinx (>=8.1.3)", "sphinx-autodoc-typehints (>=3)"]
+testing = ["covdefaults (>=2.3)", "coverage (>=7.6.10)", "diff-cover (>=9.2.1)", "pytest (>=8.3.4)", "pytest-asyncio (>=0.25.2)", "pytest-cov (>=6)", "pytest-mock (>=3.14)", "pytest-timeout (>=2.3.1)", "virtualenv (>=20.28.1)"]
 typing = ["typing-extensions (>=4.12.2)"]
 
 [[package]]
@@ -2018,22 +2018,22 @@ extra = ["pygments (>=2.19.1)"]
 
 [[package]]
 name = "pyproject-api"
-version = "1.8.0"
+version = "1.9.0"
 description = "API to interact with the python pyproject.toml based projects"
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "pyproject_api-1.8.0-py3-none-any.whl", hash = "sha256:3d7d347a047afe796fd5d1885b1e391ba29be7169bd2f102fcd378f04273d228"},
-    {file = "pyproject_api-1.8.0.tar.gz", hash = "sha256:77b8049f2feb5d33eefcc21b57f1e279636277a8ac8ad6b5871037b243778496"},
+    {file = "pyproject_api-1.9.0-py3-none-any.whl", hash = "sha256:326df9d68dea22d9d98b5243c46e3ca3161b07a1b9b18e213d1e24fd0e605766"},
+    {file = "pyproject_api-1.9.0.tar.gz", hash = "sha256:7e8a9854b2dfb49454fae421cb86af43efbb2b2454e5646ffb7623540321ae6e"},
 ]
 
 [package.dependencies]
-packaging = ">=24.1"
+packaging = ">=24.2"
 
 [package.extras]
-docs = ["furo (>=2024.8.6)", "sphinx-autodoc-typehints (>=2.4.1)"]
-testing = ["covdefaults (>=2.3)", "pytest (>=8.3.3)", "pytest-cov (>=5)", "pytest-mock (>=3.14)", "setuptools (>=75.1)"]
+docs = ["furo (>=2024.8.6)", "sphinx-autodoc-typehints (>=3)"]
+testing = ["covdefaults (>=2.3)", "pytest (>=8.3.4)", "pytest-cov (>=6)", "pytest-mock (>=3.14)", "setuptools (>=75.8)"]
 
 [[package]]
 name = "python-dateutil"
@@ -2288,14 +2288,14 @@ tests = ["coverage (>=6.0.0)", "flake8", "mypy", "pytest (>=7.0.0)", "pytest-asy
 
 [[package]]
 name = "s3transfer"
-version = "0.11.1"
+version = "0.11.2"
 description = "An Amazon S3 Transfer Manager"
 optional = false
 python-versions = ">=3.8"
 groups = ["main", "dev"]
 files = [
-    {file = "s3transfer-0.11.1-py3-none-any.whl", hash = "sha256:8fa0aa48177be1f3425176dfe1ab85dcd3d962df603c3dbfc585e6bf857ef0ff"},
-    {file = "s3transfer-0.11.1.tar.gz", hash = "sha256:3f25c900a367c8b7f7d8f9c34edc87e300bde424f779dc9f0a8ae4f9df9264f6"},
+    {file = "s3transfer-0.11.2-py3-none-any.whl", hash = "sha256:be6ecb39fadd986ef1701097771f87e4d2f821f27f6071c872143884d2950fbc"},
+    {file = "s3transfer-0.11.2.tar.gz", hash = "sha256:3b39185cb72f5acc77db1a58b6e25b977f28d20496b6e58d6813d75f464d632f"},
 ]
 
 [package.dependencies]
@@ -2360,14 +2360,14 @@ test = ["devpi-process (>=1.0.2)", "pytest (>=8.3.3)", "pytest-mock (>=3.14)"]
 
 [[package]]
 name = "types-awscrt"
-version = "0.23.6"
+version = "0.23.8"
 description = "Type annotations and code completion for awscrt"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "types_awscrt-0.23.6-py3-none-any.whl", hash = "sha256:fbf9c221af5607b24bf17f8431217ce8b9a27917139edbc984891eb63fd5a593"},
-    {file = "types_awscrt-0.23.6.tar.gz", hash = "sha256:405bce8c281f9e7c6c92a229225cc0bf10d30729a6a601123213389bd524b8b1"},
+    {file = "types_awscrt-0.23.8-py3-none-any.whl", hash = "sha256:d66b3817565769f5311b7e171a3c48d3dbf8a8f9c22f02686c2f003b6559a2a5"},
+    {file = "types_awscrt-0.23.8.tar.gz", hash = "sha256:2141391a8f4d36cf098406c19d9060b34f13a558c22d4aadac250a0c57d12710"},
 ]
 
 [[package]]
@@ -2399,14 +2399,14 @@ urllib3 = ">=2"
 
 [[package]]
 name = "types-s3transfer"
-version = "0.11.1"
+version = "0.11.2"
 description = "Type annotations and code completion for s3transfer"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "types_s3transfer-0.11.1-py3-none-any.whl", hash = "sha256:ddb20d103361c2d7cf95e9e73468cdd12f049f503b1512e6fdfe5a66fa086d2d"},
-    {file = "types_s3transfer-0.11.1.tar.gz", hash = "sha256:6ab89d4d76bcbf6d494582949963b4672347e8daa397d9790f3684b4fcf873c4"},
+    {file = "types_s3transfer-0.11.2-py3-none-any.whl", hash = "sha256:09c31cff8c79a433fcf703b840b66d1f694a6c70c410ef52015dd4fe07ee0ae2"},
+    {file = "types_s3transfer-0.11.2.tar.gz", hash = "sha256:3ccb8b90b14434af2fb0d6c08500596d93f3a83fb804a2bb843d9bf4f7c2ca60"},
 ]
 
 [[package]]
@@ -2423,15 +2423,15 @@ files = [
 
 [[package]]
 name = "tzdata"
-version = "2024.2"
+version = "2025.1"
 description = "Provider of IANA time zone data"
 optional = false
 python-versions = ">=2"
 groups = ["main", "dev"]
 markers = "sys_platform == \"win32\""
 files = [
-    {file = "tzdata-2024.2-py2.py3-none-any.whl", hash = "sha256:a48093786cdcde33cad18c2555e8532f34422074448fbc874186f0abd79565cd"},
-    {file = "tzdata-2024.2.tar.gz", hash = "sha256:7d85cc416e9382e69095b7bdf4afd9e3880418a2413feec7069d533d6b4e31cc"},
+    {file = "tzdata-2025.1-py2.py3-none-any.whl", hash = "sha256:7e127113816800496f027041c570f50bcd464a020098a3b6b199517772303639"},
+    {file = "tzdata-2025.1.tar.gz", hash = "sha256:24894909e88cdb28bd1636c6887801df64cb485bd593f2fd83ef29075a81d694"},
 ]
 
 [[package]]
