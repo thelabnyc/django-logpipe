@@ -1126,8 +1126,8 @@ zstd = ["zstandard"]
 [package.source]
 type = "git"
 url = "https://github.com/dpkp/kafka-python.git"
-reference = "master"
-resolved_reference = "a6d0579d3cadd3826dd364b01bc12a2173139abc"
+reference = "0ab54b94817e5f5ff3a1fed8f3859b5bc6246a25"
+resolved_reference = "0ab54b94817e5f5ff3a1fed8f3859b5bc6246a25"
 
 [[package]]
 name = "lru-dict"
@@ -2554,4 +2554,4 @@ msgpack = ["msgpack"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "d858b1fca278670bb21847c6280047189a67158ef180f51f305ef0f24e02d333"
+content-hash = "39580a1e71a2e25633ecf7a15c879d1715ad53631ec6f64fd5bcdaf53e2e49e9"
