@@ -23,7 +23,7 @@ djangorestframework = ">=3.15.2"
 lru-dict = ">=1.3.0"
 pydantic = "^2.10.6"
 kafka-python = {version = "*", optional = true}
-boto3 = {version = "^1.36.5", optional = true}
+boto3 = {version = "^1.36.10", optional = true}
 msgpack = {version = "^1.1.0", optional = true}
 
 [tool.poetry.extras]
@@ -35,9 +35,9 @@ msgpack = ["msgpack"]
 coverage = "^7.6.10"
 flake8 = "^7.1.1"
 moto = "^4.2.14"
-boto3 = "^1.36.5"
-boto3-stubs = {version = "^1.36.5", extras = ["kinesis"]}
-botocore-stubs = {version = "^1.36.5"}
+boto3 = "^1.36.10"
+boto3-stubs = {version = "^1.36.10", extras = ["kinesis"]}
+botocore-stubs = {version = "^1.36.10"}
 psycopg2-binary = "^2.9.10"
 tox = "^4.24.1"
 pytz = ">=2024.2"
