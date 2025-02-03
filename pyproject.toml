@@ -40,7 +40,7 @@ boto3-stubs = {version = "^1.36.10", extras = ["kinesis"]}
 botocore-stubs = {version = "^1.36.10"}
 psycopg2-binary = "^2.9.10"
 tox = "^4.24.1"
-pytz = ">=2024.2"
+pytz = ">=2025.1"
 kafka-python = {git = "https://github.com/dpkp/kafka-python.git", rev = "0ab54b94817e5f5ff3a1fed8f3859b5bc6246a25", optional = true}
 mypy = "^1.14.1"
 django-stubs = {version = "^5.1.2"}
