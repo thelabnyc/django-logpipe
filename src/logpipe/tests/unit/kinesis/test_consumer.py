@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 from django.test import override_settings
 from moto import mock_kinesis
 from rest_framework.exceptions import ValidationError
@@ -155,6 +157,21 @@ class ConsumerTest(BaseTest):
 
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_kinesis
+    def test_invalid_message_throws_pydantic(self):
+        self.make_stream_with_record(
+            "NY",
+            b'json:{"message":{"code":"NYC","name":"New York"},"version":1,"type":"us-state"}',
+        )
+        save = MagicMock()
+        FakeStateSerializer = self.mock_state_serializer_pydantic(save)
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
+        consumer.register(FakeStateSerializer)
+        with self.assertRaises(ValidationError):
+            consumer.run(iter_limit=1)
+        self.assertEqual(save.call_count, 0)
+
+    @override_settings(LOGPIPE=LOGPIPE)
+    @mock_kinesis
     def test_invalid_message_ignored(self):
         self.make_stream_with_record(
             "NY",
@@ -166,6 +183,20 @@ class ConsumerTest(BaseTest):
         consumer.run(iter_limit=1)
         self.assertEqual(FakeStateSerializer.call_count, 1)
         self.assertEqual(self.serializers["state"].save.call_count, 0)
+
+    @override_settings(LOGPIPE=LOGPIPE)
+    @mock_kinesis
+    def test_invalid_message_ignored_pydantic(self):
+        self.make_stream_with_record(
+            "NY",
+            b'json:{"message":{"code":"NYC","name":"New York"},"version":1,"type":"us-state"}',
+        )
+        save = MagicMock()
+        FakeStateSerializer = self.mock_state_serializer_pydantic(save)
+        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
+        consumer.register(FakeStateSerializer)
+        consumer.run(iter_limit=1)
+        self.assertEqual(save.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_kinesis

@@ -3,6 +3,7 @@ from typing import ClassVar
 from unittest.mock import MagicMock
 
 from django.test import TestCase
+from pydantic import Field
 from rest_framework import serializers
 
 from ..abc import PydanticModel
@@ -25,7 +26,11 @@ class State_Pydantic(PydanticModel):
     VERSION: ClassVar[int] = 1
     KEY_FIELD: ClassVar[str] = "code"
 
-    code: str = ""
+    code: str = Field(
+        ...,
+        max_length=2,
+        min_length=2,
+    )
     name: str = ""
 
 

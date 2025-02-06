@@ -5,6 +5,7 @@ import time
 
 from django.db import models, transaction
 from rest_framework import serializers
+import pydantic_core
 
 from . import settings
 from .abc import (
@@ -268,7 +269,10 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
         instance: models.Model | None,
         data: Any,
     ) -> PydanticModel:
-        serializer = serializer_class.model_validate(data)
+        try:
+            serializer = serializer_class.model_validate(data)
+        except pydantic_core.ValidationError as e:
+            raise ValidationError(e, message)
         serializer._instance = instance  # type: ignore[attr-defined]
         return serializer
 
