@@ -1,3 +1,12 @@
+## v1.4.10 (2025-02-06)
+
+### Fix
+
+- improper handling of Pydantic validation errors
+- **deps**: update boto to ^1.36.10
+- **deps**: update dependency pydantic to ^2.10.6
+- **deps**: update boto to ^1.36.5
+
 ## v1.4.9 (2025-01-23)
 
 ### Fix
