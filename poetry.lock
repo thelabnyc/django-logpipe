@@ -1110,7 +1110,7 @@ files = [
 
 [[package]]
 name = "kafka-python"
-version = "2.0.3.dev0"
+version = "2.0.4.dev0"
 description = "Pure Python client for Apache Kafka"
 optional = true
 python-versions = "*"
@@ -1122,13 +1122,14 @@ develop = false
 crc32c = ["crc32c"]
 lz4 = ["lz4"]
 snappy = ["python-snappy"]
+testing = ["mock", "pytest", "pytest-mock"]
 zstd = ["zstandard"]
 
 [package.source]
 type = "git"
 url = "https://github.com/dpkp/kafka-python.git"
-reference = "0ab54b94817e5f5ff3a1fed8f3859b5bc6246a25"
-resolved_reference = "0ab54b94817e5f5ff3a1fed8f3859b5bc6246a25"
+reference = "5e4def74516cb5f78c5791f75a4072f3fe0b666f"
+resolved_reference = "5e4def74516cb5f78c5791f75a4072f3fe0b666f"
 
 [[package]]
 name = "lru-dict"
@@ -2549,4 +2550,4 @@ msgpack = ["msgpack"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "a24ee3a48ac1c6be0d2d1a61d79dbaba1ecfec82ca86f4f5f3a53a6fb8597e4b"
+content-hash = "b112cefd14ca5b00b207c5aa3be038b213ded0888b1ec07c286d9e616c02b1c0"
