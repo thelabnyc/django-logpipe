@@ -2,6 +2,7 @@ from typing import Any, Generic, TypeVar
 import logging
 
 from django.db import models
+from pydantic import RootModel
 
 from . import settings
 from .abc import DRFSerializer, ProducerBackend, PydanticModel, RecordMetadata
@@ -116,7 +117,10 @@ class PydanticProducer(BaseProducer):
         key_field = getattr(instance, "KEY_FIELD", None)
         key = ""
         if key_field:
-            key = str(getattr(instance, key_field))
+            keyobj = getattr(instance, key_field)
+            if isinstance(keyobj, RootModel):
+                keyobj = keyobj.model_dump(mode="json")
+            key = str(keyobj)
 
         # Send
         return self._inner_send(
