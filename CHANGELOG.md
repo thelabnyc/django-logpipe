@@ -1,3 +1,11 @@
+## v1.4.11 (2025-02-17)
+
+### Fix
+
+- pydantic Producer PartitionKey when KEY_FIELD is set to an instance of RootModel
+- **deps**: update boto to ^1.36.20
+- update kafka-python dependency to 2.0.3
+
 ## v1.4.10 (2025-02-06)
 
 ### Fix
