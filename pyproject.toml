@@ -33,7 +33,7 @@ msgpack = ["msgpack"]
 
 [tool.poetry.group.dev.dependencies]
 coverage = "^7.6.12"
-flake8 = "^7.1.1"
+flake8 = "^7.1.2"
 moto = "^4.2.14"
 boto3 = "^1.36.20"
 boto3-stubs = {version = "^1.36.20", extras = ["kinesis"]}
