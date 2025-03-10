@@ -13,7 +13,7 @@ class LogPipeMessageError(LogPipeError):
     message: Record
 
     def __init__(self, descr: Any, message: Record):
-        super().__init__(Any)
+        super().__init__(descr)
         self.message = message
 
 
