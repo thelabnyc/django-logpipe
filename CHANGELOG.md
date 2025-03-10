@@ -1,3 +1,15 @@
+## v1.4.12 (2025-03-10)
+
+### Fix
+
+- fix typo in LogPipeMessageError which swallows messages
+- **deps**: update boto to ^1.37.8
+- **deps**: update dependency kafka-python to ^2.0.6
+- **deps**: update boto
+- **deps**: update dependency kafka-python to ^2.0.5
+- **deps**: update dependency kafka-python to ^2.0.4
+- **deps**: update boto to ^1.36.26
+
 ## v1.4.11 (2025-02-17)
 
 ### Fix
