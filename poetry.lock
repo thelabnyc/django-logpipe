@@ -1138,21 +1138,21 @@ files = [
 
 [[package]]
 name = "kafka-python"
-version = "2.0.6"
+version = "2.1.2"
 description = "Pure Python client for Apache Kafka"
 optional = true
 python-versions = "*"
 groups = ["main", "dev"]
 files = [
-    {file = "kafka_python-2.0.6-py2.py3-none-any.whl", hash = "sha256:a2fdb00eaea7a827f5f74693365af6b615ff0795860261d8ebaad2bb5bc73e81"},
-    {file = "kafka_python-2.0.6.tar.gz", hash = "sha256:3ac47e7c41a67a1c23f1856c1953594440bb3d9cd532ad70e353982724e5d52d"},
+    {file = "kafka_python-2.1.2-py2.py3-none-any.whl", hash = "sha256:446235fdce7ed5d9ff48de2c31651a85659105a8d2ac0b4abb249f7758d8cfc6"},
+    {file = "kafka_python-2.1.2.tar.gz", hash = "sha256:2a31ecfe4bb91d6009dd97593dcbe8dc7ba161accde2cb9342583a8f862abda7"},
 ]
 
 [package.extras]
 crc32c = ["crc32c"]
 lz4 = ["lz4"]
 snappy = ["python-snappy"]
-testing = ["mock", "pytest", "pytest-mock"]
+testing = ["mock", "pytest", "pytest-mock", "pytest-timeout"]
 zstd = ["zstandard"]
 
 [[package]]
@@ -2470,4 +2470,4 @@ msgpack = ["msgpack"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "4d7095689d4c2d9afd9593ec529cf82d3055afbe584599c46d264dc45e2ced45"
+content-hash = "c972efa133074f1297e2c5c007bf636a5a1f15a40a142f218357c33e5c9de72f"
