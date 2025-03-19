@@ -85,6 +85,7 @@ class DRFProducerTest(TestCase):
         return ConsumerRecord(
             topic=TOPIC_STATES,
             partition=0,
+            leader_epoch=-1,
             offset=42,
             timestamp=1467649216540,
             timestamp_type=0,
