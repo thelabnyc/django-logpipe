@@ -63,18 +63,18 @@ extras = ["regex"]
 
 [[package]]
 name = "boto3"
-version = "1.37.19"
+version = "1.37.23"
 description = "The AWS SDK for Python"
 optional = false
 python-versions = ">=3.8"
 groups = ["main", "dev"]
 files = [
-    {file = "boto3-1.37.19-py3-none-any.whl", hash = "sha256:fbfc2c43ad686b63c8aa02aee634c269f856eed68941d8e570cc45950be52130"},
-    {file = "boto3-1.37.19.tar.gz", hash = "sha256:c69c90500f18fd72d782d1612170b7d3db9a98ed51a4da3bebe38e693497ebf8"},
+    {file = "boto3-1.37.23-py3-none-any.whl", hash = "sha256:fc462b9fd738bd8a1c121d94d237c6b6a05a2c1cc709d16f5223acb752f7310b"},
+    {file = "boto3-1.37.23.tar.gz", hash = "sha256:82f4599a34f5eb66e916b9ac8547394f6e5899c19580e74b60237db04cf66d1e"},
 ]
 
 [package.dependencies]
-botocore = ">=1.37.19,<1.38.0"
+botocore = ">=1.37.23,<1.38.0"
 jmespath = ">=0.7.1,<2.0.0"
 s3transfer = ">=0.11.0,<0.12.0"
 
@@ -83,14 +83,14 @@ crt = ["botocore[crt] (>=1.21.0,<2.0a0)"]
 
 [[package]]
 name = "boto3-stubs"
-version = "1.37.19"
-description = "Type annotations for boto3 1.37.19 generated with mypy-boto3-builder 8.10.1"
+version = "1.37.23"
+description = "Type annotations for boto3 1.37.23 generated with mypy-boto3-builder 8.10.1"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "boto3_stubs-1.37.19-py3-none-any.whl", hash = "sha256:af67bca13956004eaab81a7af179c689392fd8341f761a27d5b49cd17639a472"},
-    {file = "boto3_stubs-1.37.19.tar.gz", hash = "sha256:95c665b1375b6578067fdc3a7854b58eca710b288240bd1cd2c9b1954e3f5f5d"},
+    {file = "boto3_stubs-1.37.23-py3-none-any.whl", hash = "sha256:a00884a3df819bdc6b040c857e57a87b4f33df963ee88f8f406b13bf2cd983ca"},
+    {file = "boto3_stubs-1.37.23.tar.gz", hash = "sha256:011f06dadcd5ef3c627ec9808b9afa4e1837b0f009d82b8209f12a84ffbb3867"},
 ]
 
 [package.dependencies]
@@ -147,7 +147,7 @@ bedrock-data-automation-runtime = ["mypy-boto3-bedrock-data-automation-runtime (
 bedrock-runtime = ["mypy-boto3-bedrock-runtime (>=1.37.0,<1.38.0)"]
 billing = ["mypy-boto3-billing (>=1.37.0,<1.38.0)"]
 billingconductor = ["mypy-boto3-billingconductor (>=1.37.0,<1.38.0)"]
-boto3 = ["boto3 (==1.37.19)"]
+boto3 = ["boto3 (==1.37.23)"]
 braket = ["mypy-boto3-braket (>=1.37.0,<1.38.0)"]
 budgets = ["mypy-boto3-budgets (>=1.37.0,<1.38.0)"]
 ce = ["mypy-boto3-ce (>=1.37.0,<1.38.0)"]
@@ -511,14 +511,14 @@ xray = ["mypy-boto3-xray (>=1.37.0,<1.38.0)"]
 
 [[package]]
 name = "botocore"
-version = "1.37.19"
+version = "1.37.23"
 description = "Low-level, data-driven core of boto 3."
 optional = false
 python-versions = ">=3.8"
 groups = ["main", "dev"]
 files = [
-    {file = "botocore-1.37.19-py3-none-any.whl", hash = "sha256:6e1337e73a6b8146c1ec20a6a72d67e2809bd4c0af076431fe6e1561e0c89415"},
-    {file = "botocore-1.37.19.tar.gz", hash = "sha256:eadcdc37de09df25cf1e62e8106660c61f60a68e984acfc1a8d43fb6267e53b8"},
+    {file = "botocore-1.37.23-py3-none-any.whl", hash = "sha256:ffbe1f5958adb1c50d72d3ad1018cb265fe349248c08782d334601c0814f0e38"},
+    {file = "botocore-1.37.23.tar.gz", hash = "sha256:3a249c950cef9ee9ed7b2278500ad83a4ad6456bc433a43abd1864d1b61b2acb"},
 ]
 
 [package.dependencies]
@@ -531,14 +531,14 @@ crt = ["awscrt (==0.23.8)"]
 
 [[package]]
 name = "botocore-stubs"
-version = "1.37.19"
+version = "1.37.23"
 description = "Type annotations and code completion for botocore"
 optional = false
 python-versions = ">=3.8"
 groups = ["dev"]
 files = [
-    {file = "botocore_stubs-1.37.19-py3-none-any.whl", hash = "sha256:c33db42760989cd3c3bfc57dc676445c0b644bfb60d2c0ef409ab7e051445f63"},
-    {file = "botocore_stubs-1.37.19.tar.gz", hash = "sha256:d8fcf941d10ff9af71cf7a4bda4b2e4f458d780f7c691f93811a130d636963f1"},
+    {file = "botocore_stubs-1.37.23-py3-none-any.whl", hash = "sha256:13a89baddd3243506d4649999de094faf3e6c1ef2231820e50ac953187940e70"},
+    {file = "botocore_stubs-1.37.23.tar.gz", hash = "sha256:3791f463ce9414811c96e29ab6602bc806a98cb46b1d55da13ff945de190e5b6"},
 ]
 
 [package.dependencies]
@@ -2470,4 +2470,4 @@ msgpack = ["msgpack"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "2c36e3b58bf989a09daf6d455a10c4e85c5d418173a51876f5d612e9121781aa"
+content-hash = "bc1ddd37614de7e111b4661ac636efc950eaa021cb352a5b7686af6723ca4775"
