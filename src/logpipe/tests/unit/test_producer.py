@@ -17,13 +17,13 @@ class CustomStateSerializer_DRF(StateSerializer_DRF):
     my_ser_method_field = serializers.SerializerMethodField()
 
     def get_my_ser_method_field(self, obj):
-        return "value-{}".format(obj.code)
+        return f"value-{obj.code}"
 
 
 class CustomState_Pydantic(State_Pydantic):
     @computed_field
     def my_ser_method_field(self) -> str:
-        return "value-{}".format(self.code)
+        return f"value-{self.code}"
 
 
 class DRFProducerTest(TestCase):

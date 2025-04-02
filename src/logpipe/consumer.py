@@ -1,4 +1,5 @@
-from typing import Any, Generator, Iterator, TypeVar, cast
+from collections.abc import Generator, Iterator
+from typing import Any, TypeVar, cast
 import itertools
 import logging
 import time
@@ -45,7 +46,7 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
         self.consumer = get_consumer_backend(topic_name, **kwargs)
         self.throw_errors = throw_errors
         self.serializer_classes = {}
-        self.ignored_message_types = set([])
+        self.ignored_message_types = set()
 
     def __iter__(self) -> Iterator[tuple[Record, Serializer]]:
         if self.throw_errors:

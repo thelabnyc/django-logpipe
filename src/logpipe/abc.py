@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from abc import abstractmethod
-from collections.abc import Mapping
+from collections.abc import Iterable, Mapping
 from enum import Enum, auto
 from typing import (
     IO,
     Any,
     ClassVar,
-    Iterable,
     Literal,
     NamedTuple,
     Protocol,
