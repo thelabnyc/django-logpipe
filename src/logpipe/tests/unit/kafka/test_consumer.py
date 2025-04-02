@@ -206,7 +206,7 @@ class ConsumerTest(BaseTest):
         fake_kafka_consumer.__next__.side_effect = _iter
 
         # Return some partitions
-        fake_kafka_consumer.partitions_for_topic.return_value = set([0, 1])
+        fake_kafka_consumer.partitions_for_topic.return_value = {0, 1}
 
         # Make class instantiation return our mock
         KafkaConsumer.return_value = fake_kafka_consumer

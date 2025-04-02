@@ -45,10 +45,10 @@ class PutRecordKwargs(TypedDict):
 
 
 class KinesisBase:
-    _client: "KinesisClient | None" = None
+    _client: KinesisClient | None = None
 
     @property
-    def client(self) -> "KinesisClient":
+    def client(self) -> KinesisClient:
         if not self._client:
             kwargs = self._get_client_config()
             self._client = boto3.client("kinesis", **kwargs)
@@ -110,7 +110,7 @@ class Consumer(KinesisBase, ConsumerBackend):
         self.shard_iters: dict[ShardID, ShardIterator] = {}
 
         shards = self._list_shard_ids()
-        logger.debug("Found {} kinesis shards.".format(len(shards)))
+        logger.debug("Found %d kinesis shards.", len(shards))
         backend = get_offset_backend()
         for shard in shards:
             self.shards.append(shard)
@@ -171,9 +171,7 @@ class Consumer(KinesisBase, ConsumerBackend):
             return 0
 
         # Fetch the records from Kinesis
-        logger.debug(
-            "Loading page of records from {}.{}".format(self.topic_name, shard)
-        )
+        logger.debug("Loading page of records from %s.%s", self.topic_name, shard)
         fetch_limit = settings.get("KINESIS_FETCH_LIMIT", 25)
         response = self._get_records(shard_iter, fetch_limit)
         if response is None:
@@ -224,7 +222,7 @@ class Consumer(KinesisBase, ConsumerBackend):
         shard_iter: ShardIterator,
         fetch_limit: int,
         retries: int = 1,
-    ) -> "GetRecordsOutputTypeDef | None":
+    ) -> GetRecordsOutputTypeDef | None:
         i = 0
         while i <= retries:
             try:
@@ -249,7 +247,7 @@ class Consumer(KinesisBase, ConsumerBackend):
                     )
             i += 1
         logger.warning(
-            "After {} attempts, couldn't get records from Kinesis. Giving up.".format(i)
+            f"After {i} attempts, couldn't get records from Kinesis. Giving up."
         )
         return None
 
@@ -288,7 +286,7 @@ class Producer(KinesisBase, ProducerBackend):
 
     def _send_and_retry(
         self, data: PutRecordKwargs, retries: int = 1
-    ) -> "PutRecordOutputTypeDef | None":
+    ) -> PutRecordOutputTypeDef | None:
         i = 0
         while i <= retries:
             try:
@@ -311,6 +309,6 @@ class Producer(KinesisBase, ProducerBackend):
                     )
             i += 1
         logger.warning(
-            "After {} attempts, couldn't send message to Kinesis. Giving up.".format(i)
+            f"After {i} attempts, couldn't send message to Kinesis. Giving up."
         )
         return None
