@@ -1,3 +1,26 @@
+## v1.5.0 (2025-04-03)
+
+### Feat
+
+- support Django 5.2. Drop Django 5.0
+
+### Fix
+
+- **deps**: update dependency pydantic to ^2.11.1
+- **deps**: update dependency djangorestframework to >=3.16.0
+- **deps**: update dependency pydantic to ^2.11.0
+- **deps**: update dependency kafka-python to ^2.1.4
+- **deps**: update boto to ^1.37.22
+- **deps**: update dependency kafka-python to ^2.1.3
+- **deps**: update boto to ^1.37.17
+- **deps**: update dependency kafka-python to ^2.1.2
+- **deps**: update dependency kafka-python to ^2.1.1
+- **deps**: update boto to ^1.37.12
+
+### Refactor
+
+- add pyupgrade / django-upgrade precommit hooks
+
 ## v1.4.12 (2025-03-10)
 
 ### Fix
