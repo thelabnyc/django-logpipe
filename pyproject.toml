@@ -50,7 +50,7 @@ msgpack-types = "^0.5.0"
 [tool.poetry.group.docs.dependencies]
 mkdocs = "^1.6.1"
 pymdown-extensions = "^10.14.3"
-mkdocs-material = "^9.6.11"
+mkdocs-material = "^9.6.12"
 mkautodoc = "^0.2.0"
 
 [tool.mypy]
