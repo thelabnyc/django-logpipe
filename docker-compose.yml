@@ -1,14 +1,14 @@
 version: '2'
 services:
   spotify__kafka:
-    image: spotify/kafka
+    image: spotify/kafka@sha256:cf8f8f760b48a07fb99df24fab8201ec8b647634751e842b67103a25a388981b
     environment:
       ADVERTISED_HOST: 'spotify__kafka'
       ADVERTISED_PORT: '9092'
       AUTO_CREATE_TOPICS: 'true'
 
   postgres:
-    image: postgres:latest
+    image: postgres:latest@sha256:fe3f571d128e8efadcd8b2fde0e2b73ebab6dbec33f6bfe69d98c682c7d8f7bd
     environment:
       POSTGRES_HOST_AUTH_METHOD: 'trust'
 
