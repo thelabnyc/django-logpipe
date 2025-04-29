@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/thelabnyc/python:py313@sha256:6a8762e21fdb1daa3152d5bff2d4a9e1d2a8e438f5ac352f50b15629c01e0db3
+FROM registry.gitlab.com/thelabnyc/python:py313@sha256:4faefb5e57574b839f6bab082bb878cf8c98f0e02807203e950acd1a74e51d61
 
 RUN mkdir /code
 WORKDIR /code
