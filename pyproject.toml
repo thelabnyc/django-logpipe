@@ -39,7 +39,7 @@ boto3 = "^1.37.36"
 boto3-stubs = {version = "^1.37.36", extras = ["kinesis"]}
 botocore-stubs = {version = "^1.37.36"}
 psycopg2-binary = "2.9.10"
-tox = "4.25.0"
+tox = "4.26.0"
 pytz = "==2025.2"
 kafka-python = {version = "2.2.6", optional = true}
 mypy = "1.15.0"
