@@ -41,7 +41,7 @@ botocore-stubs = {version = "^1.37.36"}
 psycopg2-binary = "2.9.10"
 tox = "4.26.0"
 pytz = "==2025.2"
-kafka-python = {version = "2.2.8", optional = true}
+kafka-python = {version = "2.2.9", optional = true}
 mypy = "1.15.0"
 django-stubs = {version = "5.2.0"}
 djangorestframework-stubs = "3.16.0"
