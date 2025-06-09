@@ -1143,14 +1143,14 @@ files = [
 
 [[package]]
 name = "kafka-python"
-version = "2.2.10"
+version = "2.2.11"
 description = "Pure Python client for Apache Kafka"
 optional = true
 python-versions = "*"
 groups = ["main", "dev"]
 files = [
-    {file = "kafka_python-2.2.10-py2.py3-none-any.whl", hash = "sha256:cfca1af8d6277f31d135496587c64f1de0b4021cada8d6376589e8572484068c"},
-    {file = "kafka_python-2.2.10.tar.gz", hash = "sha256:0411d2631719dae53a81716c8be8af13e47470123ba49914d7faba317379e85b"},
+    {file = "kafka_python-2.2.11-py2.py3-none-any.whl", hash = "sha256:c285ce322108382ea9fd62273aab175d9a6959866145cf7cf9d4ca447b632372"},
+    {file = "kafka_python-2.2.11.tar.gz", hash = "sha256:8ff8bcc158f48b47ba516536a5b1287db75a8ceff13d639da917ec52e171acde"},
 ]
 
 [package.extras]
@@ -2492,4 +2492,4 @@ msgpack = ["msgpack"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "208e6e9a2375f2292fc5106b7b46fb5e982b27c345171eb074f00574a7051eaa"
+content-hash = "65d38d416b0e258c451455416f0f2c875ddbdfdb8a7344a9dd78ecd8e31e8598"
