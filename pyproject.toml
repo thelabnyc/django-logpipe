@@ -34,7 +34,7 @@ msgpack = ["msgpack"]
 [tool.poetry.group.dev.dependencies]
 coverage = "7.8.2"
 flake8 = "7.2.0"
-moto = "4.2.14"
+moto = "5.1.5"
 boto3 = "^1.37.36"
 boto3-stubs = {version = "^1.37.36", extras = ["kinesis"]}
 botocore-stubs = {version = "^1.37.36"}

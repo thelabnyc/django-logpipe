@@ -1,5 +1,5 @@
 from django.test import TestCase, override_settings
-from moto import mock_kinesis
+from moto import mock_aws
 import boto3
 
 from logpipe import Producer
@@ -14,7 +14,7 @@ LOGPIPE = {
 
 class DRFProducerTest(TestCase):
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_normal_send(self):
         client = boto3.client("kinesis", region_name="us-east-1")
         client.create_stream(StreamName=TOPIC_STATES, ShardCount=1)
@@ -67,7 +67,7 @@ class DRFProducerTest(TestCase):
         self.assertEqual(response["Records"][1]["PartitionKey"], "PA")
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_object_send(self):
         client = boto3.client("kinesis", region_name="us-east-1")
         client.create_stream(StreamName=TOPIC_STATES, ShardCount=1)
