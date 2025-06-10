@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock
 
 from django.test import override_settings
-from moto import mock_kinesis
+from moto import mock_aws
 from rest_framework.exceptions import ValidationError
 import boto3
 
@@ -18,7 +18,7 @@ LOGPIPE = {
 
 class ConsumerTest(BaseTest):
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_normal_consume(self):
         self.make_stream_with_record(
             "NY",
@@ -42,7 +42,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(self.serializers["state"].save.call_count, 1)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_multi_shard_consume(self):
         # Send a bunch of messages to a bunch of shards
         key = 1
@@ -72,7 +72,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(test["i"], 101)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_missing_version_throws(self):
         self.make_stream_with_record(
             "NY", b'json:{"message":{"code":"NY","name":"New York"}}'
@@ -84,7 +84,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(FakeStateSerializer.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_missing_version_ignored(self):
         self.make_stream_with_record(
             "NY", b'json:{"message":{"code":"NY","name":"New York"}}'
@@ -95,7 +95,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(FakeStateSerializer.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_missing_message_throws(self):
         self.make_stream_with_record("NY", b'json:{"version":1}')
         FakeStateSerializer = self.mock_state_serializer_drf()
@@ -105,7 +105,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(FakeStateSerializer.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_missing_message_ignored(self):
         self.make_stream_with_record("NY", b'json:{"version":1}')
         FakeStateSerializer = self.mock_state_serializer_drf()
@@ -114,7 +114,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(FakeStateSerializer.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_unknown_version_throws(self):
         self.make_stream_with_record(
             "NY",
@@ -128,7 +128,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(FakeStateSerializer.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_unknown_version_ignored(self):
         self.make_stream_with_record(
             "NY",
@@ -141,7 +141,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(FakeStateSerializer.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_invalid_message_throws(self):
         self.make_stream_with_record(
             "NY",
@@ -156,7 +156,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(self.serializers["state"].save.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_invalid_message_throws_pydantic(self):
         self.make_stream_with_record(
             "NY",
@@ -171,7 +171,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(save.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_invalid_message_ignored(self):
         self.make_stream_with_record(
             "NY",
@@ -185,7 +185,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(self.serializers["state"].save.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_invalid_message_ignored_pydantic(self):
         self.make_stream_with_record(
             "NY",
@@ -199,7 +199,7 @@ class ConsumerTest(BaseTest):
         self.assertEqual(save.call_count, 0)
 
     @override_settings(LOGPIPE=LOGPIPE)
-    @mock_kinesis
+    @mock_aws
     def test_ignored_message_type_is_ignored(self):
         self.make_stream_with_record(
             "NY",
