@@ -8,7 +8,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ADD . /code/
-RUN poetry install
+RUN uv sync
 
 RUN mkdir /tox
 ENV TOX_WORK_DIR='/tox'

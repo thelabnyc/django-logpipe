@@ -1,8 +1,8 @@
 variables:
-  ADVERTISED_HOST: 'spotify__kafka'
-  ADVERTISED_PORT: '9092'
-  AUTO_CREATE_TOPICS: 'true'
-  POSTGRES_HOST_AUTH_METHOD: 'trust'
+  ADVERTISED_HOST: "spotify__kafka"
+  ADVERTISED_PORT: "9092"
+  AUTO_CREATE_TOPICS: "true"
+  POSTGRES_HOST_AUTH_METHOD: "trust"
 
 stages:
   - test
@@ -36,8 +36,8 @@ test:lib:
     - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
-    - pip install tox
-    - tox
+    - uv sync
+    - uv run tox
   coverage: '/^TOTAL.+?(\d+\%)$/'
   parallel:
     matrix:
@@ -54,7 +54,7 @@ test:docs:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
-    - poetry install
+    - uv sync
     - make docs
 
 pages:
@@ -67,7 +67,7 @@ pages:
   needs:
     - test:lib
   script:
-    - poetry install
+    - uv sync
     - make docs
   artifacts:
     paths:
