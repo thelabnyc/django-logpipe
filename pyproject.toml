@@ -32,7 +32,7 @@ dev = [
     "psycopg2-binary (==2.9.10)",
     "tox==4.27.0",
     "pytz (==2025.2)",
-    "kafka-python (==2.2.13)",
+    "kafka-python (==2.2.14)",
     "mypy (==1.16.1)",
     "django-stubs (==5.2.1)",
     "djangorestframework-stubs (==3.16.0)",
