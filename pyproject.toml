@@ -23,7 +23,7 @@ Repository = "https://gitlab.com/thelabnyc/django-logpipe"
 
 [dependency-groups]
 dev = [
-    "coverage==7.9.1",
+    "coverage==7.9.2",
     "flake8 (==7.3.0)",
     "moto (==5.1.6)",
     "boto3 (>=1.37.36,<2)",
