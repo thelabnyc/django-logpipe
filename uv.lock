@@ -418,7 +418,7 @@ dev = [
     { name = "django-stubs", specifier = "==5.2.1" },
     { name = "djangorestframework-stubs", specifier = "==3.16.0" },
     { name = "flake8", specifier = "==7.3.0" },
-    { name = "kafka-python", specifier = "==2.2.14" },
+    { name = "kafka-python", specifier = "==2.2.15" },
     { name = "mkautodoc", specifier = ">=0.2.0,<0.3" },
     { name = "mkdocs", specifier = ">=1.6.1,<2" },
     { name = "mkdocs-material", specifier = ">=9.6.12,<10" },
@@ -555,11 +555,11 @@ wheels = [
 
 [[package]]
 name = "kafka-python"
-version = "2.2.14"
+version = "2.2.15"
 source = { registry = "https://gitlab.com/api/v4/groups/269576/-/packages/pypi/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/f6/fe/5f5627f970a296133a9c428f39268a8a48c10cb4199ab9ed9bc7d8291812/kafka_python-2.2.14.tar.gz", hash = "sha256:5779d9c2f0af4b8e0ed952fee25506f5a5e30ba97cda1614f984eb8b2083e31d", size = 347770, upload-time = "2025-06-27T16:47:38.941Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/da/67/1434436f3cb409443f72a4843b877ac2d9bf586a31a0e966cf1dc4dc9a94/kafka_python-2.2.15.tar.gz", hash = "sha256:e0f480a45f3814cb0eb705b8b4f61069e1be61dae0d8c69d0f1f2da33eea1bd5", size = 347870, upload-time = "2025-07-01T17:37:53.686Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e1/cd/593852e8ca89a81c517832c497bc8f5f922d3cf457ce323ab5938b6496ca/kafka_python-2.2.14-py2.py3-none-any.whl", hash = "sha256:ee089dd502efe18e4cfcc1237eefde7f80689a55bd021ac9d7b805ad847d42f6", size = 309751, upload-time = "2025-06-27T16:47:36.722Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/35/e8bfed5425e8fe685bd03ec3f5135ee8b88c11558baa59c0d12fbd2a20ae/kafka_python-2.2.15-py2.py3-none-any.whl", hash = "sha256:84c0993cd4f7f2f01e92d8104ea9bdf631aff72fc5e6ea62eb3bdf1d56528fc3", size = 309751, upload-time = "2025-07-01T17:37:51.87Z" },
 ]
 
 [[package]]
