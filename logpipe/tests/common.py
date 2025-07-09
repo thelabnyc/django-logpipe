@@ -51,9 +51,7 @@ class BaseTest(TestCase):
             ser = StateSerializer_DRF(*args, **kwargs)
             ser.save = MagicMock()
             if save:
-                ser.save.side_effect = lambda *args, **kwargs: save(
-                    ser, *args, **kwargs
-                )
+                ser.save.side_effect = lambda *args, **kwargs: save(ser, *args, **kwargs)
             self.serializers["state"] = ser
             return ser
 

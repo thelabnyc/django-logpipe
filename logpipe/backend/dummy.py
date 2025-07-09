@@ -28,9 +28,7 @@ class Consumer(ConsumerBackend):
     def __init__(self, topic_name: str, **kwargs: Any):
         self.topic_name = topic_name
 
-    def seek_to_sequence_number(
-        self, shard: str, sequence_number: str | None = None
-    ) -> None:
+    def seek_to_sequence_number(self, shard: str, sequence_number: str | None = None) -> None:
         pass
 
     def __iter__(self) -> Consumer:
@@ -47,9 +45,7 @@ class Consumer(ConsumerBackend):
 
 
 class Producer(ProducerBackend):
-    def send(
-        self, topic_name: TopicName, key: str, value: bytes
-    ) -> RecordMetadata | None:
+    def send(self, topic_name: TopicName, key: str, value: bytes) -> RecordMetadata | None:
         _offsets[topic_name] += 1
         record = Record(
             topic=topic_name,

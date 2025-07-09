@@ -83,10 +83,7 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
                         message.partition,
                         message.offset,
                     )
-                    logger.exception(
-                        'Failed to process message with key "%s" from topic "%s", partition "%s", offset "%s"'
-                        % info
-                    )
+                    logger.exception('Failed to process message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
                     raise e
             i += 1
             if iter_limit > 0 and i >= iter_limit:
@@ -104,47 +101,27 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
 
             # Message format was invalid in some way: log error and move on.
             except InvalidMessageError as e:
-                logger.error(
-                    "Failed to deserialize message in topic {}. Details: {}".format(
-                        self.consumer.topic_name, e
-                    )
-                )
+                logger.error(f"Failed to deserialize message in topic {self.consumer.topic_name}. Details: {e}")
                 self.commit(e.message)
 
             # Message type has been explicitly ignored: skip it silently and move on.
             except IgnoredMessageTypeError as e:
-                logger.debug(
-                    "Skipping ignored message type in topic {}. Details: {}".format(
-                        self.consumer.topic_name, e
-                    )
-                )
+                logger.debug(f"Skipping ignored message type in topic {self.consumer.topic_name}. Details: {e}")
                 self.commit(e.message)
 
             # Message type is unknown: log error and move on.
             except UnknownMessageTypeError as e:
-                logger.error(
-                    "Skipping unknown message type in topic {}. Details: {}".format(
-                        self.consumer.topic_name, e
-                    )
-                )
+                logger.error(f"Skipping unknown message type in topic {self.consumer.topic_name}. Details: {e}")
                 self.commit(e.message)
 
             # Message version is unknown: log error and move on.
             except UnknownMessageVersionError as e:
-                logger.error(
-                    "Skipping unknown message version in topic {}. Details: {}".format(
-                        self.consumer.topic_name, e
-                    )
-                )
+                logger.error(f"Skipping unknown message version in topic {self.consumer.topic_name}. Details: {e}")
                 self.commit(e.message)
 
             # Serializer for message type flagged message as invalid: log warning and move on.
             except ValidationError as e:
-                logger.warning(
-                    "Skipping invalid message in topic {}. Details: {}".format(
-                        self.consumer.topic_name, e
-                    )
-                )
+                logger.warning(f"Skipping invalid message in topic {self.consumer.topic_name}. Details: {e}")
                 self.commit(e.message)
 
             pass
@@ -153,10 +130,7 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
         message = next(self.consumer)
 
         info = (message.key, message.topic, message.partition, message.offset)
-        logger.debug(
-            'Received message with key "%s" from topic "%s", partition "%s", offset "%s"'
-            % info
-        )
+        logger.debug('Received message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
 
         # Wait?
         timestamp = getattr(message, "timestamp", None) or (time.time() * 1000)
@@ -178,37 +152,28 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
     def _unserialize(self, message: Record) -> Serializer:
         data = parse(message.value)
         if "type" not in data:
-            raise InvalidMessageError(
-                'Received message missing missing a top-level "type" key.', message
-            )
+            raise InvalidMessageError('Received message missing missing a top-level "type" key.', message)
         if "version" not in data:
-            raise InvalidMessageError(
-                'Received message missing missing a top-level "version" key.', message
-            )
+            raise InvalidMessageError('Received message missing missing a top-level "version" key.', message)
         if "message" not in data:
-            raise InvalidMessageError(
-                'Received message missing missing a top-level "message" key.', message
-            )
+            raise InvalidMessageError('Received message missing missing a top-level "message" key.', message)
 
         message_type = data["type"]
         if message_type in self.ignored_message_types:
             raise IgnoredMessageTypeError(
-                'Received message with ignored type "%s" in topic %s'
-                % (message_type, message.topic),
+                f'Received message with ignored type "{message_type}" in topic {message.topic}',
                 message,
             )
         if message_type not in self.serializer_classes:
             raise UnknownMessageTypeError(
-                'Received message with unknown type "%s" in topic %s'
-                % (message_type, message.topic),
+                f'Received message with unknown type "{message_type}" in topic {message.topic}',
                 message,
             )
 
         version = data["version"]
         if version not in self.serializer_classes[message_type]:
             raise UnknownMessageVersionError(
-                'Received message of type "%s" with unknown version "%s" in topic %s'
-                % (message_type, version, message.topic),
+                f'Received message of type "{message_type}" with unknown version "{version}" in topic {message.topic}',
                 message,
             )
 

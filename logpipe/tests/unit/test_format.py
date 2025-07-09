@@ -58,9 +58,7 @@ class PickleFormatTest(TestCase):
 
     def test_parse(self):
         logpipe.format.register(FORMAT_PICKLE, PickleRenderer(), PickleParser())
-        data = logpipe.format.parse(
-            b"pickle:\x80\x03}q\x00X\x03\x00\x00\x00fooq\x01X\x03\x00\x00\x00barq\x02s."
-        )
+        data = logpipe.format.parse(b"pickle:\x80\x03}q\x00X\x03\x00\x00\x00fooq\x01X\x03\x00\x00\x00barq\x02s.")
         self.assertEqual(
             data,
             {

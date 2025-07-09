@@ -9,9 +9,7 @@ class SettingsTest(TestCase):
     def test_normal_required_key(self):
         self.assertEqual(settings.get("KAFKA_BOOTSTRAP_SERVERS"), ["kafka:9092"])
 
-    @override_settings(
-        LOGPIPE={"KAFKA_BOOTSTRAP_SERVERS": ["kafka:9092"], "KAFKA_MAX_SEND_RETRIES": 3}
-    )
+    @override_settings(LOGPIPE={"KAFKA_BOOTSTRAP_SERVERS": ["kafka:9092"], "KAFKA_MAX_SEND_RETRIES": 3})
     def test_normal_optional_key(self):
         self.assertEqual(settings.get("KAFKA_MAX_SEND_RETRIES", 5), 3)
 

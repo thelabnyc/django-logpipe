@@ -42,9 +42,7 @@ class ModelOffsetStore(OffsetStoreBackend):
                 self.__class__.__name__,
             )
         )
-        obj, created = KafkaOffset.objects.get_or_create(
-            topic=message.topic, partition=message.partition
-        )
+        obj, created = KafkaOffset.objects.get_or_create(topic=message.topic, partition=message.partition)
         obj.offset = int(message.offset) + 1
         obj.save()
 
@@ -55,16 +53,10 @@ class ModelOffsetStore(OffsetStoreBackend):
         tp = kafka.TopicPartition(topic=topic, partition=partition)
         try:
             obj = KafkaOffset.objects.get(topic=topic, partition=partition)
-            logger.debug(
-                'Seeking to offset "%s" on topic "%s", partition "%s"'
-                % (obj.offset, topic, partition)
-            )
+            logger.debug(f'Seeking to offset "{obj.offset}" on topic "{topic}", partition "{partition}"')
             consumer.client.seek(tp, obj.offset)
         except KafkaOffset.DoesNotExist:
-            logger.debug(
-                'Seeking to beginning of topic "%s", partition "%s"'
-                % (topic, partition)
-            )
+            logger.debug(f'Seeking to beginning of topic "{topic}", partition "{partition}"')
             consumer.client.seek_to_beginning(tp)
 
 
@@ -126,9 +118,7 @@ class Consumer(ConsumerBackend):
         p = []
         partitions = self.client.partitions_for_topic(self.topic_name)
         if not partitions:
-            raise MissingTopicError(
-                "Could not find topic %s. Does it exist?" % self.topic_name
-            )
+            raise MissingTopicError("Could not find topic %s. Does it exist?" % self.topic_name)
         for partition in partitions:
             tp = kafka.TopicPartition(self.topic_name, partition=partition)
             p.append(tp)

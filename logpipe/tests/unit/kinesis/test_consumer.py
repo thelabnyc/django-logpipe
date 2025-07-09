@@ -50,9 +50,7 @@ class ConsumerTest(BaseTest):
         client = self.make_stream_with_record(str(key), value, shard_count=20)
         for i in range(100):
             key += 1
-            client.put_record(
-                StreamName=TOPIC_STATES, Data=value, PartitionKey=str(key)
-            )
+            client.put_record(StreamName=TOPIC_STATES, Data=value, PartitionKey=str(key))
 
         # Test the values sent to our serializer match the message
         test = {"i": 0}
@@ -74,9 +72,7 @@ class ConsumerTest(BaseTest):
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_aws
     def test_missing_version_throws(self):
-        self.make_stream_with_record(
-            "NY", b'json:{"message":{"code":"NY","name":"New York"}}'
-        )
+        self.make_stream_with_record("NY", b'json:{"message":{"code":"NY","name":"New York"}}')
         FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         with self.assertRaises(InvalidMessageError):
@@ -86,9 +82,7 @@ class ConsumerTest(BaseTest):
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_aws
     def test_missing_version_ignored(self):
-        self.make_stream_with_record(
-            "NY", b'json:{"message":{"code":"NY","name":"New York"}}'
-        )
+        self.make_stream_with_record("NY", b'json:{"message":{"code":"NY","name":"New York"}}')
         FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
         consumer.run(iter_limit=1)

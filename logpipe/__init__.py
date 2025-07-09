@@ -18,12 +18,8 @@ _default_format = settings.get("DEFAULT_FORMAT", FORMAT_JSON)
 _allow_incoming_pickle = settings.get("ALLOW_INCOMING_PICKLE", False)
 if _default_format == FORMAT_PICKLE:
     if not _allow_incoming_pickle:
-        raise ImproperlyConfigured(
-            "Can not set DEFAULT_FORMAT to Pickle unless the ALLOW_INCOMING_PICKLE is enabled."
-        )
-    logger.warning(
-        "DEFAULT_FORMAT is set to Pickle. This is insecure and probable isn't a good idea."
-    )
+        raise ImproperlyConfigured("Can not set DEFAULT_FORMAT to Pickle unless the ALLOW_INCOMING_PICKLE is enabled.")
+    logger.warning("DEFAULT_FORMAT is set to Pickle. This is insecure and probable isn't a good idea.")
 
 format.register(FORMAT_JSON, JSONRenderer(), JSONParser())
 format.register(FORMAT_MSGPACK, MsgPackRenderer(), MsgPackParser())

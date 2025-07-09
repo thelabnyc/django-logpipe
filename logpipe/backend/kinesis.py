@@ -74,9 +74,7 @@ class ModelOffsetStore(OffsetStoreBackend):
                 self.__class__.__name__,
             )
         )
-        obj, created = KinesisOffset.objects.get_or_create(
-            region=region, stream=message.topic, shard=message.partition
-        )
+        obj, created = KinesisOffset.objects.get_or_create(region=region, stream=message.topic, shard=message.partition)
         obj.sequence_number = message.offset
         obj.save()
 
@@ -84,19 +82,11 @@ class ModelOffsetStore(OffsetStoreBackend):
         KinesisOffset = apps.get_model(app_label="logpipe", model_name="KinesisOffset")
         region = settings.get_aws_region()
         try:
-            obj = KinesisOffset.objects.get(
-                region=settings.get_aws_region(), stream=stream, shard=shard
-            )
-            logger.debug(
-                'Seeking to offset "%s" on region "%s", stream "%s", partition "%s"'
-                % (obj.sequence_number, region, stream, shard)
-            )
+            obj = KinesisOffset.objects.get(region=settings.get_aws_region(), stream=stream, shard=shard)
+            logger.debug(f'Seeking to offset "{obj.sequence_number}" on region "{region}", stream "{stream}", partition "{shard}"')
             consumer.seek_to_sequence_number(shard, obj.sequence_number)
         except KinesisOffset.DoesNotExist:
-            logger.debug(
-                'Seeking to beginning of region "%s", stream "%s", partition "%s"'
-                % (region, stream, shard)
-            )
+            logger.debug(f'Seeking to beginning of region "{region}", stream "{stream}", partition "{shard}"')
             consumer.seek_to_sequence_number(shard, None)
 
 
@@ -116,16 +106,12 @@ class Consumer(KinesisBase, ConsumerBackend):
             self.shards.append(shard)
             backend.seek(self, self.topic_name, shard)
 
-    def seek_to_sequence_number(
-        self, shard: str, sequence_number: str | None = None
-    ) -> None:
+    def seek_to_sequence_number(self, shard: str, sequence_number: str | None = None) -> None:
         if sequence_number is None:
             resp = self.client.get_shard_iterator(
                 StreamName=self.topic_name,
                 ShardId=shard,
-                ShardIteratorType=settings.get(
-                    "KINESIS_SHARD_ITERATOR_TYPE", default="TRIM_HORIZON"
-                ),
+                ShardIteratorType=settings.get("KINESIS_SHARD_ITERATOR_TYPE", default="TRIM_HORIZON"),
             )
         else:
             resp = self.client.get_shard_iterator(
@@ -183,11 +169,7 @@ class Consumer(KinesisBase, ConsumerBackend):
             current_stream_lag = response["MillisBehindLatest"]
         else:
             current_stream_lag = 0 if num_records == 0 else 1
-        logger.debug(
-            "Loaded {} records from {}.{}. Currently {}ms behind stream head.".format(
-                num_records, self.topic_name, shard, current_stream_lag
-            )
-        )
+        logger.debug(f"Loaded {num_records} records from {self.topic_name}.{shard}. Currently {current_stream_lag}ms behind stream head.")
 
         # Add the records page into the queue
         timestamp = (time.time() * 1000) - current_stream_lag
@@ -209,11 +191,7 @@ class Consumer(KinesisBase, ConsumerBackend):
             self.shard_iters[shard] = response["NextShardIterator"]
             self.shards.append(shard)
         else:
-            logger.info(
-                "Shard {}.{} has been closed. Removing it from the fetch pool.".format(
-                    self.topic_name, shard
-                )
-            )
+            logger.info(f"Shard {self.topic_name}.{shard} has been closed. Removing it from the fetch pool.")
 
         return current_stream_lag
 
@@ -226,29 +204,16 @@ class Consumer(KinesisBase, ConsumerBackend):
         i = 0
         while i <= retries:
             try:
-                response = self.client.get_records(
-                    ShardIterator=shard_iter, Limit=fetch_limit
-                )
+                response = self.client.get_records(ShardIterator=shard_iter, Limit=fetch_limit)
                 return response
             except ClientError as e:
-                if (
-                    e.response["Error"]["Code"]
-                    == "ProvisionedThroughputExceededException"
-                ):
-                    logger.warning(
-                        "Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds."
-                    )
+                if e.response["Error"]["Code"] == "ProvisionedThroughputExceededException":
+                    logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
                     time.sleep(5)
                 else:
-                    logger.warning(
-                        "Received {} from AWS API: {}".format(
-                            e.response["Error"]["Code"], e.response["Error"]["Message"]
-                        )
-                    )
+                    logger.warning("Received {} from AWS API: {}".format(e.response["Error"]["Code"], e.response["Error"]["Message"]))
             i += 1
-        logger.warning(
-            f"After {i} attempts, couldn't get records from Kinesis. Giving up."
-        )
+        logger.warning(f"After {i} attempts, couldn't get records from Kinesis. Giving up.")
         return None
 
     def _list_shard_ids(self) -> list[ShardID]:
@@ -257,9 +222,7 @@ class Consumer(KinesisBase, ConsumerBackend):
 
 
 class Producer(KinesisBase, ProducerBackend):
-    _last_sequence_numbers: LRU[str, dict[str, str]] = LRU(
-        settings.get("KINESIS_SEQ_NUM_CACHE_SIZE", 1000)
-    )
+    _last_sequence_numbers: LRU[str, dict[str, str]] = LRU(settings.get("KINESIS_SEQ_NUM_CACHE_SIZE", 1000))
 
     def send(self, topic_name: str, key: str, value: bytes) -> RecordMetadata | None:
         kwargs = PutRecordKwargs(
@@ -284,22 +247,15 @@ class Producer(KinesisBase, ProducerBackend):
 
         return RecordMetadata(topic=topic_name, partition=shard_id, offset=seq_num)
 
-    def _send_and_retry(
-        self, data: PutRecordKwargs, retries: int = 1
-    ) -> PutRecordOutputTypeDef | None:
+    def _send_and_retry(self, data: PutRecordKwargs, retries: int = 1) -> PutRecordOutputTypeDef | None:
         i = 0
         while i <= retries:
             try:
                 metadata = self.client.put_record(**data)
                 return metadata
             except ClientError as e:
-                if (
-                    e.response["Error"]["Code"]
-                    == "ProvisionedThroughputExceededException"
-                ):
-                    logger.warning(
-                        "Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds."
-                    )
+                if e.response["Error"]["Code"] == "ProvisionedThroughputExceededException":
+                    logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
                     time.sleep(5)
                 else:
                     logger.warning(
@@ -308,7 +264,5 @@ class Producer(KinesisBase, ProducerBackend):
                         e.response["Error"]["Message"],
                     )
             i += 1
-        logger.warning(
-            f"After {i} attempts, couldn't send message to Kinesis. Giving up."
-        )
+        logger.warning(f"After {i} attempts, couldn't send message to Kinesis. Giving up.")
         return None
