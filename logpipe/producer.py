@@ -28,9 +28,7 @@ class BaseProducer:
     ):
         self.client = get_producer_backend()
         self.topic_name = topic_name
-        self.producer_id = (
-            producer_id if producer_id else settings.get("PRODUCER_ID", "")
-        )
+        self.producer_id = producer_id if producer_id else settings.get("PRODUCER_ID", "")
 
     def _inner_send(
         self,
@@ -56,10 +54,7 @@ class BaseProducer:
             key=key,
             value=serialized_data,
         )
-        logger.debug(
-            'Sent message with type "%s", key "%s" to topic "%s"'
-            % (message_type, key, self.topic_name)
-        )
+        logger.debug(f'Sent message with type "{message_type}", key "{key}" to topic "{self.topic_name}"')
         return record_metadata
 
 

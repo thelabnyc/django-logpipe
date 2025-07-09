@@ -23,9 +23,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "stream",
-                    models.CharField(
-                        help_text="The Kinesis stream name", max_length=200
-                    ),
+                    models.CharField(help_text="The Kinesis stream name", max_length=200),
                 ),
                 (
                     "shard",
@@ -46,16 +44,12 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="kafkaoffset",
             name="offset",
-            field=models.PositiveIntegerField(
-                default=0, help_text="The current offset in the Kafka partition"
-            ),
+            field=models.PositiveIntegerField(default=0, help_text="The current offset in the Kafka partition"),
         ),
         migrations.AlterField(
             model_name="kafkaoffset",
             name="partition",
-            field=models.PositiveIntegerField(
-                help_text="The Kafka partition identifier"
-            ),
+            field=models.PositiveIntegerField(help_text="The Kafka partition identifier"),
         ),
         migrations.AlterField(
             model_name="kafkaoffset",

@@ -46,9 +46,7 @@ class ConsumerBackend(Iterable[Record]):
     def __init__(self, topic_name: TopicName, **kwargs: Any):
         pass
 
-    def seek_to_sequence_number(
-        self, shard: str, sequence_number: str | None = None
-    ) -> None:
+    def seek_to_sequence_number(self, shard: str, sequence_number: str | None = None) -> None:
         raise NotImplementedError()
 
     @abstractmethod
@@ -61,9 +59,7 @@ class ConsumerBackend(Iterable[Record]):
 
 
 class ProducerBackend(Protocol):
-    def send(
-        self, topic_name: TopicName, key: str, value: bytes
-    ) -> RecordMetadata | None:
+    def send(self, topic_name: TopicName, key: str, value: bytes) -> RecordMetadata | None:
         pass
 
 

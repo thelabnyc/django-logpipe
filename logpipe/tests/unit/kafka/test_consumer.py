@@ -67,9 +67,7 @@ class ConsumerTest(BaseTest):
 
     @patch("kafka.KafkaConsumer")
     def test_missing_version_throws(self, KafkaConsumer):
-        self.mock_consumer(
-            KafkaConsumer, value=b'json:{"message":{"code":"NY","name":"New York"}}'
-        )
+        self.mock_consumer(KafkaConsumer, value=b'json:{"message":{"code":"NY","name":"New York"}}')
         FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500, throw_errors=True)
         with self.assertRaises(InvalidMessageError):
@@ -78,9 +76,7 @@ class ConsumerTest(BaseTest):
 
     @patch("kafka.KafkaConsumer")
     def test_missing_version_ignored(self, KafkaConsumer):
-        self.mock_consumer(
-            KafkaConsumer, value=b'json:{"message":{"code":"NY","name":"New York"}}'
-        )
+        self.mock_consumer(KafkaConsumer, value=b'json:{"message":{"code":"NY","name":"New York"}}')
         FakeStateSerializer = self.mock_state_serializer_drf()
         consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=500)
         consumer.run(iter_limit=1)
