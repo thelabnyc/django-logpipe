@@ -8,7 +8,7 @@ services:
       AUTO_CREATE_TOPICS: 'true'
 
   postgres:
-    image: postgres:latest@sha256:3962158596daaef3682838cc8eb0e719ad1ce520f88e34596ce8d5de1b6330a1
+    image: postgres:latest@sha256:378ef4ac725e37399d67444809711e5340f90c2a54b22ab41a52c5ab1cd22d6b
     environment:
       POSTGRES_HOST_AUTH_METHOD: 'trust'
 
