@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.11"
 
 [[package]]
@@ -442,7 +442,7 @@ dev = [
     { name = "mkautodoc", specifier = ">=0.2.0,<0.3" },
     { name = "mkdocs", specifier = ">=1.6.1,<2" },
     { name = "mkdocs-material", specifier = ">=9.6.12,<10" },
-    { name = "moto", specifier = "==5.1.8" },
+    { name = "moto", specifier = "==5.1.9" },
     { name = "msgpack-types", specifier = "==0.5.0" },
     { name = "mypy", specifier = "==1.17.0" },
     { name = "psycopg2-binary", specifier = "==2.9.10" },
@@ -749,7 +749,7 @@ wheels = [
 
 [[package]]
 name = "moto"
-version = "5.1.8"
+version = "5.1.9"
 source = { registry = "https://gitlab.com/api/v4/groups/269576/-/packages/pypi/simple" }
 dependencies = [
     { name = "boto3" },
@@ -762,9 +762,9 @@ dependencies = [
     { name = "werkzeug" },
     { name = "xmltodict" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/19/e8/986b38d3459124168e21b8ea3311a9a26e930bc84b1e9ede16e5bccd574c/moto-5.1.8.tar.gz", hash = "sha256:5c2f63c051b7c13224cb1483917c85a796468d7e37dcd5d1a5b8de66729de3f4", size = 7039961, upload-time = "2025-07-06T21:51:01.943Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/62/767e0f65066489b50580a25182025fec19825cbed499ae2044da1e779ed6/moto-5.1.9.tar.gz", hash = "sha256:0c4f0387b06b5d24c0ce90f8f89f31a565cc05789189c5d59b5df02594f2e371", size = 7041662, upload-time = "2025-07-28T19:24:48.773Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f1/a9/7dc06460777b2c1e7a91bb485e9dd600a88331aeac73ca88a8a6d437900f/moto-5.1.8-py3-none-any.whl", hash = "sha256:12f3a15100da7de019c671a516dbba33b14072faba103f16ca79a39b8c803b7d", size = 5108867, upload-time = "2025-07-06T21:50:59.911Z" },
+    { url = "https://files.pythonhosted.org/packages/4e/0b/fd37926e3fd597df879d7c360f1641850023d30b1d67ba6686f4e33ab1fb/moto-5.1.9-py3-none-any.whl", hash = "sha256:e9ba7e4764a6088ccc34e3cc846ae719861ca202409fa865573de40a3e805b9b", size = 5216109, upload-time = "2025-07-28T19:24:45.997Z" },
 ]
 
 [[package]]
