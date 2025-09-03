@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "django-logpipe"
-version = "1.5.0"
+version = "1.5.1"
 description = "Move data around between Python services using Kafka and/or AWS Kinesis and Django Rest Framework serializers."
 readme = "README.md"
 dependencies = [

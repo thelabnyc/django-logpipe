@@ -1,3 +1,20 @@
+## v1.5.1 (2025-09-03)
+
+### Fix
+
+- update docker image tag format
+- **deps**: update boto to ^1.37.36
+- **deps**: update boto
+- **deps**: update dependency pydantic to ^2.11.3
+- **deps**: update dependency kafka-python to ^2.1.5
+- **deps**: update dependency pydantic to ^2.11.2
+- **deps**: update boto to ^1.37.27
+
+### Refactor
+
+- migrate black/flake8 -> ruff
+- migrate from poetry -> uv
+
 ## v1.5.0 (2025-04-03)
 
 ### Feat
