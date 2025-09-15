@@ -466,7 +466,7 @@ dev = [
     { name = "boto3-stubs", extras = ["kinesis"], specifier = ">=1.40.29,<2" },
     { name = "botocore-stubs", specifier = ">=1.40.29,<2" },
     { name = "coverage", specifier = "==7.10.6" },
-    { name = "django-stubs", specifier = "==5.2.2" },
+    { name = "django-stubs", specifier = "==5.2.4" },
     { name = "djangorestframework-stubs", specifier = "==3.16.2" },
     { name = "kafka-python", specifier = "==2.2.15" },
     { name = "mkautodoc", specifier = ">=0.2.0,<0.3" },
@@ -485,7 +485,7 @@ dev = [
 
 [[package]]
 name = "django-stubs"
-version = "5.2.2"
+version = "5.2.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "django" },
@@ -493,9 +493,9 @@ dependencies = [
     { name = "types-pyyaml" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bc/27/ab9813da817a29ae69ec92af31ad8fc58ce3c904f23ea604bd3bdd9adc37/django_stubs-5.2.2.tar.gz", hash = "sha256:2a04b510c7a812f88223fd7e6d87fb4ea98717f19c8e5c8b59691d83ad40a8a6", size = 243049, upload-time = "2025-07-17T08:35:02.747Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/fd/71/430901a1a799e1e66bb169a28e48a5f7b6e4ad5d6cadf60d9319d44b4181/django_stubs-5.2.4.tar.gz", hash = "sha256:89e1493d57ed091fdc990bf625bde77088e8660fcf6a3cdf0faf68e33c11c79b", size = 247751, upload-time = "2025-09-12T12:52:26.218Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/55/cb/bb387a1d40691ad54fec2be9e5093becebd63cca0ccb9348cbb27602e1d1/django_stubs-5.2.2-py3-none-any.whl", hash = "sha256:79bd0fdbc78958a8f63e0b062bd9d03f1de539664476c0be62ade5f063c9e41e", size = 485188, upload-time = "2025-07-17T08:35:00.356Z" },
+    { url = "https://files.pythonhosted.org/packages/e0/0a/6e1326888d2a8b5f390a28b543a9766105bff573641bbfd7edc7394ab5fe/django_stubs-5.2.4-py3-none-any.whl", hash = "sha256:000d59e826a15b032070d4b1b7f95b281005d690493173b95837c4c07b68dcf6", size = 490115, upload-time = "2025-09-12T12:52:24.165Z" },
 ]
 
 [[package]]
