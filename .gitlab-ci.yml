@@ -50,7 +50,7 @@ test:lib:
 
 test:docs:
   stage: test
-  image: "registry.gitlab.com/thelabnyc/python:3.13.974@sha256:a8e3c5425a167355846e94b7b32947b2795681f609f49a4d0c6ef326333045e1"
+  image: "registry.gitlab.com/thelabnyc/python:3.13.976@sha256:e711760153fc703393252416a825842f9e03f7077e48e3bcbbe23aaedb00d515"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
@@ -59,7 +59,7 @@ test:docs:
 
 pages:
   stage: release
-  image: "registry.gitlab.com/thelabnyc/python:3.13.974@sha256:a8e3c5425a167355846e94b7b32947b2795681f609f49a4d0c6ef326333045e1"
+  image: "registry.gitlab.com/thelabnyc/python:3.13.976@sha256:e711760153fc703393252416a825842f9e03f7077e48e3bcbbe23aaedb00d515"
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
