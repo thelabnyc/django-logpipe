@@ -42,7 +42,7 @@ dev = [
     "pytz (==2025.2)",
     "kafka-python (==2.2.15)",
     "mypy (==1.18.2)",
-    "django-stubs (==5.2.5)",
+    "django-stubs (==5.2.6)",
     "djangorestframework-stubs (==3.16.4)",
     "msgpack-types (==0.5.0)",
     "tox-uv>=1.28.0",
