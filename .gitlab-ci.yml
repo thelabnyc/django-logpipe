@@ -41,16 +41,18 @@ test:lib:
   coverage: '/^TOTAL.+?(\d+\%)$/'
   parallel:
     matrix:
-      - IMAGE: py311
+      - IMAGE: "3.11"
         TOX_SKIP_ENV: "^(?!py311-)"
-      - IMAGE: py312
+      - IMAGE: "3.12"
         TOX_SKIP_ENV: "^(?!py312-)"
-      - IMAGE: py313
+      - IMAGE: "3.13"
         TOX_SKIP_ENV: "^(?!py313-)"
+      - IMAGE: "3.14"
+        TOX_SKIP_ENV: "^(?!py314-)"
 
 test:docs:
   stage: test
-  image: "registry.gitlab.com/thelabnyc/python:3.13.1120@sha256:3a021ce0e99a4ee83cab71f439d5d02bf5d85b2aa819a4fe47cbd8a91340fb28"
+  image: "registry.gitlab.com/thelabnyc/python:3.14@sha256:3ebff7128227829df9137429094aa25797479af9ffc8a86b68cdb8bcbf818492"
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
   script:
@@ -59,7 +61,7 @@ test:docs:
 
 pages:
   stage: release
-  image: "registry.gitlab.com/thelabnyc/python:3.13.1120@sha256:3a021ce0e99a4ee83cab71f439d5d02bf5d85b2aa819a4fe47cbd8a91340fb28"
+  image: "registry.gitlab.com/thelabnyc/python:3.14@sha256:3ebff7128227829df9137429094aa25797479af9ffc8a86b68cdb8bcbf818492"
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
       when: never
