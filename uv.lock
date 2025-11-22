@@ -507,7 +507,7 @@ requires-dist = [
     { name = "boto3", specifier = ">=1.40.73,<2" },
     { name = "django", specifier = ">=4.2" },
     { name = "djangorestframework", specifier = ">=3.16.1" },
-    { name = "kafka-python", specifier = ">=2.2.15,<3" },
+    { name = "kafka-python", specifier = ">=2.2.16,<3" },
     { name = "lru-dict", specifier = ">=1.4.1" },
     { name = "msgpack", specifier = ">=1.1.2,<2" },
     { name = "pydantic", specifier = ">=2.12.4,<3" },
@@ -521,7 +521,7 @@ dev = [
     { name = "coverage", specifier = "==7.12.0" },
     { name = "django-stubs", specifier = "==5.2.7" },
     { name = "djangorestframework-stubs", specifier = "==3.16.5" },
-    { name = "kafka-python", specifier = "==2.2.15" },
+    { name = "kafka-python", specifier = "==2.2.16" },
     { name = "mkautodoc", specifier = ">=0.2.0,<0.3" },
     { name = "mkdocs", specifier = ">=1.6.1,<2" },
     { name = "mkdocs-material", specifier = ">=9.7.0,<10" },
@@ -645,11 +645,11 @@ wheels = [
 
 [[package]]
 name = "kafka-python"
-version = "2.2.15"
+version = "2.2.16"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/da/67/1434436f3cb409443f72a4843b877ac2d9bf586a31a0e966cf1dc4dc9a94/kafka_python-2.2.15.tar.gz", hash = "sha256:e0f480a45f3814cb0eb705b8b4f61069e1be61dae0d8c69d0f1f2da33eea1bd5", size = 347870, upload-time = "2025-07-01T17:37:53.686Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b4/2d/5a1ed7d334fcfba1e54ce0c1365117cb54e11b96403cbd3f6c4f6069cd03/kafka_python-2.2.16.tar.gz", hash = "sha256:abbb2e5b9f7ecb85fd0caa7955ee6cbb1c8257021a94819cd63e0603e82c8dc1", size = 348032, upload-time = "2025-11-18T23:57:45.124Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/e6/35/e8bfed5425e8fe685bd03ec3f5135ee8b88c11558baa59c0d12fbd2a20ae/kafka_python-2.2.15-py2.py3-none-any.whl", hash = "sha256:84c0993cd4f7f2f01e92d8104ea9bdf631aff72fc5e6ea62eb3bdf1d56528fc3", size = 309751, upload-time = "2025-07-01T17:37:51.87Z" },
+    { url = "https://files.pythonhosted.org/packages/65/0b/4f9ed37e95eb8dd827b43b2e67099f122d2d7e969e2b3efed79e73af8fa8/kafka_python-2.2.16-py2.py3-none-any.whl", hash = "sha256:76de02eeff40488fc29f01c4cce16f123686b7dad1de3c86bc3459191c5408f1", size = 309866, upload-time = "2025-11-18T23:57:43.173Z" },
 ]
 
 [[package]]
