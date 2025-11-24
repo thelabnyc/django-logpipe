@@ -12,7 +12,7 @@ dependencies = [
     "djangorestframework (>=3.16.1)",
     "lru-dict (>=1.4.1)",
     "pydantic (>=2.12.4,<3)",
-    "kafka-python (>=2.2.17,<3)",
+    "kafka-python (>=2.3.0,<3)",
     "boto3 (>=1.40.73,<2)",
     "msgpack (>=1.1.2,<2)",
 ]
@@ -40,7 +40,7 @@ dev = [
     "psycopg2-binary (==2.9.11)",
     "tox (>=4.32.0)",
     "pytz (==2025.2)",
-    "kafka-python (==2.2.17)",
+    "kafka-python (==2.3.0)",
     "mypy (==1.18.2)",
     "django-stubs (==5.2.7)",
     "djangorestframework-stubs (==3.16.5)",
