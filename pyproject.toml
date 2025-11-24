@@ -13,7 +13,7 @@ dependencies = [
     "lru-dict (>=1.4.1)",
     "pydantic (>=2.12.4,<3)",
     "kafka-python (>=2.3.0,<3)",
-    "boto3 (>=1.40.73,<2)",
+    "boto3 (>=1.41.1,<2)",
     "msgpack (>=1.1.2,<2)",
 ]
 requires-python = ">=3.11"
@@ -34,9 +34,9 @@ dev = [
     "coverage==7.12.0",
     "ruff (>=0.14.5)",
     "moto (==5.1.17)",
-    "boto3 (>=1.40.73,<2)",
-    "boto3-stubs[kinesis] (>=1.40.73,<2)",
-    "botocore-stubs (>=1.40.73,<2)",
+    "boto3 (>=1.41.1,<2)",
+    "boto3-stubs[kinesis] (>=1.41.1,<2)",
+    "botocore-stubs (>=1.40.76,<2)",
     "psycopg2-binary (==2.9.11)",
     "tox (>=4.32.0)",
     "pytz (==2025.2)",
