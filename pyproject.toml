@@ -33,7 +33,7 @@ Repository = "https://gitlab.com/thelabnyc/django-logpipe"
 dev = [
     "coverage==7.12.0",
     "ruff (>=0.14.7)",
-    "moto (==5.1.17)",
+    "moto (==5.1.18)",
     "boto3 (>=1.41.5,<2)",
     "boto3-stubs[kinesis] (>=1.41.5,<2)",
     "botocore-stubs (>=1.41.5,<2)",
