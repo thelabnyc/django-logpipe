@@ -554,7 +554,7 @@ dev = [
     { name = "msgpack-types", specifier = "==0.5.0" },
     { name = "mypy", specifier = "==1.19.0" },
     { name = "psycopg2-binary", specifier = "==2.9.11" },
-    { name = "pymdown-extensions", specifier = ">=10.19,<11" },
+    { name = "pymdown-extensions", specifier = ">=10.19.1,<11" },
     { name = "pytz", specifier = "==2025.2" },
     { name = "ruff", specifier = ">=0.14.9" },
     { name = "tox", specifier = ">=4.32.0" },
