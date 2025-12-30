@@ -10,7 +10,7 @@ stages:
 
 services:
   - spotify/kafka@sha256:cf8f8f760b48a07fb99df24fab8201ec8b647634751e842b67103a25a388981b
-  - postgres:latest@sha256:38d5c9d522037d8bf0864c9068e4df2f8a60127c6489ab06f98fdeda535560f9
+  - postgres:latest@sha256:b870e6b96354b3ed4b8737382093b22e5db2bf48b2fd97c009d3a85697cd0949
 
 cache:
   key: "$CI_PROJECT_NAME"
