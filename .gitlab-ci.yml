@@ -18,16 +18,16 @@ cache:
     - $HOME/.cache/pip
 
 include:
-  - component: gitlab.com/thelabnyc/thelab-ci-components/review@0.6.2
-  - component: gitlab.com/thelabnyc/thelab-ci-components/precommit@0.6.2
+  - component: gitlab.com/thelabnyc/thelab-ci-components/review@0.7.0
+  - component: gitlab.com/thelabnyc/thelab-ci-components/precommit@0.7.0
     rules:
       - if: $CI_PIPELINE_SOURCE == "schedule"
         when: never
       - if: $CI_COMMIT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"
       - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_PROTECTED == "true"
       - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  - component: gitlab.com/thelabnyc/thelab-ci-components/publish-gitlab-release@0.6.2
-  - component: gitlab.com/thelabnyc/thelab-ci-components/publish-to-pypi@0.6.2
+  - component: gitlab.com/thelabnyc/thelab-ci-components/publish-gitlab-release@0.7.0
+  - component: gitlab.com/thelabnyc/thelab-ci-components/publish-to-pypi@0.7.0
 
 test:lib:
   stage: test
