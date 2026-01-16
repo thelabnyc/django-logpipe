@@ -551,7 +551,7 @@ dev = [
     { name = "mkdocs", specifier = ">=1.6.1,<2" },
     { name = "mkdocs-material", specifier = ">=9.7.1,<10" },
     { name = "moto", specifier = "==5.1.19" },
-    { name = "msgpack-types", specifier = "==0.5.0" },
+    { name = "msgpack-types", specifier = "==0.6.0" },
     { name = "mypy", specifier = "==1.19.1" },
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pymdown-extensions", specifier = ">=10.20,<11" },
@@ -1063,15 +1063,15 @@ wheels = [
 
 [[package]]
 name = "msgpack-types"
-version = "0.5.0"
+version = "0.6.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "msgpack" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7f/26/a15707f2af5681333cd598724bedd1948844ac2af45eafc4175af0671a8d/msgpack_types-0.5.0.tar.gz", hash = "sha256:aebd1b8da23f8f9966d66ebb1a43bd261b95751c6a267bd21a124d2ccac84201", size = 6702, upload-time = "2024-09-21T13:55:05.587Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/be/8a867723ad290b2387e5d8ddbf5ad314a6c7575e1b8de2a83440d00a5166/msgpack_types-0.6.0.tar.gz", hash = "sha256:9c7b14ede1eb5a3a894b50f8529cd9dc075f4f40959edf98b9ebfe114e9bcf77", size = 6412, upload-time = "2026-01-13T04:26:06.767Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/19/dd/cd9d2b0ef506f6164cd81d4e92e408095041f28523d751b9f7dabdc244eb/msgpack_types-0.5.0-py3-none-any.whl", hash = "sha256:8b633ed75e495a555fa0615843de559a74b1d176828d59bb393d266e51f6bda7", size = 8182, upload-time = "2024-09-21T13:55:04.232Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/44/c7d25446d0dc059c1472b54d3fa85cdc0eceb0b5b917aa073dac95fa224a/msgpack_types-0.6.0-py3-none-any.whl", hash = "sha256:ab2c2c494dc9ab7657ee2dacbe0dc8d3026cc1d6ca7790395f7584aa1da08d9d", size = 8227, upload-time = "2026-01-13T04:26:05.552Z" },
 ]
 
 [[package]]
