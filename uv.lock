@@ -556,7 +556,7 @@ dev = [
     { name = "psycopg2-binary", specifier = "==2.9.11" },
     { name = "pymdown-extensions", specifier = ">=10.20,<11" },
     { name = "pytz", specifier = "==2025.2" },
-    { name = "ruff", specifier = ">=0.14.12" },
+    { name = "ruff", specifier = ">=0.14.13" },
     { name = "tox", specifier = ">=4.34.1" },
     { name = "tox-uv", specifier = ">=1.29.0" },
 ]
