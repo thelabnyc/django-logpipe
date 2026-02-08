@@ -39,6 +39,6 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/commitizen-tools/commitizen
-    rev: v4.13.4
+    rev: v4.13.5
     hooks:
       - id: commitizen
