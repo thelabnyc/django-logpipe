@@ -558,7 +558,7 @@ dev = [
     { name = "pytz", specifier = "==2025.2" },
     { name = "ruff", specifier = ">=0.15.2" },
     { name = "tox", specifier = ">=4.45.0" },
-    { name = "tox-uv", specifier = ">=1.30.0" },
+    { name = "tox-uv", specifier = ">=1.31.0" },
 ]
 
 [[package]]
