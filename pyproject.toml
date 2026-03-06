@@ -39,7 +39,7 @@ dev = [
     "botocore-stubs (>=1.42.41,<2)",
     "psycopg2-binary (==2.9.11)",
     "tox (>=4.47.0)",
-    "pytz (==2025.2)",
+    "pytz (==2026.1.post1)",
     "kafka-python (==2.3.0)",
     "mypy (==1.19.1)",
     "django-stubs (==5.2.9)",
