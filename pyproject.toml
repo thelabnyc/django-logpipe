@@ -45,7 +45,7 @@ dev = [
     "django-stubs (==5.2.9)",
     "djangorestframework-stubs (==3.16.8)",
     "msgpack-types (==0.7.0)",
-    "tox-uv (>=1.33.3)",
+    "tox-uv (>=1.33.4)",
     "mkdocs (>=1.6.1,<2)",
     "pymdown-extensions (>=10.21,<11)",
     "mkdocs-material (>=9.7.5,<10)",
