@@ -1,3 +1,7 @@
+default:
+  tags:
+    - thelab-arm64
+
 variables:
   ADVERTISED_HOST: "spotify__kafka"
   ADVERTISED_PORT: "9092"
