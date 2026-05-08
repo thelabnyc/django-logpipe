@@ -575,7 +575,7 @@ dev = [
     { name = "pytz", specifier = "==2026.2" },
     { name = "ruff", specifier = ">=0.15.12" },
     { name = "tox", specifier = ">=4.53.1" },
-    { name = "tox-uv", specifier = ">=1.35.1" },
+    { name = "tox-uv", specifier = ">=1.35.2" },
 ]
 
 [[package]]
