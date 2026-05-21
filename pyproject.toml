@@ -42,8 +42,8 @@ dev = [
     "pytz (==2026.2)",
     "kafka-python (==2.3.1)",
     "mypy (==1.20.2)",
-    "django-stubs (==5.2.9)",
-    "djangorestframework-stubs (==3.16.9)",
+    "django-stubs (==6.0.4)",
+    "djangorestframework-stubs (==3.17.0)",
     "msgpack-types (==0.7.0)",
     "tox-uv (>=1.35.2)",
     "mkdocs (>=1.6.1,<2)",
@@ -124,5 +124,5 @@ changelog_merge_prerelease = true
 version_provider = "pep621"
 version_scheme = "pep440"
 version_files = ["pyproject.toml:version"]
-pre_bump_hooks = ["pre-commit run --all-files || true"]
+pre_bump_hooks = ["prek run --all-files || true"]
 post_bump_hooks = ["git push origin master $CZ_POST_CURRENT_TAG_VERSION"]
