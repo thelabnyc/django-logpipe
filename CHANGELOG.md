@@ -1,3 +1,71 @@
+## v1.6.0 (2026-05-21)
+
+### Feat
+
+- support Python 3.14
+
+### Fix
+
+- **deps**: update boto to >=1.43.8,<2
+- **deps**: update boto to >=1.43.6,<2
+- **deps**: update dependency pydantic to >=2.13.4,<3
+- **deps**: update boto to >=1.43.1,<2
+- **deps**: update boto to >=1.42.95,<2
+- **deps**: update dependency pydantic to >=2.13.3,<3
+- **deps**: update dependency pydantic to >=2.13.2,<3
+- **deps**: update boto to >=1.42.90,<2
+- **deps**: update dependency pydantic to >=2.13.1,<3
+- **deps**: update dependency pydantic to >=2.13.0,<3
+- **deps**: update dependency kafka-python to v2.3.1
+- **deps**: update boto to >=1.42.87,<2
+- **deps**: update boto to >=1.42.82,<2
+- **deps**: update boto to >=1.42.77,<2
+- **deps**: update dependency djangorestframework to >=3.17.1
+- **deps**: update boto to >=1.42.72,<2
+- **deps**: update dependency djangorestframework to >=3.17.0
+- **deps**: update boto to >=1.42.62,<2
+- **deps**: update boto to >=1.42.58,<2
+- **deps**: update boto
+- **deps**: update boto to >=1.42.38,<2
+- **deps**: update boto to >=1.42.33,<2
+- **deps**: update boto to >=1.42.29,<2
+- **deps**: update boto to >=1.42.24,<2
+- **deps**: update boto to >=1.42.19,<2
+- **deps**: update boto to >=1.42.16,<2
+- **deps**: update boto to >=1.42.13,<2
+- **deps**: update dependency django to >=5.2
+- **deps**: update boto to >=1.42.8,<2
+- **deps**: update boto to >=1.42.3,<2
+- **deps**: update boto to >=1.41.5,<2
+- **deps**: update dependency pydantic to >=2.12.5,<3
+- **deps**: update boto
+- **deps**: update dependency kafka-python to v2.3.0
+- **deps**: update dependency kafka-python to v2.2.17
+- **deps**: update dependency kafka-python to v2.2.16
+- **deps**: update boto to >=1.40.73,<2
+- **deps**: update boto
+- **deps**: update dependency pydantic to >=2.12.4,<3
+- **deps**: update dependency lru-dict to >=1.4.1
+- **deps**: update boto to >=1.40.63,<2
+- **deps**: update boto to >=1.40.58,<2
+- **deps**: update dependency pydantic to >=2.12.3,<3
+- **deps**: update dependency pydantic to >=2.12.2,<3
+- **deps**: update dependency pydantic to >=2.12.0,<3
+- **deps**: update dependency msgpack to >=1.1.2,<2
+- **deps**: update dependency pydantic to >=2.11.10,<3
+- **deps**: update boto to >=1.40.44,<2
+- **deps**: update boto to >=1.40.39,<2
+- **deps**: update boto
+- **deps**: update dependency pydantic to >=2.11.9,<3
+- **deps**: update dependency pydantic to >=2.11.8,<3
+- **deps**: update boto to >=1.40.29,<2
+- **deps**: update boto to >=1.40.24,<2
+- **deps**: update dependency pydantic to >=2.11.7,<3
+- **deps**: update dependency msgpack to >=1.1.1,<2
+- **deps**: update dependency kafka-python to >=2.2.15,<3
+- **deps**: update dependency djangorestframework to >=3.16.1
+- prevent renovate from pointing all URLs at gitlab
+
 ## v1.5.1 (2025-09-03)
 
 ### Fix
