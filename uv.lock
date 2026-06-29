@@ -528,7 +528,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "boto3", specifier = ">=1.43.33,<2" },
+    { name = "boto3", specifier = ">=1.43.36,<2" },
     { name = "django", specifier = ">=5.2" },
     { name = "djangorestframework", specifier = ">=3.17.1" },
     { name = "kafka-python", specifier = ">=2.3.2,<3" },
@@ -539,8 +539,8 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "boto3", specifier = ">=1.43.33,<2" },
-    { name = "boto3-stubs", extras = ["kinesis"], specifier = ">=1.43.33,<2" },
+    { name = "boto3", specifier = ">=1.43.36,<2" },
+    { name = "boto3-stubs", extras = ["kinesis"], specifier = ">=1.43.36,<2" },
     { name = "botocore-stubs", specifier = ">=1.43.14,<2" },
     { name = "coverage", specifier = "==7.14.3" },
     { name = "django-stubs", specifier = "==6.0.4" },
