@@ -38,7 +38,7 @@ dev = [
     "boto3-stubs[kinesis] (>=1.43.40,<2)",
     "botocore-stubs (>=1.43.14,<2)",
     "psycopg2-binary (==2.9.12)",
-    "tox (>=4.56.1)",
+    "tox (>=4.56.2)",
     "pytz (==2026.2)",
     "kafka-python (==2.3.2)",
     "mypy (==1.20.2)",
