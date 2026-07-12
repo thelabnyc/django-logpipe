@@ -569,7 +569,7 @@ dev = [
     { name = "pymdown-extensions", specifier = ">=10.21.3,<11" },
     { name = "pytz", specifier = "==2026.2" },
     { name = "ruff", specifier = ">=0.15.20" },
-    { name = "tox", specifier = ">=4.56.3" },
+    { name = "tox", specifier = ">=4.56.4" },
     { name = "tox-uv", specifier = ">=1.35.2" },
 ]
 
