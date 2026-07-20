@@ -48,7 +48,7 @@ dev = [
     "tox-uv (>=1.35.2)",
     "mkdocs (>=1.6.1,<2)",
     "pymdown-extensions (>=10.21.3,<11)",
-    "mkdocs-material (>=9.7.6,<10)",
+    "mkdocs-material (>=9.7.7,<10)",
     "mkautodoc (>=0.2.0,<0.3)",
 ]
 
