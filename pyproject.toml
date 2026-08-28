@@ -47,7 +47,7 @@ dev = [
     "msgpack-types (>=0.8.0)",
     "tox-uv (>=1.36.0)",
     "mkdocs (>=1.6.1,<2)",
-    "pymdown-extensions (>=10.21.3,<11)",
+    "pymdown-extensions (>=11.0.2,<12)",
     "mkdocs-material (>=9.7.7,<10)",
     "mkautodoc (>=0.2.0,<0.3)",
 ]
