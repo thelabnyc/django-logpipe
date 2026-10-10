@@ -717,7 +717,7 @@ dev = [
 requires-dist = [
     { name = "boto3", specifier = ">=1.43.107,<2" },
     { name = "django", specifier = ">=5.2" },
-    { name = "djangorestframework", specifier = ">=3.18.2" },
+    { name = "djangorestframework", specifier = ">=3.18.3" },
     { name = "kafka-python", specifier = ">=2.3.2,<3" },
     { name = "lru-dict", specifier = ">=1.4.1" },
     { name = "msgpack", specifier = ">=1.2.3,<2" },
