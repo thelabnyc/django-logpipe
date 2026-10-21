@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 from django.test import override_settings
 from moto import mock_aws
@@ -40,6 +40,22 @@ class ConsumerTest(BaseTest):
         self.assertEqual(self.serializers["state"].save.call_count, 1)
         consumer.run(iter_limit=10)
         self.assertEqual(self.serializers["state"].save.call_count, 1)
+
+    @override_settings(LOGPIPE=LOGPIPE)
+    @mock_aws
+    def test_close_releases_client(self):
+        self.make_stream_with_record(
+            "NY",
+            b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}',
+        )
+        consumer = Consumer(TOPIC_STATES)
+        client = consumer.consumer.client
+        with patch.object(client, "close", wraps=client.close) as close:
+            with consumer:
+                pass
+            consumer.close()
+        close.assert_called_once_with()
+        self.assertIsNone(consumer.consumer._client)
 
     @override_settings(LOGPIPE=LOGPIPE)
     @mock_aws

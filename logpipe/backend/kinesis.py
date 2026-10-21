@@ -122,6 +122,11 @@ class Consumer(KinesisBase, ConsumerBackend):
             )
         self.shard_iters[shard] = resp["ShardIterator"]
 
+    def close(self) -> None:
+        if self._client:
+            self._client.close()
+            self._client = None
+
     def __iter__(self) -> Consumer:
         return self
 
