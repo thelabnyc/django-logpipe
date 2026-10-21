@@ -101,6 +101,11 @@ class Consumer(ConsumerBackend):
                 self._client.committed(tp)
         return self._client
 
+    def close(self) -> None:
+        if self._client:
+            self._client.close()
+            self._client = None
+
     def __iter__(self) -> Consumer:
         return self
 

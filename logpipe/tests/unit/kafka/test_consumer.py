@@ -65,6 +65,25 @@ class ConsumerTest(BaseTest):
         self.assertEqual(fake_kafka_consumer.__next__.call_count, 2)
         self.assertEqual(self.serializers["state"].save.call_count, 1)
 
+    @override_settings(LOGPIPE=LOGPIPE)
+    @patch("kafka.KafkaConsumer")
+    def test_close_releases_client(self, KafkaConsumer):
+        fake_kafka_consumer = self.mock_consumer(
+            KafkaConsumer,
+            value=b'json:{"message":{"code":"NY","name":"New York"},"version":1,"type":"us-state"}',
+            max_calls=100,
+        )
+        FakeStateSerializer = self.mock_state_serializer_drf(lambda ser: None)
+
+        with Consumer(TOPIC_STATES, consumer_timeout_ms=500) as consumer:
+            consumer.register(FakeStateSerializer)
+            consumer.run(iter_limit=1)
+            fake_kafka_consumer.close.assert_not_called()
+        fake_kafka_consumer.close.assert_called_once_with()
+
+        consumer.close()
+        fake_kafka_consumer.close.assert_called_once_with()
+
     @patch("kafka.KafkaConsumer")
     def test_missing_version_throws(self, KafkaConsumer):
         self.mock_consumer(KafkaConsumer, value=b'json:{"message":{"code":"NY","name":"New York"}}')

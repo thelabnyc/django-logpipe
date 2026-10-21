@@ -1,5 +1,6 @@
 from collections.abc import Generator, Iterator
-from typing import Any, TypeVar, cast
+from types import TracebackType
+from typing import Any, Self, TypeVar, cast
 import itertools
 import logging
 import time
@@ -55,6 +56,20 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
 
     def __next__(self) -> tuple[Record, Serializer]:
         return self._get_next_message()
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        self.close()
+
+    def close(self) -> None:
+        self.consumer.close()
 
     def add_ignored_message_type(self, message_type: MessageType) -> None:
         self.ignored_message_types.add(message_type)
@@ -248,6 +263,21 @@ class MultiConsumer:
 
     def __init__(self, *consumers: Consumer):
         self.consumers = list(consumers)
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        self.close()
+
+    def close(self) -> None:
+        for consumer in self.consumers:
+            consumer.close()
 
     def run(self, iter_limit: int = 0) -> None:
         i = 0
