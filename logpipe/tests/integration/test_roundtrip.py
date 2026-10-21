@@ -36,7 +36,8 @@ class RoundTripTest(BaseTest):
             "KAFKA_PRODUCER_KWARGS": {"acks": "all", "enable_idempotence": True},
         }
         with override_settings(LOGPIPE=idempotent):
-            producer = Producer(TOPIC_STATES, StateSerializer_DRF)
+            # Separate topic so the roundtrip test doesn't consume this record.
+            producer = Producer("us-states-idempotent", StateSerializer_DRF)
             record = producer.send({"code": "PA", "name": "Pennsylvania"})
-        self.assertEqual(record.topic, "us-states")
+        self.assertEqual(record.topic, "us-states-idempotent")
         self.assertTrue(record.offset >= 0)
