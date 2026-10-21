@@ -22,9 +22,9 @@ class RoundTripTest(BaseTest):
 
         # producer.client.flush()
 
-        consumer = Consumer(TOPIC_STATES, consumer_timeout_ms=1000)
-        consumer.register(FakeStateSerializer)
-        consumer.run(iter_limit=1)
+        with Consumer(TOPIC_STATES, consumer_timeout_ms=1000) as consumer:
+            consumer.register(FakeStateSerializer)
+            consumer.run(iter_limit=1)
 
         self.assertEqual(FakeStateSerializer.call_count, 1)
         self.assertEqual(self.serializers["state"].save.call_count, 1)
