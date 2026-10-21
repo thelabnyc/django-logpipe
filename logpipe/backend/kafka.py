@@ -168,7 +168,7 @@ class Producer(ProducerBackend):
     def _get_client_config(self) -> KafkaClientConfig:
         servers = settings.get("KAFKA_BOOTSTRAP_SERVERS")
         retries = settings.get("KAFKA_MAX_SEND_RETRIES", 0)
-        # Keep kafka-python 2.x delivery semantics unless KAFKA_KWARGS opts in.
+        # Keep kafka-python 2.x delivery semantics unless KAFKA_PRODUCER_KWARGS opts in.
         kwargs = KafkaClientConfig(
             bootstrap_servers=servers,
             retries=retries,
@@ -176,4 +176,5 @@ class Producer(ProducerBackend):
             enable_idempotence=False,
         )
         kwargs.update(settings.get("KAFKA_KWARGS", {}))
+        kwargs.update(settings.get("KAFKA_PRODUCER_KWARGS", {}))
         return kwargs

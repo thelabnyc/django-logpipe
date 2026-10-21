@@ -91,6 +91,31 @@ class DRFProducerTest(TestCase):
         )
         future.get.assert_called_with(timeout=5)
 
+    @override_settings(
+        LOGPIPE={
+            **LOGPIPE,
+            "KAFKA_KWARGS": {"acks": 0, "client_id": "logpipe"},
+            "KAFKA_PRODUCER_KWARGS": {"acks": "all", "enable_idempotence": True},
+        }
+    )
+    @patch("kafka.KafkaProducer")
+    def test_producer_kwargs_override_defaults(self, KafkaProducer):
+        future = MagicMock()
+        future.get.return_value = self._get_record_metadata()
+        client = MagicMock()
+        client.send.return_value = future
+        KafkaProducer.return_value = client
+
+        Producer(TOPIC_STATES, StateSerializer_DRF).send({"code": "NY", "name": "New York"})
+
+        KafkaProducer.assert_called_once_with(
+            bootstrap_servers=["kafka:9092"],
+            retries=5,
+            acks="all",
+            enable_idempotence=True,
+            client_id="logpipe",
+        )
+
     def _get_record_metadata(self):
         return ConsumerRecord(
             topic=TOPIC_STATES,

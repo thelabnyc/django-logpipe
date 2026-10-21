@@ -1,3 +1,6 @@
+from django.conf import settings
+from django.test import override_settings
+
 from logpipe import Consumer, Producer
 
 from ..common import TOPIC_STATES, BaseTest, StateSerializer_DRF
@@ -25,3 +28,15 @@ class RoundTripTest(BaseTest):
 
         self.assertEqual(FakeStateSerializer.call_count, 1)
         self.assertEqual(self.serializers["state"].save.call_count, 1)
+
+    def test_idempotent_producer_opt_in(self):
+        idempotent = {
+            **settings.LOGPIPE,
+            "KAFKA_MAX_SEND_RETRIES": 5,
+            "KAFKA_PRODUCER_KWARGS": {"acks": "all", "enable_idempotence": True},
+        }
+        with override_settings(LOGPIPE=idempotent):
+            producer = Producer(TOPIC_STATES, StateSerializer_DRF)
+            record = producer.send({"code": "PA", "name": "Pennsylvania"})
+        self.assertEqual(record.topic, "us-states")
+        self.assertTrue(record.offset >= 0)

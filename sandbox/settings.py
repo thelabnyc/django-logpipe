@@ -81,7 +81,7 @@ STATIC_URL = "/static/"
 
 
 LOGPIPE = {
-    "KAFKA_BOOTSTRAP_SERVERS": ["spotify__kafka:9092"],
+    "KAFKA_BOOTSTRAP_SERVERS": [os.environ.get("KAFKA_BOOTSTRAP_SERVER", "spotify__kafka:9092")],
     "KAFKA_CONSUMER_KWARGS": {
         "group_id": "django-logpipe",
     },

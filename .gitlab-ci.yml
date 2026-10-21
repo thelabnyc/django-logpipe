@@ -61,6 +61,24 @@ test:integration:
   rules:
     - if: $CI_COMMIT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  # spotify/kafka is amd64-only and these runners are arm64.
+  services:
+    - name: apache/kafka:4.3.2@sha256:852a0d49fc4e656b022e7f23785411802c9a088c78a7c5e39f33969de9c227a7
+      alias: kafka
+    - postgres:latest@sha256:4ef4dbc939d61acea57712655ddb4b4ab27419c913f94cca0cd57cb3ea3c2280
+  variables:
+    KAFKA_BOOTSTRAP_SERVER: "kafka:9092"
+    KAFKA_NODE_ID: "1"
+    KAFKA_PROCESS_ROLES: "broker,controller"
+    KAFKA_LISTENERS: "PLAINTEXT://:9092,CONTROLLER://:9093"
+    KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka:9092"
+    KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT"
+    KAFKA_CONTROLLER_QUORUM_VOTERS: "1@localhost:9093"
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+    KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+    KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+    KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
   script:
     - uv sync
     - uv run python manage.py test logpipe.tests.integration -v 2
