@@ -52,6 +52,8 @@ LOGPIPE = {
 }
 ```
 
+Kafka producers send with `acks=1` and idempotence turned off, the same as under kafka-python 2.x. To use kafka-python 3's idempotent `acks="all"` sends, set `'acks': 'all'` and `'enable_idempotence': True` in `KAFKA_KWARGS`, and raise `KAFKA_MAX_SEND_RETRIES` above 0.
+
 If you're using AWS Kinesis instead of Kafka, it will look like this:
 
 ```py

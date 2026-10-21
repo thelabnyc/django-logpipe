@@ -43,7 +43,12 @@ class DRFProducerTest(TestCase):
         self.assertEqual(KafkaProducer.call_count, 1)
         self.assertEqual(client.send.call_count, 1)
         self.assertEqual(future.get.call_count, 1)
-        KafkaProducer.assert_called_with(bootstrap_servers=["kafka:9092"], retries=5)
+        KafkaProducer.assert_called_with(
+            bootstrap_servers=["kafka:9092"],
+            retries=5,
+            acks=1,
+            enable_idempotence=False,
+        )
         future.get.assert_called_with(timeout=5)
 
     @override_settings(LOGPIPE=LOGPIPE)
@@ -78,7 +83,12 @@ class DRFProducerTest(TestCase):
         self.assertEqual(KafkaProducer.call_count, 1)
         self.assertEqual(client.send.call_count, 1)
         self.assertEqual(future.get.call_count, 1)
-        KafkaProducer.assert_called_with(bootstrap_servers=["kafka:9092"], retries=5)
+        KafkaProducer.assert_called_with(
+            bootstrap_servers=["kafka:9092"],
+            retries=5,
+            acks=1,
+            enable_idempotence=False,
+        )
         future.get.assert_called_with(timeout=5)
 
     def _get_record_metadata(self):

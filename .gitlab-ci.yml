@@ -55,6 +55,16 @@ test:lib:
       - IMAGE: "3.14"
         TOX_SKIP_ENV: "^(?!py314-)"
 
+test:integration:
+  stage: test
+  image: "registry.gitlab.com/thelabnyc/python:3.14@sha256:9a9f865840d4ce0ddbc177555d64cadc13b51b3d51908a502a386c24aaef18dc"
+  rules:
+    - if: $CI_COMMIT_BRANCH && $CI_COMMIT_REF_PROTECTED == "true"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  script:
+    - uv sync
+    - uv run python manage.py test logpipe.tests.integration -v 2
+
 test:docs:
   stage: test
   image: "registry.gitlab.com/thelabnyc/python:3.14@sha256:9a9f865840d4ce0ddbc177555d64cadc13b51b3d51908a502a386c24aaef18dc"
