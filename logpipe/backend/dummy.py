@@ -21,7 +21,6 @@ def reset_topics() -> None:
     global _topics, _offsets
     _topics = {}
     _offsets = collections.Counter()
-    return None
 
 
 class Consumer(ConsumerBackend):

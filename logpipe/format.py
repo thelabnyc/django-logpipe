@@ -48,8 +48,8 @@ def parse(_data: str | bytes) -> dict[str, Any]:
     data = _bytes(_data)
     code, body = data.split(_delim, 1)
     if code not in _formats:
-        raise UnknownFormatError("Could not find parser for format %s" % code.decode())
+        raise UnknownFormatError(f"Could not find parser for format {code.decode()}")
     return _formats[code]["parser"].parse(BytesIO(body))
 
 
-__all__ = ["register", "unregister", "render", "parse"]
+__all__ = ["parse", "register", "render", "unregister"]

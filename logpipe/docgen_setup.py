@@ -26,9 +26,9 @@ LOGPIPE = {
 }
 
 setup = None
-from django.apps import apps  # noqa
-from django.conf import settings  # noqa
-import django  # noqa
+from django.apps import apps
+from django.conf import settings
+import django
 
 if not apps.ready and not settings.configured:
     django.setup()

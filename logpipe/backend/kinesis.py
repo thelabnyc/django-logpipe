@@ -65,16 +65,9 @@ class ModelOffsetStore(OffsetStoreBackend):
         KinesisOffset = apps.get_model(app_label="logpipe", model_name="KinesisOffset")
         region = settings.get_aws_region()
         logger.debug(
-            'Commit offset "%s" for region "%s", stream "%s", shard "%s" to %s'
-            % (
-                message.offset,
-                region,
-                message.topic,
-                message.partition,
-                self.__class__.__name__,
-            )
+            f'Commit offset "{message.offset}" for region "{region}", stream "{message.topic}", shard "{message.partition}" to {self.__class__.__name__}'
         )
-        obj, created = KinesisOffset.objects.get_or_create(region=region, stream=message.topic, shard=message.partition)
+        obj, _created = KinesisOffset.objects.get_or_create(region=region, stream=message.topic, shard=message.partition)
         obj.sequence_number = message.offset
         obj.save()
 

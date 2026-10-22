@@ -25,4 +25,4 @@ class JSONParser(_JSONParser, Parser):
         )
 
 
-__all__ = ["JSONRenderer", "JSONParser"]
+__all__ = ["JSONParser", "JSONRenderer"]

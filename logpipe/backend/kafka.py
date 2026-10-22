@@ -35,16 +35,8 @@ class ModelOffsetStore(OffsetStoreBackend):
         if not isinstance(consumer, Consumer):
             raise TypeError("Consumer type mismatch")
         KafkaOffset = apps.get_model(app_label="logpipe", model_name="KafkaOffset")
-        logger.debug(
-            'Commit offset "%s" for topic "%s", partition "%s" to %s'
-            % (
-                message.offset,
-                message.topic,
-                message.partition,
-                self.__class__.__name__,
-            )
-        )
-        obj, created = KafkaOffset.objects.get_or_create(topic=message.topic, partition=message.partition)
+        logger.debug(f'Commit offset "{message.offset}" for topic "{message.topic}", partition "{message.partition}" to {self.__class__.__name__}')
+        obj, _created = KafkaOffset.objects.get_or_create(topic=message.topic, partition=message.partition)
         obj.offset = int(message.offset) + 1
         obj.save()
 
@@ -66,15 +58,7 @@ class KafkaOffsetStore(OffsetStoreBackend):
     def commit(self, consumer: ConsumerBackend, message: Record) -> None:
         if not isinstance(consumer, Consumer):
             raise TypeError("Consumer type mismatch")
-        logger.debug(
-            'Commit offset "%s" for topic "%s", partition "%s" to %s'
-            % (
-                message.offset,
-                message.topic,
-                message.partition,
-                self.__class__.__name__,
-            )
-        )
+        logger.debug(f'Commit offset "{message.offset}" for topic "{message.topic}", partition "{message.partition}" to {self.__class__.__name__}')
         consumer.client.commit()
 
     def seek(self, consumer: ConsumerBackend, topic: str, partition: str) -> None:
@@ -125,7 +109,7 @@ class Consumer(ConsumerBackend):
         p = []
         partitions = self.client.partitions_for_topic(self.topic_name)
         if not partitions:
-            raise MissingTopicError("Could not find topic %s. Does it exist?" % self.topic_name)
+            raise MissingTopicError(f"Could not find topic {self.topic_name}. Does it exist?")
         for partition in partitions:
             tp = kafka.TopicPartition(self.topic_name, partition=partition)
             p.append(tp)

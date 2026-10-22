@@ -33,7 +33,6 @@ from .format import parse
 
 logger = logging.getLogger(__name__)
 
-_Ser = TypeVar("_Ser", bound=Serializer)
 _DRFSer = TypeVar("_DRFSer", bound=DRFSerializer[Any])
 
 
@@ -49,7 +48,7 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
         self.serializer_classes = {}
         self.ignored_message_types = set()
 
-    def __iter__(self) -> Iterator[tuple[Record, Serializer]]:
+    def __iter__(self) -> Iterator[tuple[Record, Serializer]]:  # noqa: PYI034
         if self.throw_errors:
             return self
         return self._error_handler()
@@ -85,22 +84,16 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
         self.serializer_classes[message_type][version] = serializer_class
 
     def run(self, iter_limit: int = 0) -> None:
-        i = 0
-        for message, serializer in self:
+        for i, (message, serializer) in enumerate(self, start=1):
             with transaction.atomic():
                 try:
                     serializer.save()
                     self.commit(message)
-                except Exception as e:
-                    info = (
-                        message.key,
-                        message.topic,
-                        message.partition,
-                        message.offset,
+                except Exception:
+                    logger.exception(
+                        f'Failed to process message with key "{message.key}" from topic "{message.topic}", partition "{message.partition}", offset "{message.offset}"'
                     )
-                    logger.exception('Failed to process message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
-                    raise e
-            i += 1
+                    raise
             if iter_limit > 0 and i >= iter_limit:
                 break
 
@@ -139,29 +132,22 @@ class Consumer(Iterator[tuple[Record, Serializer]]):
                 logger.warning(f"Skipping invalid message in topic {self.consumer.topic_name}. Details: {e}")
                 self.commit(e.message)
 
-            pass
-
     def _get_next_message(self) -> tuple[Record, Serializer]:
         message = next(self.consumer)
 
-        info = (message.key, message.topic, message.partition, message.offset)
-        logger.debug('Received message with key "%s" from topic "%s", partition "%s", offset "%s"' % info)
+        logger.debug(f'Received message with key "{message.key}" from topic "{message.topic}", partition "{message.partition}", offset "{message.offset}"')
 
         # Wait?
         timestamp = getattr(message, "timestamp", None) or (time.time() * 1000)
         lag_ms = (time.time() * 1000) - timestamp
-        logger.debug("Message lag is %sms" % lag_ms)
+        logger.debug(f"Message lag is {lag_ms}ms")
         wait_ms = settings.get("MIN_MESSAGE_LAG_MS", 0) - lag_ms
         if wait_ms > 0:
-            logger.debug("Respecting MIN_MESSAGE_LAG_MS by waiting %sms" % wait_ms)
+            logger.debug(f"Respecting MIN_MESSAGE_LAG_MS by waiting {wait_ms}ms")
             time.sleep(wait_ms / 1000)
             logger.debug("Finished waiting")
 
-        try:
-            serializer = self._unserialize(message)
-        except Exception as e:
-            raise e
-
+        serializer = self._unserialize(message)
         return message, serializer
 
     def _unserialize(self, message: Record) -> Serializer:
@@ -280,9 +266,7 @@ class MultiConsumer:
             consumer.close()
 
     def run(self, iter_limit: int = 0) -> None:
-        i = 0
-        for consumer in itertools.cycle(self.consumers):
+        for i, consumer in enumerate(itertools.cycle(self.consumers), start=1):
             consumer.run(iter_limit=1)
-            i += 1
             if iter_limit > 0 and i >= iter_limit:
                 break
