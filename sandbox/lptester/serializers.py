@@ -16,7 +16,7 @@ class PersonSerializer(
 
     class Meta:
         model = models.Person
-        fields = ["uuid", "first_name", "last_name"]
+        fields = ("uuid", "first_name", "last_name")
 
     @classmethod
     def lookup_instance(cls, **kwargs: Any) -> models.Person | None:

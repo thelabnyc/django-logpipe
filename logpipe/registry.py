@@ -22,4 +22,4 @@ def list_registered_consumers() -> list[Consumer]:
     return [build() for build in _registered_consumers]
 
 
-__all__ = ["register_consumer", "list_registered_consumers"]
+__all__ = ["list_registered_consumers", "register_consumer"]

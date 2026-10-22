@@ -44,4 +44,4 @@ class MsgPackParser(parsers.BaseParser, Parser):
         return msgpack.unpack(stream, use_list=False)
 
 
-__all__ = ["MsgPackRenderer", "MsgPackParser"]
+__all__ = ["MsgPackParser", "MsgPackRenderer"]

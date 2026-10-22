@@ -11,7 +11,7 @@ Add `logpipe` to your installed apps.
 ```py
 INSTALLED_APPS = [
     # …
-    'logpipe',
+    "logpipe",
     # …
 ]
 ```
@@ -21,35 +21,32 @@ Add connection settings to your `settings.py` file. If you're using Kafka, this 
 ```py
 LOGPIPE = {
     # Required Settings
-    'OFFSET_BACKEND': 'logpipe.backend.kafka.ModelOffsetStore',
-    'CONSUMER_BACKEND': 'logpipe.backend.kafka.Consumer',
-    'PRODUCER_BACKEND': 'logpipe.backend.kafka.Producer',
-    'KAFKA_BOOTSTRAP_SERVERS': [
-        'kafka:9092'
-    ],
-    'KAFKA_CONSUMER_KWARGS': {
-        'group_id': 'django-logpipe',
+    "OFFSET_BACKEND": "logpipe.backend.kafka.ModelOffsetStore",
+    "CONSUMER_BACKEND": "logpipe.backend.kafka.Consumer",
+    "PRODUCER_BACKEND": "logpipe.backend.kafka.Producer",
+    "KAFKA_BOOTSTRAP_SERVERS": ["kafka:9092"],
+    "KAFKA_CONSUMER_KWARGS": {
+        "group_id": "django-logpipe",
     },
-
     # Optional Settings
-    'KAFKA_SEND_TIMEOUT': 10,
-    'KAFKA_MAX_SEND_RETRIES': 0,
-    'KAFKA_KWARGS': {
+    "KAFKA_SEND_TIMEOUT": 10,
+    "KAFKA_MAX_SEND_RETRIES": 0,
+    "KAFKA_KWARGS": {
         # Example for Confluent Cloud
-        'security_protocol': 'SASL_SSL',
-        'sasl_mechanism': 'PLAIN',
-        'sasl_plain_username': '<api_key>',
-        'sasl_plain_password': '<api_secret>',
+        "security_protocol": "SASL_SSL",
+        "sasl_mechanism": "PLAIN",
+        "sasl_plain_username": "<api_key>",
+        "sasl_plain_password": "<api_secret>",
         # …or for OVHCloud
-        'security_protocol': 'SSL',
-        'ssl_cafile': '<ca.pem or ca.certificate.pem>',
-        'ssl_certfile': '<service.cert or access.certificate.pem>',
-        'ssl_keyfile': '<service.key or access.key>',
+        "security_protocol": "SSL",
+        "ssl_cafile": "<ca.pem or ca.certificate.pem>",
+        "ssl_certfile": "<service.cert or access.certificate.pem>",
+        "ssl_keyfile": "<service.key or access.key>",
     },
-    'KAFKA_PRODUCER_KWARGS': {},
-    'MIN_MESSAGE_LAG_MS': 0,
-    'DEFAULT_FORMAT': 'json',
-    'PRODUCER_ID': 'my-application-name',
+    "KAFKA_PRODUCER_KWARGS": {},
+    "MIN_MESSAGE_LAG_MS": 0,
+    "DEFAULT_FORMAT": "json",
+    "PRODUCER_ID": "my-application-name",
 }
 ```
 
@@ -63,10 +60,9 @@ If you're using AWS Kinesis instead of Kafka, it will look like this:
 ```py
 LOGPIPE = {
     # Required Settings
-    'OFFSET_BACKEND': 'logpipe.backend.kinesis.ModelOffsetStore',
-    'CONSUMER_BACKEND': 'logpipe.backend.kinesis.Consumer',
-    'PRODUCER_BACKEND': 'logpipe.backend.kinesis.Producer',
-
+    "OFFSET_BACKEND": "logpipe.backend.kinesis.ModelOffsetStore",
+    "CONSUMER_BACKEND": "logpipe.backend.kinesis.Consumer",
+    "PRODUCER_BACKEND": "logpipe.backend.kinesis.Producer",
     # Optional Settings
     # 'KINESIS_REGION': 'us-east-1',
     # 'KINESIS_FETCH_LIMIT': 25,

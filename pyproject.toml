@@ -101,6 +101,10 @@ from_first = true
 [tool.ruff]
 line-length = 160
 
+[tool.ruff.lint.per-file-ignores]
+# makemigrations regenerates these; ClassVar annotations would not survive.
+"**/migrations/*.py" = ["RUF012"]
+
 [tool.ruff.lint.isort]
 from-first = true
 

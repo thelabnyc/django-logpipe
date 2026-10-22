@@ -12,7 +12,7 @@ class Command(BaseCommand):
     def handle(self, *args: Any, **options: Any) -> None:
         consumers = list_registered_consumers()
         for c in consumers:
-            print("Found consumer: %s" % c)
+            print(f"Found consumer: {c}")
         print("Running indefinite consumer...")
         with MultiConsumer(*consumers) as multi:
             multi.run()

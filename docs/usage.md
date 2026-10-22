@@ -29,13 +29,13 @@ class Person(models.Model):
 
 
 class PersonSerializer(serializers.ModelSerializer):
-    MESSAGE_TYPE = 'person'
+    MESSAGE_TYPE = "person"
     VERSION = 1
-    KEY_FIELD = 'uuid'
+    KEY_FIELD = "uuid"
 
     class Meta:
         model = Person
-        fields = ['uuid', 'first_name', 'last_name']
+        fields = ["uuid", "first_name", "last_name"]
 
     @classmethod
     def lookup_instance(cls, uuid, **kwargs):
@@ -63,9 +63,9 @@ class Person(models.Model):
 
 
 class PersonSchema(PydanticModel):
-    MESSAGE_TYPE: ClassVar[str] = 'person'
+    MESSAGE_TYPE: ClassVar[str] = "person"
     VERSION: ClassVar[int] = 1
-    KEY_FIELD: ClassVar[str] = 'uuid'
+    KEY_FIELD: ClassVar[str] = "uuid"
 
     uuid: uuid.UUID
     first_name: str
@@ -97,10 +97,10 @@ from logpipe import DRFProducer
 from .models import Person, PersonSerializer
 
 joe = Person.objects.create(
-    first_name='Joe',
-    last_name='Schmoe',
+    first_name="Joe",
+    last_name="Schmoe",
 )
-producer = DRFProducer('people', PersonSerializer)
+producer = DRFProducer("people", PersonSerializer)
 producer.send(joe)
 ```
 
@@ -121,10 +121,10 @@ import uuid
 
 joe = PersonSchema(
     uuid=uuid.uuid4(),
-    first_name='Joe',
-    last_name='Schmoe',
+    first_name="Joe",
+    last_name="Schmoe",
 )
-producer = PydanticProducer('people')
+producer = PydanticProducer("people")
 producer.send(joe)
 ```
 
@@ -145,17 +145,17 @@ from .models import PersonSerializer, PersonSchema
 # Watch for messages, but timeout after 1000ms of no messages.
 # Use it as a context manager (or call close()) so the Kafka client and its
 # background thread are released when you're done.
-with Consumer('people', consumer_timeout_ms=1000) as consumer:
+with Consumer("people", consumer_timeout_ms=1000) as consumer:
     consumer.register(PersonSerializer)
     consumer.run()
 
 # Watch for messages and block forever
-consumer = Consumer('people')
+consumer = Consumer("people")
 consumer.register(PersonSerializer)
 consumer.run()
 
 # Pydantic serializers work here too.
-consumer = Consumer('people')
+consumer = Consumer("people")
 consumer.register(PersonSchema)
 consumer.run()
 ```
@@ -170,7 +170,7 @@ If you have multiple data-types in a single topic or stream, you can consume the
 from logpipe import Consumer
 from .models import PersonSerializer, PlaceSerializer, ThingSerializer
 
-consumer = Consumer('nouns')
+consumer = Consumer("nouns")
 consumer.register(PersonSerializer)
 consumer.register(PlaceSerializer)
 consumer.register(ThingSerializer)
@@ -188,7 +188,7 @@ from .models import (
     ThingSerializer,
 )
 
-consumer = Consumer('nouns')
+consumer = Consumer("nouns")
 consumer.register(PersonSerializerVersion1)
 consumer.register(PersonSerializerVersion2)
 consumer.register(PlaceSerializer)
@@ -207,10 +207,10 @@ from .models import (
     PlaceSerializer,
 )
 
-people_consumer = Consumer('people')
+people_consumer = Consumer("people")
 people_consumer.register(PersonSerializer)
 
-places_consumer = Consumer('places')
+places_consumer = Consumer("places")
 places_consumer.register(PlaceSerializer)
 
 multi = MultiConsumer(people_consumer, places_consumer)
@@ -228,13 +228,15 @@ Finally, consumers can be registered and run automatically by the build in `run_
 from django.apps import AppConfig
 from logpipe import Consumer, register_consumer
 
+
 class MyAppConfig(AppConfig):
-    name = 'myapp'
+    name = "myapp"
+
 
 # Register consumers with logpipe
 @register_consumer
 def build_person_consumer():
-    consumer = Consumer('people')
+    consumer = Consumer("people")
     consumer.register(PersonSerializer)
     return consumer
 ```
@@ -267,24 +269,24 @@ class Person(models.Model):
 
 
 class PersonSerializerV1(serializers.ModelSerializer):
-    MESSAGE_TYPE = 'person'
+    MESSAGE_TYPE = "person"
     VERSION = 1
-    KEY_FIELD = 'uuid'
+    KEY_FIELD = "uuid"
 
     class Meta:
         model = Person
-        fields = ['uuid', 'first_name', 'last_name']
+        fields = ["uuid", "first_name", "last_name"]
 
 
 class PersonSerializerV2(PersonSerializerV1):
-    MESSAGE_TYPE = 'person'
+    MESSAGE_TYPE = "person"
     VERSION = 2
 
     class Meta(PersonSerializerV1.META):
-        fields = ['uuid', 'first_name', 'last_name', 'email']
+        fields = ["uuid", "first_name", "last_name", "email"]
 
 
-consumer = Consumer('people', consumer_timeout_ms=1000)
+consumer = Consumer("people", consumer_timeout_ms=1000)
 consumer.register(PersonSerializerV1)
 consumer.register(PersonSerializerV2)
 ```
@@ -292,7 +294,7 @@ consumer.register(PersonSerializerV2)
 The consumers will now use the appropriate serializer for the message version. Second, we need to update producer code to being using schema version 2.
 
 ```py
-producer = Producer('people', PersonSerializerV2)
+producer = Producer("people", PersonSerializerV2)
 ```
 
 Finally, after all the old version 1 messages have been dropped (by log compaction), the `PersonSerializerV1` class can be removed form the code base.

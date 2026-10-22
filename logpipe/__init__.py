@@ -32,10 +32,10 @@ __all__ = [
     "FORMAT_JSON",
     "FORMAT_MSGPACK",
     "FORMAT_PICKLE",
-    "DRFProducer",
-    "PydanticProducer",
-    "Producer",
     "Consumer",
+    "DRFProducer",
     "MultiConsumer",
+    "Producer",
+    "PydanticProducer",
     "register_consumer",
 ]

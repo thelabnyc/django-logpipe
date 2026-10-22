@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 
 def get(key: str, default: Any = None) -> Any:
     if default is None and key not in settings.LOGPIPE:
-        raise ImproperlyConfigured('Please ensure LOGPIPE["%s"] is defined in your settings.py file.' % key)
+        raise ImproperlyConfigured(f'Please ensure LOGPIPE["{key}"] is defined in your settings.py file.')
     return settings.LOGPIPE.get(key, default)
 
 

@@ -34,4 +34,4 @@ class PickleParser(parsers.BaseParser, Parser):
         return pickle.load(stream)
 
 
-__all__ = ["PickleRenderer", "PickleParser"]
+__all__ = ["PickleParser", "PickleRenderer"]
