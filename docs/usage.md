@@ -142,10 +142,12 @@ To processing incoming messages, we can reuse the same model and serializer. We 
 from logpipe import Consumer
 from .models import PersonSerializer, PersonSchema
 
-# Watch for messages, but timeout after 1000ms of no messages
-consumer = Consumer('people', consumer_timeout_ms=1000)
-consumer.register(PersonSerializer)
-consumer.run()
+# Watch for messages, but timeout after 1000ms of no messages.
+# Use it as a context manager (or call close()) so the Kafka client and its
+# background thread are released when you're done.
+with Consumer('people', consumer_timeout_ms=1000) as consumer:
+    consumer.register(PersonSerializer)
+    consumer.run()
 
 # Watch for messages and block forever
 consumer = Consumer('people')

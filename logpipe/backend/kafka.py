@@ -23,6 +23,8 @@ logger = logging.getLogger(__name__)
 class KafkaClientConfig(TypedDict):
     bootstrap_servers: list[str]
     retries: NotRequired[int]
+    acks: NotRequired[int | str]
+    enable_idempotence: NotRequired[bool]
     auto_offset_reset: NotRequired[str]
     enable_auto_commit: NotRequired[bool]
     consumer_timeout_ms: NotRequired[int]
@@ -99,6 +101,11 @@ class Consumer(ConsumerBackend):
                 self._client.committed(tp)
         return self._client
 
+    def close(self) -> None:
+        if self._client:
+            self._client.close()
+            self._client = None
+
     def __iter__(self) -> Consumer:
         return self
 
@@ -161,9 +168,13 @@ class Producer(ProducerBackend):
     def _get_client_config(self) -> KafkaClientConfig:
         servers = settings.get("KAFKA_BOOTSTRAP_SERVERS")
         retries = settings.get("KAFKA_MAX_SEND_RETRIES", 0)
+        # Keep kafka-python 2.x delivery semantics unless KAFKA_PRODUCER_KWARGS opts in.
         kwargs = KafkaClientConfig(
             bootstrap_servers=servers,
             retries=retries,
+            acks=1,
+            enable_idempotence=False,
         )
         kwargs.update(settings.get("KAFKA_KWARGS", {}))
+        kwargs.update(settings.get("KAFKA_PRODUCER_KWARGS", {}))
         return kwargs

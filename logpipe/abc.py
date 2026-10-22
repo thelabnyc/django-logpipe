@@ -49,6 +49,9 @@ class ConsumerBackend(Iterable[Record]):
     def seek_to_sequence_number(self, shard: str, sequence_number: str | None = None) -> None:
         raise NotImplementedError()
 
+    def close(self) -> None:
+        pass
+
     @abstractmethod
     def __iter__(self) -> ConsumerBackend:
         pass

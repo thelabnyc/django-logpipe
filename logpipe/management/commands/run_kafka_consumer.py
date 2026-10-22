@@ -14,5 +14,5 @@ class Command(BaseCommand):
         for c in consumers:
             print("Found consumer: %s" % c)
         print("Running indefinite consumer...")
-        multi = MultiConsumer(*consumers)
-        multi.run()
+        with MultiConsumer(*consumers) as multi:
+            multi.run()
