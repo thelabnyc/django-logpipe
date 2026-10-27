@@ -174,3 +174,6 @@ __pycache__/
 local_settings.py
 db.sqlite3
 media
+
+# Third-party files for the docs site, copied by bin/vendor-docs-assets.py
+docs/vendor/
