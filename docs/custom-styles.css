@@ -9,3 +9,8 @@ div.autodoc-members {
     padding-left: 20px;
     margin-bottom: 15px;
 }
+
+:root {
+    --md-text-font: "Roboto Variable";
+    --md-code-font: "Roboto Mono Variable";
+}

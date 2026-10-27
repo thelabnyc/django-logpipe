@@ -46,14 +46,20 @@ dev = [
     "djangorestframework-stubs (==3.18.1)",
     "msgpack-types (>=0.8.0)",
     "tox-uv (>=1.37.0)",
-    "mkdocs (>=1.6.1,<2)",
     "pymdown-extensions (>=12.3,<13)",
-    "mkdocs-material (>=9.8.0,<10)",
     "mkautodoc (>=0.2.0,<0.3)",
+    "zensical (>=0.0.73,<0.0.74)",
 ]
 
 [tool.hatch.build.targets.wheel]
 packages = ["logpipe"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    "/bin/check-docs-csp.py",
+    "/bin/vendor-docs-assets.py",
+    "/docs-vendor",
+]
 
 [[tool.uv.index]]
 name = "thelabnyc"

@@ -1,0 +1,21 @@
+{
+  "name": "django-logpipe-docs-vendor",
+  "private": true,
+  "description": "Third-party files the docs site serves itself instead of loading from a CDN. Run bin/vendor-docs-assets.py to copy them into docs/vendor/.",
+  "devDependencies": {
+    "@fontsource-variable/roboto": "5.3.0",
+    "@fontsource-variable/roboto-mono": "5.3.0"
+  },
+  "docsAssets": {
+    "@fontsource-variable/roboto": [
+      "index.css",
+      "wght-italic.css",
+      "files/roboto-*-wght-*.woff2"
+    ],
+    "@fontsource-variable/roboto-mono": [
+      "index.css",
+      "wght-italic.css",
+      "files/roboto-mono-*-wght-*.woff2"
+    ]
+  }
+}

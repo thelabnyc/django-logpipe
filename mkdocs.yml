@@ -3,6 +3,9 @@ site_name: django-logpipe
 
 theme:
   name: material
+  variant: classic
+  custom_dir: docs-theme-overrides
+  font: false
   icon:
     repo: fontawesome/brands/git-alt
   features:
@@ -18,6 +21,10 @@ docs_dir: docs/
 site_dir: build/mkdocs/
 
 extra_css:
+  - vendor/@fontsource-variable/roboto/index.css
+  - vendor/@fontsource-variable/roboto/wght-italic.css
+  - vendor/@fontsource-variable/roboto-mono/index.css
+  - vendor/@fontsource-variable/roboto-mono/wght-italic.css
   - custom-styles.css
 
 markdown_extensions:
@@ -38,7 +45,7 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_div_format
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.arithmatex:
       generic: true
   - pymdownx.tasklist:
@@ -47,3 +54,19 @@ markdown_extensions:
   - mkautodoc
 
 use_directory_urls: false
+
+extra:
+  # GitLab Pages can't send response headers, so this goes in a <meta> tag.
+  content_security_policy: >-
+    default-src 'self';
+    script-src 'self' 'unsafe-inline';
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https:;
+    connect-src 'self' https://gitlab.com/api/v4/projects/;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self'
+
+# Rebuilds the API pages when the documented code changes
+watch:
+  - logpipe/
