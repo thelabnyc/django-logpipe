@@ -718,7 +718,7 @@ requires-dist = [
     { name = "djangorestframework", specifier = ">=3.18.3" },
     { name = "kafka-python", specifier = ">=3.0.12,<4" },
     { name = "lru-dict", specifier = ">=1.4.1" },
-    { name = "msgpack", specifier = ">=1.2.3,<2" },
+    { name = "msgpack", specifier = ">=1.2.4,<2" },
     { name = "pydantic", specifier = ">=2.14.1,<3" },
 ]
 
