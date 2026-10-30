@@ -1,3 +1,57 @@
+## v1.7.0 (2026-10-30)
+
+### Feat
+
+- test Django 6.0 and 6.1 with DRF 3.18, drop Django 4.2 and 5.1
+- support Python 3.15 and drop Python 3.11
+- **kinesis**: close the boto3 client in Consumer.close()
+- **kafka**: add KAFKA_PRODUCER_KWARGS for producer-only settings
+- **kafka**: add Consumer.close() and context-manager support
+
+### Fix
+
+- **deps**: update dependency msgpack to >=1.2.4,<2
+- **deps**: update dependency kafka-python to v3.0.12
+- **deps**: update boto to >=1.43.118,<2
+- **kafka**: keep 2.x producer delivery defaults on kafka-python 3
+- **deps**: update dependency kafka-python to v3
+- **deps**: update boto to >=1.43.114,<2
+- **deps**: update dependency pydantic to >=2.14.1,<3
+- **deps**: update dependency pydantic to >=2.14.0,<3
+- **deps**: update boto to >=1.43.110,<2
+- **deps**: update dependency djangorestframework to >=3.18.3
+- **deps**: update dependency djangorestframework to >=3.18.2
+- **deps**: update boto to >=1.43.107,<2
+- **deps**: update dependency msgpack to >=1.2.3,<2
+- **deps**: update boto to >=1.43.102,<2
+- **deps**: update boto to >=1.43.97,<2
+- **deps**: update boto to >=1.43.92,<2
+- **deps**: update dependency djangorestframework to >=3.18.1
+- **deps**: update boto to >=1.43.88,<2
+- **deps**: update dependency pydantic to >=2.13.5,<3
+- **deps**: update boto to >=1.43.82,<2
+- **deps**: update dependency msgpack to >=1.2.2,<2
+- **deps**: update boto
+- **deps**: update dependency djangorestframework to >=3.18.0
+- **deps**: update boto to >=1.43.66,<2
+- **deps**: update dependency djangorestframework to >=3.17.2
+- **deps**: update boto to >=1.43.61,<2
+- **deps**: update boto to >=1.43.55,<2
+- **deps**: update boto to >=1.43.45,<2
+- **deps**: update boto to >=1.43.40,<2
+- **deps**: update dependency msgpack to >=1.2.1,<2
+- **deps**: update boto to >=1.43.36,<2
+- **deps**: update boto to >=1.43.33,<2
+- **deps**: update boto to >=1.43.28,<2
+- **deps**: update boto to >=1.43.23,<2
+- **deps**: update python to v2.3.2
+- **deps**: update boto
+- **deps**: update boto to >=1.43.13,<2
+
+### Refactor
+
+- adopt Python 3.12 syntax
+
 ## v1.6.0 (2026-05-21)
 
 ### Feat
