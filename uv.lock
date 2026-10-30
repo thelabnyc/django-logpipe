@@ -738,7 +738,7 @@ dev = [
     { name = "psycopg2-binary", specifier = "==2.9.13" },
     { name = "pymdown-extensions", specifier = ">=12.3,<13" },
     { name = "pytz", specifier = "==2026.5" },
-    { name = "ruff", specifier = ">=0.17.2" },
+    { name = "ruff", specifier = ">=0.17.3" },
     { name = "tox", specifier = ">=4.67.1" },
     { name = "tox-uv", specifier = ">=1.37.0" },
     { name = "zensical", specifier = ">=0.0.73,<0.0.74" },
