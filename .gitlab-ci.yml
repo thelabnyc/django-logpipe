@@ -54,14 +54,14 @@ test:lib:
   coverage: '/^TOTAL.+?(\d+\%)$/'
   parallel:
     matrix:
-      - IMAGE: "3.11"
-        TOX_SKIP_ENV: "^(?!py311-)"
       - IMAGE: "3.12"
         TOX_SKIP_ENV: "^(?!py312-)"
       - IMAGE: "3.13"
         TOX_SKIP_ENV: "^(?!py313-)"
       - IMAGE: "3.14"
         TOX_SKIP_ENV: "^(?!py314-)"
+      - IMAGE: "3.15"
+        TOX_SKIP_ENV: "^(?!py315-)"
 
 test:integration:
   stage: test
