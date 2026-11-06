@@ -43,7 +43,7 @@ dev = [
     "kafka-python (==3.0.12)",
     "mypy (==2.4.1)",
     "django-stubs (==6.1.2)",
-    "djangorestframework-stubs (==3.18.1)",
+    "djangorestframework-stubs (==3.18.2)",
     "msgpack-types (>=0.8.0)",
     "tox-uv (>=1.37.3)",
     "pymdown-extensions (>=12.3,<13)",
