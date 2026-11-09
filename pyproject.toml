@@ -48,7 +48,7 @@ dev = [
     "tox-uv (>=1.37.4)",
     "pymdown-extensions (>=12.3,<13)",
     "mkautodoc (>=0.2.0,<0.3)",
-    "zensical (>=0.0.73,<0.0.74)",
+    "zensical (>=0.1.0,<0.1.1)",
 ]
 
 [tool.hatch.build.targets.wheel]
