@@ -3,6 +3,7 @@ import logging
 from django.core.exceptions import ImproperlyConfigured
 
 from . import format, settings
+from .backend import reuse_producer
 from .constants import FORMAT_JSON, FORMAT_MSGPACK, FORMAT_PICKLE
 from .consumer import Consumer, MultiConsumer
 from .formats.json import JSONParser, JSONRenderer
@@ -38,4 +39,5 @@ __all__ = [
     "Producer",
     "PydanticProducer",
     "register_consumer",
+    "reuse_producer",
 ]

@@ -116,6 +116,16 @@ class DRFProducerTest(TestCase):
             client_id="logpipe",
         )
 
+    @override_settings(LOGPIPE={**LOGPIPE, "KAFKA_SEND_TIMEOUT": 7})
+    @patch("kafka.KafkaProducer")
+    def test_producer_close_passes_timeout(self, KafkaProducer) -> None:
+        client = MagicMock()
+        KafkaProducer.return_value = client
+        producer = Producer(TOPIC_STATES, StateSerializer_DRF)
+        _ = producer.client.client
+        producer.close()
+        client.close.assert_called_once_with(timeout=7)
+
     def _get_record_metadata(self):
         return ConsumerRecord(
             topic=TOPIC_STATES,

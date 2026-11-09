@@ -65,6 +65,14 @@ LOGPIPE = {
     "PRODUCER_BACKEND": "logpipe.backend.kinesis.Producer",
     # Optional Settings
     # 'KINESIS_REGION': 'us-east-1',
+    # 'KINESIS_CONNECT_TIMEOUT': 5,
+    # 'KINESIS_READ_TIMEOUT': 10,
+    # 'KINESIS_MAX_ATTEMPTS': 3,  # total attempts per request (initial request + up to 2 retries; overrides AWS_MAX_ATTEMPTS)
+    # 'KINESIS_MAX_SEND_RETRIES': 1,
+    # 'KINESIS_MAX_FETCH_RETRIES': 1,
+    # 'KINESIS_KWARGS': {},  # extra boto3.client('kinesis', ...) kwargs; 'config' (Config or dict) is merged over defaults
+    # 'KINESIS_PRODUCER_KWARGS': {},
+    # 'KINESIS_CONSUMER_KWARGS': {},
     # 'KINESIS_FETCH_LIMIT': 25,
     # 'KINESIS_SEQ_NUM_CACHE_SIZE': 1000,
     # 'MIN_MESSAGE_LAG_MS': 0,

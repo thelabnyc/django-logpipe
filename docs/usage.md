@@ -134,6 +134,19 @@ The above sample code would result in the following message being sent to the Ka
 json:{"type":"person","version":1,"producer":"my-application-name","message":{"first_name":"Joe","last_name":"Schmoe","uuid":"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"}}
 ```
 
+When sending a batch of messages across multiple helper calls in a synchronous loop, wrap the batch in `reuse_producer()` to share a single backend client and close it when the outer block exits (or use a single `with PydanticProducer("people") as producer:` when you hold the producer instance directly). While `reuse_producer()` is active, calling `producer.close()` or exiting an inner `with PydanticProducer(...)` is a safe no-op so the shared backend remains open until the outermost `reuse_producer()` block finishes:
+
+```py
+from logpipe import PydanticProducer, reuse_producer
+
+with reuse_producer():
+    for person in people:
+        PydanticProducer("people").send(person)
+```
+
+!!! note "Kinesis Producer Error Contract"
+    On AWS Kinesis, `producer.send()` returns `RecordMetadata` on success, returns `None` if an AWS API `botocore.exceptions.ClientError` persists after `KINESIS_MAX_SEND_RETRIES`, and raises transport errors (`botocore.exceptions.ConnectionError`, `botocore.exceptions.HTTPClientError`) once botocore has used up `KINESIS_MAX_ATTEMPTS` total attempts (or immediately for non-transport configuration errors such as `NoCredentialsError` / `ParamValidationError`).
+
 ## Receiving Messages
 
 To processing incoming messages, we can reuse the same model and serializer. We just need to instantiate a Consumer object. Unlike Producers, there's not separate Consumer classes for DRF vs. Pydantic serializers. Either type of serializer can be passed into the `Consumer.register` method.
@@ -161,6 +174,9 @@ consumer.run()
 ```
 
 The consumer object uses Django REST Framework's built-in `save`, `create`, and `update` methods to apply the message. If your messages aren't tied directly to a Django model, skip defining the `lookup_instance` class method and override the `save` method to house your custom import logic.
+
+!!! note "Kinesis Consumer Error Contract"
+    On AWS Kinesis, expired shard iterators (`ExpiredIteratorException`) are automatically refreshed in place from the last fetched sequence number (or the initial seek boundary). Throttled fetches (`ProvisionedThroughputExceededException`) sleep 5 seconds per attempt—including on the final attempt—and retry up to `KINESIS_MAX_FETCH_RETRIES` before skipping that shard for the current fetch pass, while other `botocore.exceptions.ClientError` responses (including iterator-refresh errors) log a warning, sleep 5 seconds, and skip the shard immediately so continuous consumers back off between passes. Transport errors (`botocore.exceptions.ConnectionError`, `botocore.exceptions.HTTPClientError`) propagate out of `consumer.run()` / `multi.run()` once botocore has used up `KINESIS_MAX_ATTEMPTS` total attempts while preserving the consumer's shard and iterator state; process supervisors are expected to restart the command, or custom runner loops may catch transport errors, back off, and call `run()` again.
 
 ### Consuming Multiple Data-Types Per Topic
 

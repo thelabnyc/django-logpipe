@@ -1,12 +1,16 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, NotRequired, TypedDict
+from collections.abc import Mapping
+from typing import TYPE_CHECKING, Any, NotRequired, TypedDict, cast
 import collections
+import datetime
 import logging
 import time
 
+from botocore.config import Config
 from botocore.exceptions import ClientError
 from django.apps import apps
+from django.core.exceptions import ImproperlyConfigured
 from lru import LRU
 import boto3
 
@@ -32,9 +36,18 @@ logger = logging.getLogger(__name__)
 ShardID = str
 ShardIterator = str
 
+DEFAULT_KINESIS_CONNECT_TIMEOUT = 5
+DEFAULT_KINESIS_READ_TIMEOUT = 10
+DEFAULT_KINESIS_MAX_ATTEMPTS = 3
+
+
+class _ExpiredShardIteratorError(Exception):
+    pass
+
 
 class KinesisClientConfig(TypedDict):
     region_name: str
+    config: Config
 
 
 class PutRecordKwargs(TypedDict):
@@ -42,6 +55,30 @@ class PutRecordKwargs(TypedDict):
     Data: bytes
     PartitionKey: str
     SequenceNumberForOrdering: NotRequired[str]
+
+
+def _merge_client_kwargs(base: KinesisClientConfig, extra: Mapping[str, Any]) -> None:
+    if not extra:
+        return
+    merged: dict[str, Any] = dict(extra)
+    if "config" in merged:
+        user_config = merged.pop("config")
+        if isinstance(user_config, Mapping):
+            user_config = Config(**user_config)
+        elif not isinstance(user_config, Config):
+            raise ImproperlyConfigured("Kinesis client 'config' must be a botocore.config.Config instance or a mapping of Config options.")
+        user_retries: Mapping[str, Any] | None = getattr(user_config, "retries", None)
+        merged_config = base["config"].merge(user_config)
+        if user_retries:
+            base_retries = getattr(base["config"], "retries", None) or {}
+            retries = dict(base_retries)
+            if {"max_attempts", "total_max_attempts"} & user_retries.keys():
+                retries.pop("max_attempts", None)
+                retries.pop("total_max_attempts", None)
+            retries.update(user_retries)
+            merged_config = merged_config.merge(Config(retries=cast(Any, retries)))
+        base["config"] = merged_config
+    base.update(merged)  # type: ignore[typeddict-item]
 
 
 class KinesisBase:
@@ -54,16 +91,46 @@ class KinesisBase:
             self._client = boto3.client("kinesis", **kwargs)
         return self._client
 
+    def close(self) -> None:
+        if self._client:
+            self._client.close()
+            self._client = None
+
     def _get_client_config(self) -> KinesisClientConfig:
-        return KinesisClientConfig(
-            region_name=settings.get_aws_region(),
+        connect_timeout = settings.get(
+            "KINESIS_CONNECT_TIMEOUT",
+            DEFAULT_KINESIS_CONNECT_TIMEOUT,
         )
+        read_timeout = settings.get(
+            "KINESIS_READ_TIMEOUT",
+            DEFAULT_KINESIS_READ_TIMEOUT,
+        )
+        max_attempts = settings.get(
+            "KINESIS_MAX_ATTEMPTS",
+            DEFAULT_KINESIS_MAX_ATTEMPTS,
+        )
+        kwargs = KinesisClientConfig(
+            region_name=settings.get_aws_region(),
+            config=Config(
+                connect_timeout=connect_timeout,
+                read_timeout=read_timeout,
+                retries={"total_max_attempts": max_attempts},
+            ),
+        )
+        _merge_client_kwargs(kwargs, settings.get("KINESIS_KWARGS", {}))
+        return kwargs
 
 
 class ModelOffsetStore(OffsetStoreBackend):
+    @staticmethod
+    def _get_region(consumer: ConsumerBackend) -> str:
+        if isinstance(consumer, KinesisBase):
+            return consumer.client.meta.region_name
+        return settings.get_aws_region()
+
     def commit(self, consumer: ConsumerBackend, message: Record) -> None:
         KinesisOffset = apps.get_model(app_label="logpipe", model_name="KinesisOffset")
-        region = settings.get_aws_region()
+        region = self._get_region(consumer)
         logger.debug(
             f'Commit offset "{message.offset}" for region "{region}", stream "{message.topic}", shard "{message.partition}" to {self.__class__.__name__}'
         )
@@ -73,9 +140,9 @@ class ModelOffsetStore(OffsetStoreBackend):
 
     def seek(self, consumer: ConsumerBackend, stream: str, shard: str) -> None:
         KinesisOffset = apps.get_model(app_label="logpipe", model_name="KinesisOffset")
-        region = settings.get_aws_region()
+        region = self._get_region(consumer)
         try:
-            obj = KinesisOffset.objects.get(region=settings.get_aws_region(), stream=stream, shard=shard)
+            obj = KinesisOffset.objects.get(region=region, stream=stream, shard=shard)
             logger.debug(f'Seeking to offset "{obj.sequence_number}" on region "{region}", stream "{stream}", partition "{shard}"')
             consumer.seek_to_sequence_number(shard, obj.sequence_number)
         except KinesisOffset.DoesNotExist:
@@ -91,6 +158,8 @@ class Consumer(KinesisBase, ConsumerBackend):
         self.shards: collections.deque[ShardID] = collections.deque()
         self.records: collections.deque[Record] = collections.deque()
         self.shard_iters: dict[ShardID, ShardIterator] = {}
+        self.last_sequence_numbers: dict[ShardID, str] = {}
+        self.initial_seek_timestamps: dict[ShardID, datetime.datetime] = {}
 
         shards = self._list_shard_ids()
         logger.debug("Found %d kinesis shards.", len(shards))
@@ -101,10 +170,13 @@ class Consumer(KinesisBase, ConsumerBackend):
 
     def seek_to_sequence_number(self, shard: str, sequence_number: str | None = None) -> None:
         if sequence_number is None:
+            iterator_type = settings.get("KINESIS_SHARD_ITERATOR_TYPE", default="TRIM_HORIZON")
+            if iterator_type == "LATEST":
+                self.initial_seek_timestamps.setdefault(shard, datetime.datetime.now(datetime.UTC))
             resp = self.client.get_shard_iterator(
                 StreamName=self.topic_name,
                 ShardId=shard,
-                ShardIteratorType=settings.get("KINESIS_SHARD_ITERATOR_TYPE", default="TRIM_HORIZON"),
+                ShardIteratorType=iterator_type,
             )
         else:
             resp = self.client.get_shard_iterator(
@@ -115,10 +187,25 @@ class Consumer(KinesisBase, ConsumerBackend):
             )
         self.shard_iters[shard] = resp["ShardIterator"]
 
-    def close(self) -> None:
-        if self._client:
-            self._client.close()
-            self._client = None
+    def _refresh_shard_iterator(self, shard: ShardID) -> None:
+        last_seq = self.last_sequence_numbers.get(shard)
+        if last_seq is not None:
+            self.seek_to_sequence_number(shard, last_seq)
+        elif shard in self.initial_seek_timestamps:
+            resp = self.client.get_shard_iterator(
+                StreamName=self.topic_name,
+                ShardId=shard,
+                ShardIteratorType="AT_TIMESTAMP",
+                Timestamp=self.initial_seek_timestamps[shard],
+            )
+            self.shard_iters[shard] = resp["ShardIterator"]
+        else:
+            get_offset_backend().seek(self, self.topic_name, shard)
+
+    def _get_client_config(self) -> KinesisClientConfig:
+        kwargs = super()._get_client_config()
+        _merge_client_kwargs(kwargs, settings.get("KINESIS_CONSUMER_KWARGS", {}))
+        return kwargs
 
     def __iter__(self) -> Consumer:
         return self
@@ -150,14 +237,37 @@ class Consumer(KinesisBase, ConsumerBackend):
             return 0
 
         # Get the next shard iterator for the shard
-        shard_iter = self.shard_iters.pop(shard, None)
+        shard_iter = self.shard_iters.get(shard)
         if not shard_iter:
             return 0
+        # Re-queue now; only a closed shard (NextShardIterator=None) removes it below.
+        self.shards.append(shard)
 
         # Fetch the records from Kinesis
         logger.debug("Loading page of records from %s.%s", self.topic_name, shard)
         fetch_limit = settings.get("KINESIS_FETCH_LIMIT", 25)
-        response = self._get_records(shard_iter, fetch_limit)
+        try:
+            response = self._get_records(shard_iter, fetch_limit)
+        except _ExpiredShardIteratorError:
+            try:
+                self._refresh_shard_iterator(shard)
+                response = self._get_records(self.shard_iters[shard], fetch_limit)
+            except ClientError as e:
+                logger.warning(
+                    "Failed to refresh expired shard iterator for %s.%s: %s. Sleeping for 5 seconds.",
+                    self.topic_name,
+                    shard,
+                    e,
+                )
+                time.sleep(5)
+                return 0
+            except _ExpiredShardIteratorError:
+                logger.warning(
+                    "Refreshed shard iterator for %s.%s expired before records could be fetched.",
+                    self.topic_name,
+                    shard,
+                )
+                return 0
         if response is None:
             return 0
 
@@ -181,14 +291,14 @@ class Consumer(KinesisBase, ConsumerBackend):
                 value=r["Data"],
             )
             self.records.append(record)
+            self.last_sequence_numbers[shard] = r["SequenceNumber"]
 
-        # Add the shard back to the right of the queue and save the shard iterator for next time we need
-        # to get records from this shard. If NextShardIterator is None, the shard has been closed and
-        # we should remove it from the pool.
+        # Save the next shard iterator, or remove the closed shard from the fetch pool.
         if response.get("NextShardIterator", None):
             self.shard_iters[shard] = response["NextShardIterator"]
-            self.shards.append(shard)
         else:
+            self.shard_iters.pop(shard, None)
+            self.shards.remove(shard)
             logger.info(f"Shard {self.topic_name}.{shard} has been closed. Removing it from the fetch pool.")
 
         return current_stream_lag
@@ -197,19 +307,30 @@ class Consumer(KinesisBase, ConsumerBackend):
         self,
         shard_iter: ShardIterator,
         fetch_limit: int,
-        retries: int = 1,
     ) -> GetRecordsOutputTypeDef | None:
+        retries = settings.get("KINESIS_MAX_FETCH_RETRIES", 1)
         i = 0
         while i <= retries:
             try:
                 response = self.client.get_records(ShardIterator=shard_iter, Limit=fetch_limit)
                 return response
             except ClientError as e:
-                if e.response["Error"]["Code"] == "ProvisionedThroughputExceededException":
+                error = e.response.get("Error") or {}
+                code = error.get("Code", "")
+                if code == "ExpiredIteratorException":
+                    logger.warning("Caught ExpiredIteratorException; shard iterator must be refreshed.")
+                    raise _ExpiredShardIteratorError() from e
+                if code == "ProvisionedThroughputExceededException":
                     logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
                     time.sleep(5)
                 else:
-                    logger.warning("Received {} from AWS API: {}".format(e.response["Error"]["Code"], e.response["Error"]["Message"]))
+                    logger.warning(
+                        "Received %s from AWS API: %s. Sleeping for 5 seconds.",
+                        code or "ClientError",
+                        error.get("Message", ""),
+                    )
+                    time.sleep(5)
+                    return None
             i += 1
         logger.warning(f"After {i} attempts, couldn't get records from Kinesis. Giving up.")
         return None
@@ -221,6 +342,11 @@ class Consumer(KinesisBase, ConsumerBackend):
 
 class Producer(KinesisBase, ProducerBackend):
     _last_sequence_numbers: LRU[str, dict[str, str]] = LRU(settings.get("KINESIS_SEQ_NUM_CACHE_SIZE", 1000))
+
+    def _get_client_config(self) -> KinesisClientConfig:
+        kwargs = super()._get_client_config()
+        _merge_client_kwargs(kwargs, settings.get("KINESIS_PRODUCER_KWARGS", {}))
+        return kwargs
 
     def send(self, topic_name: str, key: str, value: bytes) -> RecordMetadata | None:
         kwargs = PutRecordKwargs(
@@ -245,7 +371,11 @@ class Producer(KinesisBase, ProducerBackend):
 
         return RecordMetadata(topic=topic_name, partition=shard_id, offset=seq_num)
 
-    def _send_and_retry(self, data: PutRecordKwargs, retries: int = 1) -> PutRecordOutputTypeDef | None:
+    def _send_and_retry(
+        self,
+        data: PutRecordKwargs,
+    ) -> PutRecordOutputTypeDef | None:
+        retries = settings.get("KINESIS_MAX_SEND_RETRIES", 1)
         i = 0
         while i <= retries:
             try:
@@ -253,8 +383,9 @@ class Producer(KinesisBase, ProducerBackend):
                 return metadata
             except ClientError as e:
                 if e.response["Error"]["Code"] == "ProvisionedThroughputExceededException":
-                    logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
-                    time.sleep(5)
+                    if i < retries:
+                        logger.warning("Caught ProvisionedThroughputExceededException. Sleeping for 5 seconds.")
+                        time.sleep(5)
                 else:
                     logger.warning(
                         "Received %s from AWS API: %s",
