@@ -46,7 +46,7 @@ dev = [
     "djangorestframework-stubs (==3.18.2)",
     "msgpack-types (>=0.8.0)",
     "tox-uv (>=1.37.7)",
-    "pymdown-extensions (>=12.3,<13)",
+    "pymdown-extensions (>=13.0,<14)",
     "mkautodoc (>=0.2.0,<0.3)",
     "zensical (>=0.1.0,<0.1.1)",
 ]
