@@ -653,7 +653,7 @@ dev = [
     { name = "msgpack-types", specifier = ">=0.8.0" },
     { name = "mypy", specifier = "==2.4.1" },
     { name = "psycopg2-binary", specifier = "==2.9.13" },
-    { name = "pymdown-extensions", specifier = ">=13.1,<14" },
+    { name = "pymdown-extensions", specifier = ">=13.1.1,<14" },
     { name = "pytz", specifier = "==2026.6" },
     { name = "ruff", specifier = ">=0.17.6" },
     { name = "tox", specifier = ">=4.67.15" },
@@ -1467,15 +1467,15 @@ wheels = [
 
 [[package]]
 name = "pymdown-extensions"
-version = "13.1"
+version = "13.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "markdown" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/47/b0/c98e5189398dc14ad3fa7d8762bed345d9178a6a3a37e2f6bdfb7cce8f53/pymdown_extensions-13.1.tar.gz", hash = "sha256:e1ecec373677483b7324a47e5b4bf2e0c6614fe8dcdab1dcc6a05ecefd9b527d", size = 897600, upload-time = "2026-11-11T14:08:38.819Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/78/59/1759fb252a3e48c14ab4c9a9a00f6236f0b2d731521923bbafb8c22fd739/pymdown_extensions-13.1.1.tar.gz", hash = "sha256:975384d42127906a014ed0770ab7d5b0d747a24f2635b9eba8571791455781d3", size = 902250, upload-time = "2026-11-20T13:39:32.37Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/09/ea/6efb2c6c3dd91156bad5e46c292164a9115a35a83cac285f0ed8e7d3a810/pymdown_extensions-13.1-py3-none-any.whl", hash = "sha256:093d1fab98168526d98fbb17aa5c9da68eef3664324f6b25ebbf78b2709babeb", size = 284594, upload-time = "2026-11-11T14:08:37.03Z" },
+    { url = "https://files.pythonhosted.org/packages/d3/98/23a0d8c91c295e296da75c1b45a647b24b5ae283ac6d29ce6b5e128dca76/pymdown_extensions-13.1.1-py3-none-any.whl", hash = "sha256:eadd3c66e1c44249cde54be202606f52cbf798ffdc334e060ed7d15800bab3a0", size = 286252, upload-time = "2026-11-20T13:39:30.894Z" },
 ]
 
 [[package]]
