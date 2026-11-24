@@ -185,3 +185,22 @@ class PydanticProducerTest(TestCase):
         producer.send(ny)
 
         self.assertEqual(fake_client.send.call_count, 1)
+
+    def test_context_manager_closes_producer(self) -> None:
+        fake_client = mock.MagicMock()
+        with (
+            mock.patch("logpipe.producer.get_producer_backend", return_value=fake_client),
+            PydanticProducer(TOPIC_STATES) as producer,
+        ):
+            self.assertIsNotNone(producer)
+        fake_client.close.assert_called_once_with()
+
+    def test_context_manager_exception_closes_producer_and_propagates(self) -> None:
+        fake_client = mock.MagicMock()
+        with (
+            self.assertRaisesRegex(ValueError, "boom"),
+            mock.patch("logpipe.producer.get_producer_backend", return_value=fake_client),
+            PydanticProducer(TOPIC_STATES),
+        ):
+            raise ValueError("boom")
+        fake_client.close.assert_called_once_with()

@@ -65,6 +65,9 @@ class ProducerBackend(Protocol):
     def send(self, topic_name: TopicName, key: str, value: bytes) -> RecordMetadata | None:
         pass
 
+    def close(self) -> None:
+        pass
+
 
 class OffsetStoreBackend(Protocol):
     def commit(self, consumer: ConsumerBackend, message: Record) -> None:

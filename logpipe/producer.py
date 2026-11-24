@@ -1,4 +1,5 @@
-from typing import Any
+from types import TracebackType
+from typing import Any, Self
 import logging
 
 from django.db import models
@@ -6,7 +7,7 @@ from pydantic import RootModel
 
 from . import settings
 from .abc import DRFSerializer, ProducerBackend, PydanticModel, RecordMetadata
-from .backend import get_producer_backend
+from .backend import ProducerScope, get_active_producer_scope, get_producer_backend
 from .constants import FORMAT_JSON
 from .format import render
 
@@ -17,15 +18,37 @@ class BaseProducer:
     client: ProducerBackend
     topic_name: str
     producer_id: str
+    _scope: ProducerScope | None
 
     def __init__(
         self,
         topic_name: str,
         producer_id: str | None = None,
     ):
+        self._scope = get_active_producer_scope()
         self.client = get_producer_backend()
         self.topic_name = topic_name
         self.producer_id = producer_id if producer_id else settings.get("PRODUCER_ID", "")
+
+    def __enter__(self) -> Self:
+        return self
+
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
+    ) -> None:
+        self.close()
+
+    def close(self) -> None:
+        # While the `reuse_producer()` scope this producer was created in is still open, that scope owns the
+        # shared backend. Once the scope has closed, a client reopened by a later send() belongs to this producer.
+        if self._scope is not None and not self._scope.closed:
+            return
+        close = getattr(self.client, "close", None)
+        if callable(close):
+            close()
 
     def _inner_send(
         self,

@@ -138,6 +138,11 @@ class Producer(ProducerBackend):
             self._client = kafka.KafkaProducer(**kwargs)
         return self._client
 
+    def close(self) -> None:
+        if self._client:
+            self._client.close(timeout=settings.get("KAFKA_SEND_TIMEOUT", 10))
+            self._client = None
+
     def send(self, topic_name: str, key: str, value: bytes) -> RecordMetadata:
         keybytes = key.encode()
         timeout = settings.get("KAFKA_SEND_TIMEOUT", 10)
