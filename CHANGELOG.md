@@ -1,3 +1,20 @@
+## v1.8.0 (2026-11-24)
+
+### Feat
+
+- bound Kinesis client timeouts and reuse producer clients
+
+### Fix
+
+- **deps**: update boto to >=1.44.7,<2
+- **deps**: update dependency pydantic to >=2.14.4,<3
+- **deps**: update boto
+- **deps**: update boto to >=1.43.125,<2
+- **deps**: update dependency kafka-python to v3.0.13
+- **deps**: update dependency pydantic to >=2.14.3,<3
+- **deps**: update boto to >=1.43.122,<2
+- **deps**: update dependency pydantic to >=2.14.2,<3
+
 ## v1.7.0 (2026-10-30)
 
 ### Feat
